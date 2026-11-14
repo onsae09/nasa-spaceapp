@@ -3,28 +3,42 @@ import { panels } from '../assets'
 import { EASE } from '../motion'
 import type { PanelKey } from '../story/types'
 
-/** Splits the background into three vertical photos, each with its flag on top. */
+const WIPE_SECONDS = 0.9
+const STAGGER_SECONDS = 0.22
+
+/**
+ * Splits the background into three vertical photos. Each one is uncovered
+ * from the top, left to right, and its flag follows once it is open.
+ */
 export function Triptych({ keys }: { keys: [PanelKey, PanelKey, PanelKey] }) {
   return (
     <div className="triptych">
       {keys.map((key, i) => {
         const panel = panels[key]
+        const delay = 0.15 + i * STAGGER_SECONDS
         return (
           <motion.figure
             key={key}
             className="triptych-panel"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 + i * 0.06, ease: EASE }}
+            initial={{ clipPath: 'inset(0% 0% 100% 0%)' }}
+            animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
+            transition={{ duration: WIPE_SECONDS, delay, ease: EASE }}
           >
-            <img
+            <motion.img
               className="triptych-photo"
               src={panel.src}
               alt={panel.alt}
               style={{ objectPosition: panel.position }}
               draggable={false}
+              initial={{ scale: 1.14 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 7, delay, ease: EASE }}
             />
-            <figcaption>
+            <motion.figcaption
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: delay + 0.5, ease: EASE }}
+            >
               <div className="triptych-label">
                 <img className="triptych-flag" src={panel.flag} alt="" draggable={false} />
                 <span className="triptych-country">{panel.country}</span>
@@ -33,7 +47,7 @@ export function Triptych({ keys }: { keys: [PanelKey, PanelKey, PanelKey] }) {
                 </p>
               </div>
               <p className="stamp triptych-source">{panel.stamp.source}</p>
-            </figcaption>
+            </motion.figcaption>
           </motion.figure>
         )
       })}

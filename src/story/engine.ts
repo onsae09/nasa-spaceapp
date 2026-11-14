@@ -1,4 +1,4 @@
-import type { Backdrop, ButtonSpec, Scene, Step } from './types'
+import type { Backdrop, ButtonSpec, CameraShot, Cover, FactKey, MusicCue, Pace, Scene, Step } from './types'
 
 /** Where the story is. Always rests on a blocking step, or is finished. */
 export type State = {
@@ -18,7 +18,12 @@ export type View = {
   sceneId: string | null
   backdrop: Backdrop | null
   uiVisible: boolean
+  camera: CameraShot
+  music: MusicCue
+  fact: FactKey | null
+  cover: Cover | null
   line: string | null
+  pace: Pace
   button: ButtonSpec | null
   waitMs: number | null
   finished: boolean
@@ -71,6 +76,10 @@ export function reduce(script: Scene[], state: State, action: Action): State {
 export function getView(script: Scene[], state: State): View {
   let backdrop: Backdrop | null = null
   let uiVisible = true
+  let camera: CameraShot = 'stars'
+  let music: MusicCue = 'silence'
+  let fact: FactKey | null = null
+  let cover: Cover | null = null
 
   // Replay every instant step up to the current position.
   const lastScene = Math.min(state.scene, script.length - 1)
@@ -79,9 +88,17 @@ export function getView(script: Scene[], state: State): View {
     const end = s === state.scene ? state.step : steps.length - 1
     for (let i = 0; i <= end && i < steps.length; i++) {
       const step = steps[i]
-      if ('bg' in step) backdrop = { kind: 'image', key: step.bg }
-      else if ('triptych' in step) backdrop = { kind: 'triptych', keys: step.triptych }
+      if ('bg' in step) {
+        backdrop = { kind: 'image', key: step.bg }
+        cover = null
+      } else if ('triptych' in step) {
+        backdrop = { kind: 'triptych', keys: step.triptych }
+        cover = null
+      } else if ('cover' in step) cover = step.cover
       else if ('ui' in step) uiVisible = step.ui
+      else if ('camera' in step) camera = step.camera
+      else if ('music' in step) music = step.music
+      else if ('fact' in step) fact = step.fact
     }
   }
 
@@ -90,7 +107,12 @@ export function getView(script: Scene[], state: State): View {
     sceneId: state.finished ? null : script[state.scene].id,
     backdrop,
     uiVisible,
+    camera,
+    music,
+    fact,
+    cover,
     line: step && 'say' in step ? step.say : null,
+    pace: step && 'say' in step ? (step.pace ?? 'normal') : 'normal',
     button: step && 'say' in step ? (step.button ?? null) : null,
     waitMs: step && 'wait' in step ? step.wait : null,
     finished: state.finished,

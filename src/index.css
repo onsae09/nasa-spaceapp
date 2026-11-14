@@ -86,6 +86,169 @@ body {
   display: block;
 }
 
+/* ---------- space ---------- */
+
+.space {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.starfield {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * The Earth photo is a disc on a black square. The mask cuts the square away
+ * just inside the disc's edge. At rest the disc is 1760px across, centred at
+ * (1560, 560), so it fills the right of the frame.
+ */
+.earth {
+  position: absolute;
+  left: 556px;
+  top: -444px;
+  width: 2008px;
+  height: 2008px;
+  mask-image: radial-gradient(circle closest-side, #000 86.8%, transparent 87.8%);
+  will-change: transform;
+}
+
+/* ---------- cloud and radar ---------- */
+
+.cloud-cover,
+.cloud-sky {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Wider than the stage so the slow drift never shows an edge. */
+.cloud-layer {
+  position: absolute;
+  top: 0;
+  left: -120px;
+  width: 2160px;
+  height: 1080px;
+  animation: cloud-drift 40s linear infinite alternate;
+}
+
+.cloud-layer--far {
+  opacity: 0.8;
+  animation-duration: 64s;
+  animation-direction: alternate-reverse;
+}
+
+@keyframes cloud-drift {
+  from {
+    transform: translateX(-120px);
+  }
+  to {
+    transform: translateX(120px);
+  }
+}
+
+/* The leading edge of the sweep, with a short faint trail behind it. */
+.scan-beam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -200px;
+  width: 200px;
+  border-right: 4px solid var(--text);
+  background: linear-gradient(to right, transparent, rgba(238, 240, 245, 0.2));
+}
+
+.scan-label {
+  position: absolute;
+  left: 112px;
+  top: 128px;
+  padding: 12px 20px;
+  background: var(--chip);
+  border-radius: 8px;
+}
+
+/* The white-out at the end of the dive. */
+.haze {
+  position: absolute;
+  inset: 0;
+  background: #e8eef7;
+  pointer-events: none;
+}
+
+/* ---------- title ---------- */
+
+.title {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.title-name {
+  margin: 16px 0 0;
+  font-size: 128px;
+  line-height: 136px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.title-line {
+  margin: 16px 0 0;
+  font-size: 40px;
+  line-height: 48px;
+  color: var(--text-2);
+}
+
+.title-prompt {
+  margin: 96px 0 0;
+  font-size: 28px;
+  line-height: 36px;
+  color: var(--text);
+}
+
+/* ---------- figures ---------- */
+
+.fact {
+  position: absolute;
+  left: 112px;
+  top: 128px;
+  padding: 32px 40px;
+  background: var(--chip);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.fact-row {
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+}
+
+.fact-figure {
+  min-width: 320px;
+  font-size: 120px;
+  line-height: 128px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.fact-label {
+  font-size: 36px;
+  line-height: 44px;
+  color: var(--text-2);
+}
+
+.fact-source {
+  margin-top: 16px;
+}
+
 /*
  * Acquisition stamp: every image is labelled the way a satellite frame is,
  * with where, when and who captured it.
@@ -119,8 +282,12 @@ body {
   inset: 0;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  background: var(--ink-0);
+}
+
+/* A dark seam between panels. Drawn on the panel so the photo underneath
+   never shows through while the panels are still opening. */
+.triptych-panel + .triptych-panel {
+  border-left: 4px solid var(--ink-0);
 }
 
 .triptych-panel {
@@ -212,8 +379,32 @@ body {
   align-items: center;
   justify-content: center;
   background: var(--panel);
-  border-top: 2px solid var(--text);
-  border-bottom: 2px solid var(--text);
+}
+
+/* The two rules draw outward from the centre when the box appears. */
+.dialogue::before,
+.dialogue::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--text);
+  animation: rule-draw 700ms var(--ease) both;
+}
+
+.dialogue::before {
+  top: 0;
+}
+
+.dialogue::after {
+  bottom: 0;
+}
+
+@keyframes rule-draw {
+  from {
+    transform: scaleX(0);
+  }
 }
 
 .dialogue-text {
@@ -244,8 +435,24 @@ body {
   left: 120px;
   top: 568px;
   width: 264px;
+}
+
+/* She is in orbit: a slow weightless drift. */
+.character-art {
+  display: block;
+  width: 100%;
   height: auto;
   filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+  animation: weightless 7s ease-in-out infinite alternate;
+}
+
+@keyframes weightless {
+  from {
+    transform: translateY(4px) rotate(-1.2deg);
+  }
+  to {
+    transform: translateY(-8px) rotate(1.2deg);
+  }
 }
 
 /* ---------- buttons ---------- */
@@ -375,4 +582,13 @@ body {
   right: 0;
   bottom: 32px;
   text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .character-art,
+  .cloud-layer,
+  .dialogue::before,
+  .dialogue::after {
+    animation: none;
+  }
 }

@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useReducer } from 'react'
 import { getView, reduce, start, type Action, type State } from './engine'
 import type { Scene } from './types'
 
-/** Connects the story engine to React and runs the timer for `wait` steps. */
-export function useStory(script: Scene[], startScene = 0) {
+/**
+ * Connects the story engine to React and runs the timer for `wait` steps.
+ * While `running` is false the story holds still (used behind the title screen).
+ */
+export function useStory(script: Scene[], startScene = 0, running = true) {
   const [state, dispatch] = useReducer(
     (s: State, a: Action) => reduce(script, s, a),
     undefined,
@@ -12,10 +15,10 @@ export function useStory(script: Scene[], startScene = 0) {
   const view = useMemo(() => getView(script, state), [script, state])
 
   useEffect(() => {
-    if (view.waitMs == null) return
+    if (view.waitMs == null || !running) return
     const id = setTimeout(() => dispatch({ type: 'waitDone' }), view.waitMs)
     return () => clearTimeout(id)
-  }, [state.scene, state.step, view.waitMs])
+  }, [state.scene, state.step, view.waitMs, running])
 
   return {
     view,

@@ -1,7 +1,7 @@
-import type { BackdropKey, PanelKey } from './story/types'
+import type { BackdropKey, FactKey, PanelKey } from './story/types'
 
 /**
- * Every image the story uses. To swap one, drop the new file into
+ * Every image and sound the story uses. To swap one, drop the new file into
  * public/assets/ and change its path here.
  *
  * PLACEHOLDER marks art that is waiting for the final illustration.
@@ -18,12 +18,22 @@ export type Stamp = {
   source: string
 }
 
+/** A slow zoom that keeps a still photo alive. Scale never goes below 1. */
+export type Drift = {
+  from: number
+  to: number
+  seconds: number
+  /** settle: fast then slow, for arriving at a place. steady: constant. */
+  pace: 'settle' | 'steady'
+}
+
 type BackdropAsset = {
   src: string
   alt: string
   /** CSS object-position: which part stays visible when the image is cropped to 16:9. */
   position?: string
   stamp?: Stamp
+  drift?: Drift
 }
 
 type PanelAsset = {
@@ -39,6 +49,11 @@ export const character = {
   // PLACEHOLDER – replace with the Canva astronaut (transparent PNG, about 520×900).
   src: url('character/astronaut.svg'),
   alt: 'An astronaut',
+}
+
+/** NASA Blue Marble, Eastern Hemisphere (2002). Public domain. */
+export const earth = {
+  src: url('bg/earth.jpg'),
 }
 
 export const music = {
@@ -58,12 +73,15 @@ export const backdrops: Record<BackdropKey, BackdropAsset> = {
     alt: 'Satellite image of the Nepal–China border after the flash flood of 26 August 2026, with floodwater and debris filling the river valley.',
     position: 'center 91%',
     stamp: { place: 'Rasuwa, Nepal 28.3°N 85.5°E', date: '26 Aug 2026', source: 'ESA, CC BY 4.0' },
+    // Arrives still falling, then comes to rest.
+    drift: { from: 1.3, to: 1, seconds: 6, pace: 'settle' },
   },
   brokenCity: {
     src: url('photos/broken-city.jpg'),
     alt: 'A field of debris where a mobile home park and businesses stood before a river flood.',
     position: 'center 70%',
     stamp: { place: 'Liberty, Kentucky, USA', date: '3 Jun 2010', source: 'Liz Roll / FEMA, public domain' },
+    drift: { from: 1, to: 1.08, seconds: 30, pace: 'steady' },
   },
 }
 
@@ -94,8 +112,20 @@ export const panels: Record<PanelKey, PanelAsset> = {
   },
 }
 
+/** Figures shown large beside the dialogue, always with where they come from. */
+export const facts: Record<FactKey, { rows: { figure: string; label: string }[]; source: string }> = {
+  nepalToll: {
+    rows: [
+      { figure: '1,455', label: 'confirmed dead' },
+      { figure: '5,285', label: 'still missing' },
+    ],
+    source: 'Nepal · NDRRMA, 5 Oct 2026',
+  },
+}
+
 export const allImageUrls = [
   character.src,
+  earth.src,
   ...Object.values(backdrops).map((b) => b.src),
   ...Object.values(panels).flatMap((p) => [p.src, p.flag]),
 ]

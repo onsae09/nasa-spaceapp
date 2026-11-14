@@ -8,7 +8,9 @@ const script: Scene[] = [
     id: 'one',
     steps: [
       { bg: 'space' },
+      { music: 'ambience' },
       { say: 'first' },
+      { camera: 'earth' },
       { say: 'second', button: { label: 'Go', at: 'center' } },
     ],
   },
@@ -16,12 +18,18 @@ const script: Scene[] = [
     id: 'two',
     steps: [
       { ui: false },
+      { music: 'silence' },
+      { camera: 'dive' },
       { bg: 'nepalFlood' },
       { wait: 3000 },
       { ui: true },
+      { music: 'theme' },
+      { fact: 'nepalToll' },
       { say: 'third' },
+      { fact: null },
+      { cover: 'clouds' },
       { triptych: ['bangladesh', 'india', 'us'] },
-      { say: 'fourth' },
+      { say: 'fourth', pace: 'slow' },
     ],
   },
 ]
@@ -74,6 +82,42 @@ describe('story engine', () => {
     const view = getView(script, run(start(script), 'next', 'pressButton', 'waitDone', 'next'))
     expect(view.line).toBe('fourth')
     expect(view.backdrop).toEqual({ kind: 'triptych', keys: ['bangladesh', 'india', 'us'] })
+  })
+
+  it('tracks the camera, the music cue and the fact panel', () => {
+    const first = getView(script, start(script))
+    expect([first.camera, first.music, first.fact]).toEqual(['stars', 'ambience', null])
+
+    const second = getView(script, run(start(script), 'next'))
+    expect(second.camera).toBe('earth')
+
+    const waiting = getView(script, run(start(script), 'next', 'pressButton'))
+    expect([waiting.camera, waiting.music]).toEqual(['dive', 'silence'])
+
+    const third = getView(script, run(start(script), 'next', 'pressButton', 'waitDone'))
+    expect([third.music, third.fact]).toEqual(['theme', 'nepalToll'])
+
+    const fourth = getView(script, run(start(script), 'next', 'pressButton', 'waitDone', 'next'))
+    expect(fourth.fact).toBeNull()
+  })
+
+  it('reports the pace of the current line', () => {
+    expect(getView(script, start(script)).pace).toBe('normal')
+    const fourth = getView(script, run(start(script), 'next', 'pressButton', 'waitDone', 'next'))
+    expect(fourth.pace).toBe('slow')
+  })
+
+  it('clears the cloud cover when the background changes', () => {
+    const covered: Scene[] = [
+      { id: 'a', steps: [{ bg: 'nepalFlood' }, { cover: 'clouds' }, { say: 'one' }, { cover: 'scan' }, { say: 'two' }] },
+      { id: 'b', steps: [{ bg: 'space' }, { say: 'three' }] },
+    ]
+    const at = (n: number) => {
+      let s = start(covered)
+      for (let i = 0; i < n; i++) s = reduce(covered, s, { type: 'next' })
+      return getView(covered, s).cover
+    }
+    expect([at(0), at(1), at(2)]).toEqual(['clouds', 'scan', null])
   })
 
   it('finishes after the last line and keeps the last backdrop', () => {
