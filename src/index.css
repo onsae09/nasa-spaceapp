@@ -38,7 +38,8 @@ body,
 }
 
 body {
-  background: #000;
+  /* Same black as the stage, so the bars around it do not show an edge. */
+  background: var(--ink-0);
   color: var(--text);
   overflow: hidden;
 }
@@ -179,20 +180,21 @@ body {
 
 /* ---------- title ---------- */
 
+/* Text on the calm left of the frame; the Earth sits small on the right. */
 .title {
   position: absolute;
   inset: 0;
+  padding: 0 112px 64px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  text-align: center;
 }
 
 .title-name {
   margin: 16px 0 0;
-  font-size: 128px;
-  line-height: 136px;
+  font-size: 112px;
+  line-height: 120px;
   font-weight: 500;
   letter-spacing: -0.03em;
 }

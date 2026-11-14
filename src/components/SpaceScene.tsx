@@ -12,20 +12,21 @@ const NEPAL = { x: 1187, y: 779 }
 
 /** Where the Earth image sits for each camera shot (offsets from its resting place). */
 const POSES: Record<CameraShot, { x: number; y: number; scale: number }> = {
-  stars: { x: 1400, y: 160, scale: 1 },
+  // A 387px disc centred at (1560, 480), clear of the title on the left.
+  far: { x: -143, y: 96, scale: 0.22 },
   earth: { x: 0, y: 0, scale: 1 },
   // Brings Nepal to the centre of the frame while zooming in.
   dive: { x: -783, y: 205, scale: 4.5 },
 }
 
 const MOVES = {
-  stars: { duration: 0 },
+  far: { duration: 0 },
   earth: { duration: 3.2, ease: EASE },
   // Slow start, then accelerating, like falling.
   dive: { duration: 1.8, ease: [0.6, 0, 0.9, 0.4] },
 } as const
 
-/** Open space with twinkling stars and the Earth, moved by the camera shot. */
+/** Open space with softly twinkling stars and the Earth, moved by the camera shot. */
 export function SpaceScene({ camera }: { camera: CameraShot }) {
   return (
     <div className="space">
@@ -34,7 +35,7 @@ export function SpaceScene({ camera }: { camera: CameraShot }) {
       <motion.img
         className="earth"
         src={earth.src}
-        alt={camera === 'stars' ? '' : 'The Earth seen from orbit, with Asia and the Indian Ocean facing us.'}
+        alt="The Earth seen from orbit, with Asia and the Indian Ocean facing us."
         draggable={false}
         style={{ transformOrigin: `${NEPAL.x}px ${NEPAL.y}px` }}
         initial={false}
@@ -72,7 +73,8 @@ function Starfield() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
       ctx.fillStyle = '#eef0f5'
       for (const star of stars) {
-        ctx.globalAlpha = 0.5 + 0.5 * Math.sin(star.phase + seconds * star.speed)
+        // Between 45% and 100%: a shimmer, never a blink.
+        ctx.globalAlpha = 0.725 + 0.275 * Math.sin(star.phase + seconds * star.speed)
         ctx.beginPath()
         ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2)
         ctx.fill()

@@ -40,7 +40,7 @@ export default function App() {
 
   const speaking = playing && view.line != null && view.uiVisible
   const backdrop = playing ? view.backdrop : TITLE_BACKDROP
-  const camera = playing ? view.camera : 'stars'
+  const camera = playing ? view.camera : 'far'
   const cover = playing ? view.cover : null
   const diving = playing && camera === 'dive' && view.backdrop?.kind === 'image' && view.backdrop.key === 'space'
 

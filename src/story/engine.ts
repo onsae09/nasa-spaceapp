@@ -76,7 +76,7 @@ export function reduce(script: Scene[], state: State, action: Action): State {
 export function getView(script: Scene[], state: State): View {
   let backdrop: Backdrop | null = null
   let uiVisible = true
-  let camera: CameraShot = 'stars'
+  let camera: CameraShot = 'far'
   let music: MusicCue = 'silence'
   let fact: FactKey | null = null
   let cover: Cover | null = null

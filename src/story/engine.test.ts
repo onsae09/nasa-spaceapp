@@ -86,7 +86,7 @@ describe('story engine', () => {
 
   it('tracks the camera, the music cue and the fact panel', () => {
     const first = getView(script, start(script))
-    expect([first.camera, first.music, first.fact]).toEqual(['stars', 'ambience', null])
+    expect([first.camera, first.music, first.fact]).toEqual(['far', 'ambience', null])
 
     const second = getView(script, run(start(script), 'next'))
     expect(second.camera).toBe('earth')

@@ -6,11 +6,11 @@ export type PanelKey = 'bangladesh' | 'india' | 'us'
 
 /**
  * Where the camera is while the background is `space`.
- *   stars – open space, Earth out of frame
- *   earth – Earth fills the right of the frame
+ *   far   – Earth small and distant on the right
+ *   earth – up close: Earth fills the right of the frame
  *   dive  – falls toward Nepal until the screen whites out
  */
-export type CameraShot = 'stars' | 'earth' | 'dive'
+export type CameraShot = 'far' | 'earth' | 'dive'
 
 /**
  * What the soundtrack is doing.

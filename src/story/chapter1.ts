@@ -12,11 +12,11 @@ export const chapter1: Scene[] = [
     id: 'character-intro',
     steps: [
       { bg: 'space' },
-      { camera: 'stars' },
+      { camera: 'far' },
       { music: 'ambience' },
       { ui: true },
       { say: `Hello! I'm ${CHARACTER_NAME}!`, pace: 'quick' },
-      // Earth swings into view as she mentions it.
+      // The camera closes in on Earth as she mentions it.
       { camera: 'earth' },
       { say: "I've been keeping an eye on Earth from up here." },
       { say: 'And you must be the one taking over.' },
