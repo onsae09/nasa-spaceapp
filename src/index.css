@@ -1,0 +1,378 @@
+/*
+ * Everything inside .stage is laid out in Canva pixels (1920×1080) on a 4px grid.
+ * The stage is scaled down to fit the window, so sizes here are roughly 1.5–2×
+ * what they look like on screen.
+ *
+ * Colour lives in the photographs and the astronaut. The dialogue box, buttons
+ * and stamps stay on one ink-tinted neutral ramp; the accent marks only the
+ * "your turn" cue.
+ */
+
+:root {
+  --ink-0: #07080d;
+  --ink-1: #0b0d14;
+  --text: #eef0f5;
+  --text-2: #a3a9b8;
+  --accent: #ee5a6f;
+
+  --panel: rgba(11, 13, 20, 0.8);
+  --chip: rgba(7, 8, 13, 0.76);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --font-ui: 'Figtree Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  font-family: var(--font-ui);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #000;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- stage ---------- */
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+}
+
+.stage {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--ink-0);
+  user-select: none;
+  cursor: pointer;
+}
+
+/* ---------- backdrop ---------- */
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.backdrop-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/*
+ * Acquisition stamp: every image is labelled the way a satellite frame is,
+ * with where, when and who captured it.
+ */
+.stamp {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+
+.stamp-lead {
+  color: var(--text);
+}
+
+.stamp--corner {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+  padding: 12px 20px;
+  background: var(--chip);
+  border-radius: 8px;
+}
+
+/* ---------- three-way split ---------- */
+
+.triptych {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+  background: var(--ink-0);
+}
+
+.triptych-panel {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+}
+
+.triptych-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Darkens the top and bottom so the flag and the stamp stay readable. */
+.triptych-panel::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 8, 13, 0.9),
+    rgba(7, 8, 13, 0.72) 22%,
+    transparent 40%,
+    transparent 62%,
+    rgba(7, 8, 13, 0.88)
+  );
+  pointer-events: none;
+}
+
+.triptych-label {
+  position: absolute;
+  z-index: 1;
+  top: 48px;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.triptych-flag {
+  height: 80px;
+  width: auto;
+  border-radius: 4px;
+  box-shadow: 0 0 0 2px var(--text);
+}
+
+.triptych-country {
+  margin-top: 20px;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 500;
+}
+
+.triptych-label .stamp {
+  margin-top: 4px;
+  color: var(--text);
+}
+
+.triptych-source {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 20px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+/* ---------- character and dialogue ---------- */
+
+.ui {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dialogue {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 708px;
+  height: 276px;
+  padding: 0 144px 0 288px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--panel);
+  border-top: 2px solid var(--text);
+  border-bottom: 2px solid var(--text);
+}
+
+.dialogue-text {
+  margin: 0;
+  font-size: 44px;
+  line-height: 60px;
+  font-weight: 500;
+  text-align: center;
+  text-wrap: balance;
+  font-variant-numeric: tabular-nums;
+}
+
+.dialogue-rest {
+  visibility: hidden;
+}
+
+.dialogue-hint {
+  position: absolute;
+  right: 44px;
+  bottom: 28px;
+  width: 32px;
+  height: 32px;
+  color: var(--accent);
+}
+
+.character {
+  position: absolute;
+  left: 120px;
+  top: 568px;
+  width: 264px;
+  height: auto;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+/* ---------- buttons ---------- */
+
+.story-button {
+  height: 64px;
+  padding: 0 40px;
+  font: inherit;
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ink-1);
+  background: var(--text);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition:
+    background-color 150ms var(--ease),
+    scale 150ms var(--ease);
+}
+
+.story-button:hover {
+  background: #fff;
+}
+
+.story-button:active {
+  scale: 0.98;
+}
+
+.story-button:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.story-button--center {
+  position: absolute;
+  left: 50%;
+  top: 420px;
+  translate: -50% 0;
+  height: 96px;
+  padding: 0 64px;
+  font-size: 40px;
+}
+
+.story-button--corner {
+  position: absolute;
+  right: 112px;
+  bottom: 16px;
+}
+
+.music-toggle {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--text-2);
+  background: var(--chip);
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    scale 150ms var(--ease);
+}
+
+.music-toggle:hover {
+  color: var(--text);
+}
+
+.music-toggle:active {
+  scale: 0.98;
+}
+
+.music-toggle:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.music-toggle svg {
+  width: 32px;
+  height: 32px;
+}
+
+/* ---------- end of chapter ---------- */
+
+.end-card {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(7, 8, 13, 0.9);
+  cursor: default;
+}
+
+.end-card-eyebrow {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--text-2);
+}
+
+.end-card-title {
+  margin: 12px 0 0;
+  font-size: 96px;
+  line-height: 104px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.end-card-note {
+  margin: 12px 0 64px;
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--text-2);
+}
+
+.end-card-credit {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 32px;
+  text-align: center;
+}
