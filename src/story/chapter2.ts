@@ -4,7 +4,7 @@ import type { ScriptScene } from './script'
 const same = (text: string) => ({ en: text, ko: text })
 
 /**
- * Chapter 2 – Your turn at the radar.
+ * Chapter 2 – Follow the signal.
  * The visitor fires the radar at dry ground and at water, guesses what comes
  * back, then reads the team's Cyclone Amphan change map and guesses how far
  * to trust it. Every figure is from src/content/analysis.ts.

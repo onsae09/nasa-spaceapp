@@ -90,6 +90,24 @@ export const analysis = {
     { en: 'Reference map: Zenodo record 4390084', ko: '기준 지도: Zenodo 4390084' },
   ] satisfies L[],
 
+  /**
+   * Panel D of the analysis summary figure (data/amphan/figures): both
+   * channels' change maps with axes, as the analysis drew them.
+   */
+  figure: {
+    src: url('analysis/amphan-comparison.png'),
+    open: { en: 'See the analysis figure', ko: '분석 그림 보기' } satisfies L,
+    close: { en: 'Close the figure', ko: '그림 닫기' } satisfies L,
+    alt: {
+      en: 'Two maps side by side, titled OPERA VV change and OPERA VH change in decibels, each showing the same slanted strip of land with eastings and northings on the axes and the reference newly inundated areas marked in cyan.',
+      ko: 'OPERA VV 변화와 OPERA VH 변화(dB)라는 제목의 지도 두 장이 나란히 있다. 같은 비스듬한 띠 모양의 땅을 보여 주며, 축에는 좌표가 적혀 있고 기준 지도의 새 침수 지역이 청록색으로 표시돼 있다.',
+    } satisfies L,
+    caption: {
+      en: 'From our analysis: how the radar echo changed in each channel between 16 and 22 May 2020, with the reference map’s newly flooded areas in cyan.',
+      ko: '우리 분석에서: 2020년 5월 16일과 22일 사이 채널별 레이더 메아리 변화. 기준 지도의 새 침수 지역은 청록색입니다.',
+    } satisfies L,
+  },
+
   labels: {
     hint: { en: 'Scroll to zoom · drag to move', ko: '스크롤로 확대 · 끌어서 이동' },
     close: { en: 'Close the map', ko: '지도 닫기' },

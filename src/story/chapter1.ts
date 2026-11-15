@@ -1,7 +1,7 @@
 import type { ScriptScene } from './script'
 
 /**
- * Chapter 1 – What the world missed.
+ * Chapter 1 – Hidden in plain sight.
  * No greeting: the visitor falls straight into the flood, loses it under
  * cloud, and clears the cloud with radar themselves before Sara appears.
  *

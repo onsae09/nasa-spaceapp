@@ -8,16 +8,18 @@ import { MapBackdrop } from './MapBackdrop'
 import { RadarLesson, type Pulse } from './RadarLesson'
 import { SpaceScene } from './SpaceScene'
 import { Triptych } from './Triptych'
+import { WarningWindow, type WindowTask } from './WarningWindow'
 
 const keyOf = (b: Backdrop) => (b.kind === 'image' ? b.key : `triptych:${b.keys.join(',')}`)
 
 /** The background. A new one fades in on top of the old one. */
-export function BackdropLayer({ backdrop, camera, lesson, look, pulse }: {
+export function BackdropLayer({ backdrop, camera, lesson, look, pulse, task }: {
   backdrop: Backdrop | null
   camera: CameraShot
   lesson: LessonStep
   look: MapLook
   pulse: Pulse
+  task: WindowTask
 }) {
   // Count every change, so that returning to a backdrop mounts a fresh layer
   // on top. Reusing the key would revive the old layer where it was, under
@@ -47,6 +49,8 @@ export function BackdropLayer({ backdrop, camera, lesson, look, pulse }: {
             <SpaceScene camera={camera} />
           ) : backdrop.key === 'radarLesson' ? (
             <RadarLesson step={lesson} pulse={pulse} />
+          ) : backdrop.key === 'warningWindow' ? (
+            <WarningWindow task={task} />
           ) : backdrop.key === 'amphanSwath' ? (
             <MapBackdrop look={look} />
           ) : (
@@ -60,6 +64,23 @@ export function BackdropLayer({ backdrop, camera, lesson, look, pulse }: {
 
 function PhotoBackdrop({ id }: { id: Exclude<PhotoKey, 'amphanSwath'> }) {
   const { src, alt, stamp, position, drift, fit } = useResolved(backdrops[id])
+  const credit = stamp && (
+    <p className="stamp stamp--corner">
+      <span className="stamp-lead">{stamp.place}</span> · {stamp.date} · {stamp.source}
+    </p>
+  )
+  // A chart keeps its white ground: it is laid on the dark stage as a sheet of paper.
+  if (fit === 'paper') {
+    return (
+      <>
+        <div className="backdrop-ground" />
+        <div className="paper-figure">
+          <img src={src} alt={alt} draggable={false} />
+        </div>
+        {credit}
+      </>
+    )
+  }
   return (
     <>
       {/* A contained image leaves gaps, so it needs its own ground to cover the last backdrop. */}
@@ -74,11 +95,7 @@ function PhotoBackdrop({ id }: { id: Exclude<PhotoKey, 'amphanSwath'> }) {
         animate={drift ? { scale: drift.to } : undefined}
         transition={drift ? { duration: drift.seconds, ease: drift.pace === 'settle' ? EASE : 'linear' } : undefined}
       />
-      {stamp && (
-        <p className="stamp stamp--corner">
-          <span className="stamp-lead">{stamp.place}</span> · {stamp.date} · {stamp.source}
-        </p>
-      )}
+      {credit}
     </>
   )
 }

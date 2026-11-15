@@ -36,8 +36,11 @@ type BackdropAsset = {
   position?: string
   stamp?: Stamp
   drift?: Drift
-  /** contain: show the whole image on a dark ground instead of filling the frame. */
-  fit?: 'contain'
+  /**
+   * contain: show the whole image on a dark ground instead of filling the frame.
+   * paper: a chart with a white ground, shown whole on a sheet of paper.
+   */
+  fit?: 'contain' | 'paper'
 }
 
 type PanelAsset = {
@@ -77,7 +80,22 @@ export const music = {
 }
 
 /** A backdrop that is a picture. `radarLesson` is drawn in code (components/RadarLesson.tsx). */
-export type PhotoKey = Exclude<BackdropKey, 'radarLesson'>
+export type PhotoKey = Exclude<BackdropKey, 'radarLesson' | 'warningWindow'>
+
+/** The team's chart of backscatter change by reference class (data/amphan, panel E). */
+const evidence: BackdropAsset = {
+  src: url('analysis/amphan-distributions.png'),
+  alt: {
+    en: 'Two histograms of radar backscatter change, one per channel. In each, the orange bars for newly flooded pixels sit to the left of the blue bars for other pixels, and the two overlap in the middle.',
+    ko: '채널별 레이더 메아리 변화 히스토그램 두 개. 새로 잠긴 픽셀을 나타내는 주황 막대가 다른 픽셀의 파랑 막대보다 왼쪽에 있고, 가운데에서 둘이 겹친다.',
+  },
+  fit: 'paper',
+  stamp: {
+    place: { en: 'Southwestern Bangladesh', ko: '방글라데시 남서부' },
+    date: { en: 'Cyclone Amphan, May 2020', ko: '사이클론 암판, 2020년 5월' },
+    source: { en: 'the team’s analysis of Sentinel-1', ko: '팀의 Sentinel-1 분석' },
+  },
+}
 
 export const backdrops: Record<PhotoKey, BackdropAsset> = {
   space: {
@@ -128,6 +146,7 @@ export const backdrops: Record<PhotoKey, BackdropAsset> = {
       source: same('Sentinel-1 · NASA/JPL OPERA'),
     },
   },
+  evidence,
 }
 
 export const panels: Record<PanelKey, PanelAsset> = {
@@ -205,6 +224,17 @@ export const facts: Record<
     dots: { total: 10, lit: 1 },
     source: { en: 'Reference map: Zenodo record 4390084', ko: '기준 지도: Zenodo 4390084' },
   },
+  // Solutions paper, section 1. Its own caveat goes with the figures.
+  texas: {
+    rows: [
+      { figure: '136', label: { en: 'dead, July 2025', ko: '사망, 2025년 7월' } },
+      { figure: '2', label: { en: 'dead, July 2026, with sirens', ko: '사망, 2026년 7월, 사이렌 설치 후' } },
+    ],
+    source: {
+      en: 'Texas Hill Country · AP, 18 Jul 2026 · peak rain was lower in 2026',
+      ko: '텍사스 힐 컨트리 · AP, 2026년 7월 18일 · 2026년은 최대 강우가 더 약했음',
+    },
+  },
 }
 
 export const allImageUrls = [
@@ -214,4 +244,5 @@ export const allImageUrls = [
   ...Object.values(panels).flatMap((p) => [p.src, p.flag]),
   url('analysis/amphan-vv.webp'),
   url('analysis/amphan-distributions.png'),
+  url('analysis/amphan-comparison.png'),
 ]

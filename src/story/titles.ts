@@ -2,10 +2,7 @@ import type { L } from '../i18n'
 
 /** Chapter names, shown in the progress display and on chapter cards. */
 export const chapterTitles: Record<number, L> = {
-  1: { en: 'What the world missed', ko: '세상이 놓친 것' },
-  2: { en: 'Your turn at the radar', ko: '이제 당신이 레이더를' },
-  3: { en: 'What comes next', ko: '다음 이야기' },
+  1: { en: 'Hidden in plain sight', ko: '눈앞에 숨은 것' },
+  2: { en: 'Follow the signal', ko: '신호를 따라가라' },
+  3: { en: 'Choose the next step', ko: '다음 걸음을 고르다' },
 }
-
-/** The chapter the closing card announces. It is not built yet. */
-export const nextChapter = 3

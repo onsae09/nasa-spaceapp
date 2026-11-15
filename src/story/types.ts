@@ -1,5 +1,14 @@
 /** Full-screen backgrounds. Paths live in src/assets.ts. */
-export type BackdropKey = 'space' | 'nepalFlood' | 'brokenCity' | 'amphanSwath' | 'radarLesson'
+export type BackdropKey =
+  | 'space'
+  | 'nepalFlood'
+  | 'brokenCity'
+  | 'amphanSwath'
+  | 'radarLesson'
+  /** The team's chart of how flooded and other pixels changed (a figure on paper). */
+  | 'evidence'
+  /** The warning-time calculation, drawn in code (components/WarningWindow.tsx). */
+  | 'warningWindow'
 
 /** Vertical panels used by the three-way split. */
 export type PanelKey = 'bangladesh' | 'india' | 'us'
@@ -41,7 +50,7 @@ export type LessonStep = 'send' | 'dry' | 'flood' | 'wet' | 'compare'
 export type Pace = 'slow' | 'normal' | 'quick'
 
 /** Figures shown large beside the dialogue. Content lives in src/assets.ts. */
-export type FactKey = 'nepalToll' | 'oneInTen'
+export type FactKey = 'nepalToll' | 'oneInTen' | 'texas'
 
 /**
  * A full-screen interactive part of the story. The story waits until it is closed.
@@ -73,11 +82,13 @@ export type MapLook = 'whole' | 'patch'
  * Something the visitor does themselves.
  *   sweep  – drag the radar beam across the cloud
  *   pulse  – fire the radar and watch the echo
+ *   window – find the village enough warning time
  *   choice – pick an answer
  */
 export type Interaction =
   | { kind: 'sweep' }
   | { kind: 'pulse' }
+  | { kind: 'window' }
   | { kind: 'choice'; options: string[]; answer: number }
 
 /** The card shown at the start of a chapter. */
@@ -117,7 +128,7 @@ export type Step =
   | { say: string; button?: ButtonSpec; pace?: Pace }
   | { wait: number }
   | { open: OverlayKey }
-  | { do: 'sweep' | 'pulse'; say: string }
+  | { do: 'sweep' | 'pulse' | 'window'; say: string }
   | { do: 'choice'; say: string; options: string[]; answer: number }
   | { bg: BackdropKey }
   | { triptych: [PanelKey, PanelKey, PanelKey] }

@@ -1672,11 +1672,6 @@ body {
   background: var(--text-2);
 }
 
-.nav-bar[data-state='unbuilt'] {
-  background: repeating-linear-gradient(to right, var(--text-2) 0 6px, transparent 6px 12px);
-  opacity: 0.6;
-}
-
 /* ================= things the visitor does ================= */
 
 /* Catches the drag across the whole frame while the radar is theirs to move. */
@@ -1900,21 +1895,250 @@ body {
   bottom: 120px;
 }
 
-/* ================= the closing card ================= */
-
-.end-card-doors {
-  display: flex;
-  gap: 24px;
+/* Above Continue: the same map as the analysis drew it. */
+.story-button.map-figure-open {
+  position: absolute;
+  right: 112px;
+  bottom: 200px;
 }
 
-.end-card-restart {
-  margin-top: 40px;
-  padding: 8px 16px;
+.map-figure {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(7, 8, 13, 0.8);
+}
+
+.map-figure-page {
+  position: relative;
+  width: 1520px;
+  margin: 0;
+  padding: 32px 32px 24px;
+  color: var(--paper-ink);
+  background: var(--white);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.map-figure-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.map-figure-page figcaption {
+  margin-top: 16px;
+  font-size: 22px;
+  line-height: 32px;
+  color: var(--paper-ink-2);
+}
+
+.map-figure-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+/* ================= the closing card ================= */
+
+.end-card {
+  padding: 0 112px;
+}
+
+/* A sentence, not a name: smaller than the title screen's. */
+.end-card .end-card-title {
+  max-width: 1400px;
+  font-size: 72px;
+  line-height: 80px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.end-card .end-card-note {
+  margin: 48px 0 0;
+}
+
+.end-card-actions {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  font-size: 24px;
+  line-height: 32px;
   color: var(--text-2);
 }
 
-.end-card-restart:hover {
+.end-card-actions li {
+  display: grid;
+  grid-template-columns: 320px auto;
+  gap: 24px;
+}
+
+.end-card-action {
+  font-weight: 500;
   color: var(--text);
+}
+
+.story-button.end-card-restart {
+  margin-top: 48px;
+}
+
+/* ================= a chart on paper ================= */
+
+/* The same window above the dialogue box that the map uses. */
+.paper-figure {
+  position: absolute;
+  left: 392px;
+  top: 96px;
+  width: 1136px;
+  padding: 16px;
+  background: var(--white);
+  border-radius: 16px;
+}
+
+.paper-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ================= the warning-time sum ================= */
+
+.window {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+  cursor: default;
+}
+
+.window-art {
+  position: absolute;
+  left: 112px;
+  top: 96px;
+  width: 1696px;
+  height: 584px;
+  overflow: visible;
+}
+
+.window-art rect {
+  transition:
+    x 500ms var(--ease),
+    width 500ms var(--ease);
+}
+
+.window-art path {
+  transition: d 500ms var(--ease);
+}
+
+.window-small {
+  font-size: 22px;
+}
+
+/* Minutes lost before anyone is told. */
+.window-lost {
+  fill: var(--text-2);
+  opacity: 0.5;
+}
+
+/* Too little: an outline. Enough: filled with the chapter's colour. */
+.window-left {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 2;
+  stroke-dasharray: 8 8;
+}
+
+.window-left--enough {
+  fill: var(--accent);
+  stroke: none;
+}
+
+.window-needed {
+  fill: none;
+  stroke: var(--text-2);
+  stroke-width: 2;
+}
+
+.window-figure {
+  fill: var(--text);
+  font-size: 96px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+
+.window-verdict {
+  fill: var(--text-2);
+}
+
+.window-verdict--enough {
+  fill: var(--accent);
+}
+
+.window-controls {
+  position: absolute;
+  right: 112px;
+  top: 344px;
+  width: 560px;
+}
+
+.map-switch-option.window-speed {
+  width: 124px;
+}
+
+.window-note {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 26px;
+  white-space: normal;
+}
+
+.window-automate {
+  margin-top: 28px;
+  width: 100%;
+  min-height: 72px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-align: left;
+  font: inherit;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--chip);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(238, 240, 245, 0.28);
+  cursor: pointer;
+  transition: box-shadow 150ms var(--ease);
+}
+
+.window-automate:hover,
+.window-automate[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.window-automate:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.window-automate-box {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px var(--text-2);
+  transition: background-color 150ms var(--ease);
+}
+
+.window-automate[aria-pressed='true'] .window-automate-box {
+  background: var(--accent);
+  box-shadow: none;
 }
 
 /* ================= each chapter's look ================= */
@@ -1973,9 +2197,16 @@ body {
   border-width: 0 2px 2px 0;
 }
 
+/* Chapter 3 is the way out: a calm green, and no frame. */
+.stage[data-chapter='3'] {
+  --accent: #6fd3a4;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sara-part,
-  .mapdrop-image {
+  .mapdrop-image,
+  .window-art rect,
+  .window-art path {
     transition: none;
   }
 }

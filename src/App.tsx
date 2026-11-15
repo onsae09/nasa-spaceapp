@@ -15,13 +15,11 @@ import { Speech } from './components/Speech'
 import { Stage } from './components/Stage'
 import { StoryNav } from './components/StoryNav'
 import { useSpeech } from './components/useSpeech'
-import { deck } from './content/solutions'
-import { shelf } from './content/research'
 import { chapterLabel, ui } from './content/ui'
 import { LANGS, LangProvider, initialLang, resolve, saveLang, type Lang } from './i18n'
 import { EASE } from './motion'
-import { buildStory, chapterTitles, nextChapter } from './story'
-import type { Backdrop, OverlayKey } from './story/types'
+import { buildStory } from './story'
+import type { Backdrop } from './story/types'
 import { useStory } from './story/useStory'
 
 /** `?scene=2` starts at the second scene. Handy when checking one page. */
@@ -54,13 +52,10 @@ export default function App() {
   const speaking = playing && view.line != null && view.uiVisible
   const typing = useSpeech(stepId, view.line ?? '', view.pace, speaking, sound.blip, view.revisit)
 
-  // The closing card can open the chapter 3 material on its own.
-  const [extra, setExtra] = useState<OverlayKey | null>(null)
   const backdrop = playing ? view.backdrop : TITLE_BACKDROP
   const camera = playing ? view.camera : 'far'
   const cover = playing ? view.cover : null
-  const overlay = playing ? (view.open ?? extra) : null
-  const closeOverlay = view.open ? close : () => setExtra(null)
+  const overlay = playing ? view.open : null
   const interaction = playing && !overlay && view.uiVisible ? view.interaction : null
 
   // The research files have their own lines; they say when Sara should be there.
@@ -146,6 +141,7 @@ export default function App() {
     () => ({ armed: interaction?.kind === 'pulse', onFire: sound.ping, onDone: done }),
     [interaction?.kind, sound.ping, done],
   )
+  const task = useMemo(() => ({ armed: interaction?.kind === 'window', onDone: done }), [interaction?.kind, done])
 
   // Load every image up front so scene changes do not flash.
   useEffect(() => {
@@ -161,7 +157,7 @@ export default function App() {
     <LangProvider value={lang}>
       <MotionConfig reducedMotion="user">
         <Stage onClick={advance} chapter={playing ? view.chapterNo : 1}>
-          <BackdropLayer backdrop={backdrop} camera={camera} lesson={view.lesson} look={view.look} pulse={pulse} />
+          <BackdropLayer backdrop={backdrop} camera={camera} lesson={view.lesson} look={view.look} pulse={pulse} task={task} />
           <CloudCover cover={cover} drag={interaction?.kind === 'sweep'} onSwept={onSwept} />
 
           {/* Chapter 2 is framed like an instrument; the CSS shows this only there. */}
@@ -295,38 +291,36 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, ease: EASE }}
               >
-                {overlay === 'map' && <MapViewer onClose={closeOverlay} />}
-                {overlay === 'cards' && <SolutionDeck onClose={closeOverlay} />}
+                {overlay === 'map' && <MapViewer onClose={close} />}
+                {overlay === 'cards' && <SolutionDeck onClose={close} />}
                 {overlay === 'files' && (
-                  <ResearchFiles onClose={closeOverlay} tick={sound.blip} onSpeaking={onFilesSpeaking} />
+                  <ResearchFiles onClose={close} tick={sound.blip} onSpeaking={onFilesSpeaking} />
                 )}
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Chapter 3 is not built: the card says so and offers what there is of it. */}
-          {view.finished && !overlay && (
+          {/* The final briefing: the closing line, and what the visitor can do next. */}
+          {view.finished && (
             <motion.div
               className="end-card"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, ease: EASE }}
+              transition={{ duration: 0.8, ease: EASE }}
               onClick={(e) => e.stopPropagation()}
             >
-              <p className="end-card-eyebrow">
-                {chapterLabel(nextChapter, t.chapter, lang)} · {t.inProgress}
-              </p>
-              <h1 className="end-card-title">{chapterTitles[nextChapter][lang]}</h1>
-              <p className="end-card-note">{t.meanwhile}</p>
-              <div className="end-card-doors">
-                <button type="button" className="story-button title-lang" onClick={() => setExtra('cards')}>
-                  {deck.title[lang]}
-                </button>
-                <button type="button" className="story-button title-lang" onClick={() => setExtra('files')}>
-                  {shelf.title[lang]}
-                </button>
-              </div>
-              <button type="button" className="text-button end-card-restart" onClick={restart}>
+              <p className="end-card-eyebrow">{t.ending.thanks}</p>
+              <h1 className="end-card-title">{t.ending.title}</h1>
+              <p className="end-card-note">{t.ending.lead}</p>
+              <ol className="end-card-actions">
+                {t.ending.actions.map((action) => (
+                  <li key={action.name}>
+                    <span className="end-card-action">{action.name}</span>
+                    {action.line}
+                  </li>
+                ))}
+              </ol>
+              <button type="button" className="story-button title-lang end-card-restart" onClick={restart}>
                 {t.backToStart}
               </button>
               <p className="stamp end-card-credit">{music.credit[lang]}</p>

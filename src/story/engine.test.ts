@@ -307,13 +307,13 @@ function playThrough(story: Scene[], see: (view: ReturnType<typeof getView>) => 
 }
 
 /** A judge has five to ten minutes: the story has to stay this short. */
-const BUDGET = { chapter1: 9, chapter2: 16, words: 12, hangul: 40 }
+const BUDGET = { chapter1: 9, chapter2: 16, chapter3: 12, words: 12, hangul: 40 }
 
 describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
   const story = buildStory(lang)
 
-  it('plays both chapters within the length budget', () => {
-    const lines: Record<number, string[]> = { 1: [], 2: [] }
+  it('plays all three chapters within the length budget', () => {
+    const lines: Record<number, string[]> = { 1: [], 2: [], 3: [] }
     const scenes: string[] = []
     const overlays: string[] = []
     const end = playThrough(story, (view) => {
@@ -322,11 +322,12 @@ describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
       if (view.open) overlays.push(view.open)
     })
     expect(end.finished).toBe(true)
-    expect(scenes).toEqual(['missed', 'reminder', 'echo', 'hunt'])
-    expect(overlays).toEqual(['map'])
+    expect(scenes).toEqual(['missed', 'reminder', 'echo', 'hunt', 'gaps', 'window', 'briefing'])
+    expect(overlays).toEqual(['map', 'cards', 'files'])
     expect(lines[1].length).toBeLessThanOrEqual(BUDGET.chapter1)
     expect(lines[2].length).toBeLessThanOrEqual(BUDGET.chapter2)
-    for (const line of [...lines[1], ...lines[2]]) {
+    expect(lines[3].length).toBeLessThanOrEqual(BUDGET.chapter3)
+    for (const line of [...lines[1], ...lines[2], ...lines[3]]) {
       expect(line.trim().length).toBeGreaterThan(0)
       if (lang === 'en') expect(line.split(/\s+/).length, line).toBeLessThanOrEqual(BUDGET.words)
       else expect(line.length, line).toBeLessThanOrEqual(BUDGET.hangul)
@@ -369,6 +370,7 @@ describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
       if (view.interaction) expect(view.uiVisible).toBe(true)
       if (view.interaction?.kind === 'sweep') expect(view.cover).toBe('clouds')
       if (view.interaction?.kind === 'pulse') expect(view.backdrop).toEqual({ kind: 'image', key: 'radarLesson' })
+      if (view.interaction?.kind === 'window') expect(view.backdrop).toEqual({ kind: 'image', key: 'warningWindow' })
       if (view.interaction?.kind === 'choice') {
         expect(view.interaction.options[view.interaction.answer]).toBeDefined()
       }

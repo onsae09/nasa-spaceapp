@@ -41,6 +41,7 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
   const [layer, setLayer] = useState<LayerKey>('vh')
   const [view, setView] = useState<View>(HOME)
   const [explored, setExplored] = useState(false)
+  const [figure, setFigure] = useState(false)
   const drag = useRef<{ x: number; y: number } | null>(null)
 
   /** A point on screen, in stage pixels measured from the map's resting centre. */
@@ -79,7 +80,8 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') figure ? setFigure(false) : onClose()
+      else if (figure) return
       else {
         const pan = (dx: number, dy: number) => setView((v) => settle({ ...v, x: v.x + dx, y: v.y + dy }))
         if (e.key === '+' || e.key === '=') zoomAt(STEP)
@@ -95,7 +97,7 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose, zoomAt])
+  }, [onClose, zoomAt, figure])
 
   const active = text.layers[layer]
 
@@ -238,9 +240,32 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
               <FitIcon />
             </button>
           </div>
+      <button type="button" className="story-button title-lang map-figure-open" onClick={() => setFigure(true)}>
+        {text.figure.open}
+      </button>
+
       <button type="button" className="story-button map-continue" onClick={onClose}>
         {words.continue}
       </button>
+
+      {/* The figure as the analysis drew it, on paper, over the map. */}
+      {figure && (
+        <div className="map-figure" onClick={() => setFigure(false)}>
+          <figure className="map-figure-page" onClick={(e) => e.stopPropagation()}>
+            <img src={text.figure.src} alt={text.figure.alt} draggable={false} />
+            <figcaption>{text.figure.caption}</figcaption>
+            <button
+              type="button"
+              className="icon-button icon-button--on-paper map-figure-close"
+              aria-label={text.figure.close}
+              onClick={() => setFigure(false)}
+            >
+              <CloseIcon />
+            </button>
+          </figure>
+        </div>
+      )}
+
     </div>
   )
 }

@@ -2,15 +2,15 @@
 
 NASA Space Apps Challenge 2026 — [Dancing with the SARs](https://www.spaceappschallenge.org/2026/challenges/dancing-with-the-sars/)
 
-An interactive story in which you take over a radar satellite and learn to read what it saw of a flood. Chapters 1 and 2 are built; chapter 3 is waiting for its data.
+An interactive story in which you take over a radar satellite and learn to read what it saw of a flood. All three chapters are built.
 
-Chapter 1, "What the world missed", has no greeting. The title drops you into the Nepal flood of August 2026, cloud closes over the valley, and you drag a radar beam across to clear it. Only then does Sara, the guide, appear.
+Chapter 1, "Hidden in plain sight", has no greeting. The title drops you into the Nepal flood of August 2026, cloud closes over the valley, and you drag a radar beam across to clear it. Only then does Sara, the guide, appear.
 
-Chapter 2, "Your turn at the radar", has you fire the radar yourself: at dry ground, where the echo comes back, and at water, where it does not. You guess the result before you see it. Then the story reads the team's radar analysis of Cyclone Amphan (Bangladesh, May 2020) with you, including how often its flags were wrong, and hands you the map to zoom, drag and switch between the VV and VH channels.
+Chapter 2, "Follow the signal", has you fire the radar yourself: at dry ground, where the echo comes back, and at water, where it does not. You guess the result before you see it. Then the story reads the team's radar analysis of Cyclone Amphan (Bangladesh, May 2020) with you, including how often its flags were wrong, and hands you the map to zoom, drag and switch between the VV and VH channels. The map viewer can also show the analysis's own comparison figure.
 
-Chapter 3 is not built. The closing card says so and opens what exists of it: five solution cards and three research files.
+Chapter 3, "Choose the next step", starts from what the map cannot tell you: the team's chart of flooded and other pixels overlaps, and you are asked whether one line could split them. It then turns to warning time, with the Texas figures and the warning-time sum from the team's solutions paper: for a flood that starts 35 km upstream you find what gives a village its 15 minutes. After that come the five solution cards, the three research files, and a closing card with five things a visitor can do.
 
-The whole story is held to a length a judge can finish: the tests fail if chapter 1 has more than 9 lines, chapter 2 more than 16, or any line more than 12 English words.
+The whole story is held to a length a judge can finish: the tests fail if chapter 1 has more than 9 lines, chapter 2 more than 16, chapter 3 more than 12, or any line more than 12 English words.
 
 The story is in English and Korean. The title screen asks which, with English preselected; `?lang=ko` in the URL preselects Korean, and a visitor's last choice is remembered.
 
@@ -27,7 +27,7 @@ npm run test     # story engine tests
 npm run build    # type-check and build to dist/
 ```
 
-Add `?scene=N` to the URL to start at that scene: 1 (the flood and the radar sweep) and 2 (the reminder) are chapter 1; 3 (firing the radar) and 4 (the map) are chapter 2.
+Add `?scene=N` to the URL to start at that scene: 1 (the flood and the radar sweep) and 2 (the reminder) are chapter 1; 3 (firing the radar) and 4 (the map) are chapter 2; 5 (the overlap), 6 (warning time and the solution cards) and 7 (the research files and the hand-over) are chapter 3.
 
 Click, Space, Enter or → moves the story on, and ← or the Back button returns to the previous line. The first press finishes a line that is still typing; a line you have already read comes back whole. Where the story asks you to do something (drag the radar, press Fire, pick an answer) it waits for that instead. The radar handle also works from the keyboard: → moves it, Enter sends it across. Sound starts when you leave the title screen; `M` or the speaker button turns it off.
 
@@ -35,12 +35,14 @@ Click, Space, Enter or → moves the story on, and ← or the Back button return
 
 | To change | Edit |
 |---|---|
-| Dialogue and its pace, order of events, what Sara does, what the visitor does | `src/story/chapter1.ts`, `src/story/chapter2.ts` |
+| Dialogue and its pace, order of events, what Sara does, what the visitor does | `src/story/chapter1.ts`, `chapter2.ts`, `chapter3.ts` |
 | Chapter names | `src/story/titles.ts` |
 | Sara's poses, and the places she can point at | `src/components/saraPose.ts`, `src/story/anchors.ts` |
 | The map's layers, numbers and wording | `src/content/analysis.ts` |
 | Buttons and other fixed interface words | `src/content/ui.ts` |
 | The solution cards | `src/content/solutions.ts` |
+| The warning-time sum: distance, speeds, delays | `src/components/WarningWindow.tsx` |
+| The closing card and its five actions | `src/content/ui.ts` (`ending`) |
 | The research files: spoken lines, text, figures, papers | `src/content/research.ts` |
 | Typing speed and pauses at punctuation | `src/story/pacing.ts` |
 | Images, photo stamps, figures, music | `src/assets.ts` and `public/assets/` |
@@ -77,6 +79,8 @@ Casualty figures for the 26 August 2026 Nepal flood (1,455 dead, 5,285 missing i
 Photos are resized to 1920 px wide and cropped on screen; nothing else is altered.
 
 Radar analysis: OPERA RTC-S1 products from the NASA/JPL OPERA archive (Sentinel-1A, 16 May 2020, and Sentinel-1B, 22 May 2020). Reference flood map: Bangladesh Cyclone Amphan inundation dataset, [Zenodo record 4390084](https://zenodo.org/records/4390084). Method, results and limits are in `data/amphan/REPORT.md`.
+
+The Texas figures (136 deaths in July 2025, 2 in July 2026), the 35 km distance, the warning-time sum and the five ideas are from the team's solutions paper, `data/Wave_of_Change_Flood_Solutions.pdf`, which lists its own sources (AP, 18 July 2026, for Texas). Its speeds are illustrative, and the screen says so.
 
 Research files are based on:
 

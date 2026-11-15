@@ -1,11 +1,10 @@
 import { chapterLabel, ui } from '../content/ui'
 import { useLang, useResolved } from '../i18n'
-import { chapterTitles, nextChapter } from '../story'
+import { chapterTitles } from '../story'
 
 /**
  * Where the visitor is: a way back to the previous line, the chapter's name,
- * and a dot for each of its stops. The chapter that is not built yet shows
- * as a dashed segment.
+ * and a dot for each of its stops. The other chapters show as one bar each.
  */
 export function StoryNav({ chapter, progress, canBack, onBack, showProgress }: {
   chapter: number
@@ -46,7 +45,7 @@ export function StoryNav({ chapter, progress, canBack, onBack, showProgress }: {
                   />
                 ))
               ) : (
-                <li key={n} className="nav-bar" data-state={n < chapter ? 'done' : n === nextChapter ? 'unbuilt' : 'ahead'} />
+                <li key={n} className="nav-bar" data-state={n < chapter ? 'done' : 'ahead'} />
               ),
             )}
           </ol>
