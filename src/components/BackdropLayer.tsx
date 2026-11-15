@@ -4,6 +4,7 @@ import { backdrops, type PhotoKey } from '../assets'
 import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { Backdrop, CameraShot, LessonStep, MapLook } from '../story/types'
+import { CaseDesk } from './CaseDesk'
 import { CutOffExplorer, type CutOffTask } from './CutOffExplorer'
 import { MapBackdrop } from './MapBackdrop'
 import { RadarLesson, type Pulse } from './RadarLesson'
@@ -53,6 +54,8 @@ export function BackdropLayer({ backdrop, camera, lesson, look, pulse, task, cut
             <RadarLesson step={lesson} pulse={pulse} />
           ) : backdrop.key === 'warningWindow' ? (
             <WarningWindow task={task} />
+          ) : backdrop.key === 'desk' ? (
+            <CaseDesk />
           ) : backdrop.key === 'evidence' ? (
             <CutOffExplorer task={cut} />
           ) : backdrop.key === 'amphanSwath' ? (

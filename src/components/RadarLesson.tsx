@@ -74,6 +74,10 @@ export function RadarLesson({ step, pulse }: { step: LessonStep; pulse?: Pulse }
     if (!armed) setFlying(false)
   }, [armed])
 
+  // The explanation belongs to the picture it was opened on.
+  const [why, setWhy] = useState(false)
+  useEffect(() => setWhy(false), [step])
+
   return (
     <div className="lesson">
       <svg className="lesson-art" viewBox="0 0 1696 600" role="img" aria-label={t.alt}>
@@ -236,6 +240,31 @@ export function RadarLesson({ step, pulse }: { step: LessonStep; pulse?: Pulse }
           </motion.g>
         )}
       </svg>
+
+      <p className="stamp lesson-note">{t.simplified}</p>
+
+      {/* Once a shot has been seen it can be watched again, and water explained. */}
+      {shown && !flying && !armed && (
+        <div className="lesson-extras" onClick={(e) => e.stopPropagation()}>
+          <button
+            type="button"
+            className="text-button"
+            onClick={() => {
+              setShot((n) => n + 1)
+              setFlying(true)
+              pulse?.onFire()
+            }}
+          >
+            {t.replay}
+          </button>
+          {wet && (
+            <button type="button" className="text-button" aria-expanded={why} onClick={() => setWhy((on) => !on)}>
+              {t.whyDark}
+            </button>
+          )}
+        </div>
+      )}
+      {why && wet && shown && !flying && <p className="lesson-why">{t.whyDarkText}</p>}
 
       <AnimatePresence>
         {pulse?.armed && !flying && (

@@ -170,6 +170,8 @@ export const analysis = {
       ko: 'A, B, C 중 하나를 골라 구분선을 움직여 보고, 판단을 붙이세요.',
     },
     region: { en: 'Region', ko: '지점' },
+    /** On the way out, with the picked region's letter after it. */
+    investigate: { en: 'Investigate region', ko: '이 지점 조사하기:' },
     labels: {
       changed: { en: 'New change', ko: '새로 달라짐' },
       present: { en: 'Already there', ko: '원래 있던 것' },

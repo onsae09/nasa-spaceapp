@@ -7,6 +7,8 @@ export type BackdropKey =
   | 'radarLesson'
   /** The team's histogram of flooded and other pixels, with a cut-off to drag (components/CutOffExplorer.tsx). */
   | 'evidence'
+  /** The investigation desk: the two passes as thumbnails, and the case notes (components/CaseDesk.tsx). */
+  | 'desk'
   /** The warning-time calculation, drawn in code (components/WarningWindow.tsx). */
   | 'warningWindow'
 
@@ -54,11 +56,14 @@ export type FactKey = 'nepalToll' | 'oneInTen' | 'texas'
 
 /**
  * A full-screen interactive part of the story. The story waits until it is closed.
- *   map   – the radar change map: zoom, drag, switch layers
+ *   map   – the radar map: compare the two passes and label three regions
+ *   clues – the same map: hold other evidence against one region
+ *   gaps  – the same map: what a radar map of this place can miss
+ *   steps – choose a next step for the briefing
  *   cards – the solution cards: turn them over
- *   files – the research files: open and read
+ *   files – the research files: open, read and play
  */
-export type OverlayKey = 'map' | 'cards' | 'files'
+export type OverlayKey = 'map' | 'clues' | 'gaps' | 'steps' | 'cards' | 'files'
 
 /** Where Sara floats. dock: beside the dialogue box. */
 export type SaraSpot = 'dock'

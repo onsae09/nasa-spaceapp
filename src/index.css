@@ -2619,3 +2619,615 @@ body {
     transition: none;
   }
 }
+
+/* ================= the investigation desk ================= */
+
+.desk {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+  cursor: default;
+}
+
+.desk-head {
+  position: absolute;
+  left: 112px;
+  top: 56px;
+}
+
+/* Two equal views side by side, above the dialogue box. */
+.desk-views {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 168px;
+  height: 332px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.desk-view {
+  position: relative;
+  padding: 16px 16px 56px;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  background: var(--ink-2);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  cursor: zoom-in;
+  transition: box-shadow 150ms var(--ease);
+}
+
+.desk-view:hover {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.desk-view:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.desk-view img {
+  max-width: 100%;
+  max-height: 100%;
+  min-height: 0;
+  object-fit: contain;
+}
+
+.desk-date {
+  position: absolute;
+  left: 20px;
+  bottom: 16px;
+}
+
+/* Enlarged, one view takes the whole row and the other steps out. */
+.desk-views[data-large] {
+  grid-template-columns: 1fr;
+}
+
+.desk-views[data-large] .desk-view[data-large='false'] {
+  display: none;
+}
+
+.desk-view[data-large='true'] {
+  cursor: zoom-out;
+}
+
+/* The case notes: three slots that start empty. */
+.desk-notes {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 516px;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.desk-notes div {
+  padding: 12px 20px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  align-items: baseline;
+  font-size: 22px;
+  line-height: 32px;
+  color: var(--text-2);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.desk-notes div[data-filled='true'] {
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.desk-notes dt {
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
+.desk-notes dd {
+  margin: 0;
+  font-weight: 500;
+}
+
+/* ================= choosing a next step ================= */
+
+.steps {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 8, 13, 0.82);
+}
+
+.steps-head {
+  position: absolute;
+  left: 112px;
+  top: 96px;
+}
+
+.steps-row {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 248px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.steps-card {
+  width: 100%;
+  height: 440px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--ink-2);
+  border: 0;
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition:
+    background-color 180ms var(--ease),
+    color 180ms var(--ease),
+    translate 180ms var(--ease);
+}
+
+.steps-card:hover {
+  translate: 0 -4px;
+}
+
+.steps-card:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.steps-card[aria-pressed='true'] {
+  color: var(--paper-ink);
+  background: var(--paper);
+}
+
+.steps-name {
+  margin-top: 12px;
+  font-size: 40px;
+  line-height: 48px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.steps-line {
+  margin-top: 8px;
+  font-size: 22px;
+  line-height: 30px;
+  opacity: 0.72;
+}
+
+.steps-needs {
+  margin-top: auto;
+  display: grid;
+  gap: 4px;
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.steps-response {
+  margin-bottom: 8px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+
+.steps-needs-lead {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  color: var(--paper-ink-2);
+}
+
+.steps-need {
+  padding-left: 20px;
+  background: linear-gradient(currentColor, currentColor) 0 13px / 10px 2px no-repeat;
+}
+
+.steps .desk-notes {
+  top: 724px;
+}
+
+/* ================= evidence and gaps on the map ================= */
+
+.map-group--row {
+  margin: 14px 0 8px;
+}
+
+.map-sources,
+.map-gaps {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.map-gaps {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.map-source {
+  width: 100%;
+  padding: 10px 16px;
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(238, 240, 245, 0.28);
+  cursor: pointer;
+}
+
+.map-source:hover,
+.map-source[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.map-source:focus-visible,
+.map-gap:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.map-source-name {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 500;
+}
+
+.map-source-fact {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--text-2);
+}
+
+.map-source[data-weighed='true'] .map-source-name::after {
+  content: ' ✓';
+  color: var(--accent);
+}
+
+.map-ask {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+}
+
+.map-ask .map-group {
+  margin-bottom: 8px;
+}
+
+.map-ask .map-explain,
+.map-case > .map-explain {
+  margin-top: 12px;
+  font-size: 21px;
+  line-height: 29px;
+}
+
+.map-stack-options {
+  display: grid;
+  gap: 6px;
+}
+
+.map-stack-options .map-switch-option {
+  height: 44px;
+  text-align: left;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.map-gap-tab {
+  width: 100% !important;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.map-gap-tab[data-seen='true']:not([aria-pressed='true']) {
+  color: var(--text);
+}
+
+/* A marker for something the map can miss. */
+.map-gap {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 6px 14px;
+  font: inherit;
+  font-size: 20px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text);
+  background: var(--chip);
+  border: 2px dashed var(--accent);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.map-gap[data-selected='true'] {
+  color: var(--ink-1);
+  background: var(--accent);
+  border-style: solid;
+}
+
+/* ================= more of the radar lesson ================= */
+
+.lesson-note {
+  position: absolute;
+  left: 112px;
+  top: 632px;
+}
+
+.lesson-extras {
+  position: absolute;
+  right: 112px;
+  top: 560px;
+  display: flex;
+  gap: 24px;
+}
+
+.lesson-why {
+  position: absolute;
+  right: 112px;
+  top: 612px;
+  width: 640px;
+  margin: 0;
+  padding: 16px 20px;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text);
+  background: var(--ink-2);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  translate: 0 -100%;
+}
+
+/* ================= games in the research files ================= */
+
+.file-tab[data-relevant='true'] {
+  box-shadow:
+    0 0 0 4px var(--accent),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.file-tab-relevant {
+  margin-top: 8px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--paper-ink);
+}
+
+.game-button {
+  height: 52px;
+  padding: 0 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--paper);
+  background: var(--paper-ink);
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+}
+
+.game-button:hover:enabled {
+  background: #000;
+}
+
+.game-button:focus-visible,
+.spot-cell:focus-visible {
+  outline: 3px solid var(--paper-ink);
+  outline-offset: 3px;
+}
+
+.game-button--quiet {
+  color: var(--paper-ink);
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--paper-ink);
+}
+
+.game-button--quiet:hover:enabled {
+  color: var(--paper);
+}
+
+.game-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.game-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.file-play {
+  margin-top: 16px;
+}
+
+/* A game takes the whole sheet, and the room the dialogue box leaves. */
+.file-page.game {
+  display: block;
+  top: 120px;
+  height: 760px;
+  padding: 56px 64px;
+}
+
+.game-body {
+  height: 100%;
+  padding-right: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.game-body--centre {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-right: 0;
+}
+
+.game-wide {
+  max-width: 920px;
+  font-size: 24px;
+  line-height: 34px;
+  margin-bottom: 24px;
+}
+
+.game-row {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+}
+
+.game-note {
+  position: absolute;
+  right: 48px;
+  bottom: 28px;
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  color: var(--paper-ink-2);
+}
+
+.game-status {
+  min-height: 60px;
+  margin: 16px 0 0;
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.game-meter {
+  margin: 0 0 12px;
+  display: flex;
+  gap: 40px;
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: var(--paper-ink-2);
+}
+
+.game-meter strong {
+  font-size: 32px;
+  color: var(--paper-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.game-ask {
+  max-width: 1200px;
+  margin: 8px 0 0;
+  font-size: 34px;
+  line-height: 44px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.spot {
+  margin-top: 16px;
+  display: flex;
+  gap: 48px;
+}
+
+.spot-side {
+  margin: 0;
+}
+
+.spot-side figcaption {
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  color: var(--paper-ink-2);
+}
+
+.spot-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 72px);
+  gap: 5px;
+}
+
+.spot-cell {
+  width: 72px;
+  height: 72px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+}
+
+button.spot-cell {
+  cursor: pointer;
+}
+
+.spot-cell[data-found='true'] {
+  box-shadow: inset 0 0 0 4px #3fe0f0;
+}
+
+.pass-art {
+  width: 760px;
+  height: 260px;
+  margin-top: 12px;
+  overflow: visible;
+}
+
+.pass-flood {
+  fill: #5b8def;
+  opacity: 0.45;
+}
+
+.pass-axis,
+.pass-line {
+  fill: none;
+  stroke: var(--paper-ink);
+  stroke-width: 2;
+}
+
+.pass-line {
+  stroke-dasharray: 6 6;
+}
+
+.pass-dot {
+  fill: var(--paper-ink);
+}
+
+.pass-label {
+  fill: var(--paper-ink-2);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  text-anchor: middle;
+}
+
+.pass-label--strong {
+  fill: var(--paper-ink);
+}
+
+.pass-control {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 20px;
+  color: var(--paper-ink-2);
+}
+
+.pass-control input {
+  width: 360px;
+  accent-color: var(--paper-ink);
+}

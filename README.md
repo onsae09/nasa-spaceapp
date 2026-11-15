@@ -4,13 +4,19 @@ NASA Space Apps Challenge 2026 — [Dancing with the SARs](https://www.spaceapps
 
 An interactive story in which you take over a radar satellite and learn to read what it saw of a flood. All three chapters are built.
 
-Chapter 1, "Hidden in plain sight", has no greeting. The title drops you into the Nepal flood of August 2026, cloud closes over the valley, and you drag a radar beam across to clear it. Only then does Sara, the guide, appear.
+Chapter 1, "Hidden in plain sight", has no greeting. The title drops you into the Nepal flood of August 2026, cloud closes over the valley, and you drag a radar beam across to clear it (and back, if you like). Only then does Sara, the guide, appear. The chapter ends at the investigation desk: the two radar passes of your case side by side, and three case notes, Change, Uncertainty and Next step, still empty.
 
-Chapter 2, "Follow the signal", has you fire the radar yourself: at dry ground, where the echo comes back, and at water, where it does not. You guess the result before you see it. Then the story shows the team's two radar passes over Cyclone Amphan (Bangladesh, 16 and 22 May 2020), one fading into the other, and says how often a radar flag was wrong. It then hands you the map. A divider you drag separates the two dates; three marked places, A, B and C, wait for you to label each as a new change, something already there, or unclear; and the published reference flood map can be switched on, where you can see that it covers only the east of the strip. The map shows the latitude and longitude under the pointer and a scale bar, and can switch to the change map and between the VV and VH channels.
+Chapter 2, "Follow the signal", has you fire the radar yourself: at dry ground, where the echo comes back, and at water, where it does not. You guess the result before you see it, can replay a shot, and can ask why water looks dark. Then the story shows the team's two radar passes over Cyclone Amphan (16 and 22 May 2020), one fading into the other, and says how often a radar flag was wrong. The map then opens three times:
 
-Chapter 3, "Choose the next step", starts from what the map cannot tell you. The team's histogram of flooded and other pixels is drawn from their counts, and you drag one cut-off line across it: two figures show how many of the flagged places the reference map agrees with and how much of the flooding the line catches, and no position gets both right. It then turns to warning time, with the Texas figures and the warning-time sum from the team's solutions paper: for a flood that starts 35 km upstream you find what gives a village its 15 minutes. After that come the five solution cards, the three research files, and a closing card. The card reads your own case back to you (which regions you labelled, whether you looked at the reference map, the cut-off you kept, and the evidence still missing) and says so plainly where you skipped a part, beside five things a visitor can do.
+1. Find the change. A divider you drag separates the two dates; three marked places, A, B and C, wait for you to label each as a new change, something already there, or unclear. You take one of them forward.
+2. Check the evidence. Three sources are held against your region: the published reference flood map, which covers only the east of the strip; the other radar channel, which is the same satellite on the same passes; and a ground report or optical image, which the team does not have. You say what each shows there, then record your reading: possible flooding, existing water, or still uncertain.
+3. See the gaps. Markers on the map show what it can miss: buildings, plants, the edge of the reference map, and the single moment of the pass.
 
-The whole story is held to a length a judge can finish: the tests fail if chapter 1 has more than 9 lines, chapter 2 more than 16, chapter 3 more than 12, or any line more than 12 English words.
+Between the second and third, the team's histogram of flooded and other pixels is drawn from their counts and you drag one cut-off line across it: two figures show how many of the flagged places the reference map agrees with and how much of the flooding the line catches, and no position gets both right.
+
+Chapter 3, "Choose the next step", opens with three next steps face up: map the change, support warnings, or plan for future floods. Choosing one shows what it still needs. Then comes warning time, with the Texas figures and the warning-time sum from the team's solutions paper: for a flood that starts 35 km upstream you find what gives a village its 15 minutes. After that come the five solution cards and the three research files (the case, the radar, the blind spots), each with a small game behind its Play button: spot the squares that changed, a 90-second run of observation problems, and a satellite pass to slide across a rising and draining flood. The closing card reads your own case back to you (the regions you labelled, the evidence you checked, your reading, your cut-off, your next step and what it still needs) and says so plainly where you skipped a part, beside five things a visitor can do.
+
+The whole story is held to a length a judge can finish: the tests fail if chapter 1 has more than 9 lines, chapter 2 more than 24, chapter 3 more than 12, or any line more than 12 English words.
 
 The story is in English and Korean. The title screen asks which, with English preselected; `?lang=ko` in the URL preselects Korean, and a visitor's last choice is remembered.
 
@@ -27,7 +33,7 @@ npm run test     # story engine tests
 npm run build    # type-check and build to dist/
 ```
 
-Add `?scene=N` to the URL to start at that scene: 1 (the flood and the radar sweep) and 2 (the reminder) are chapter 1; 3 (firing the radar) and 4 (the map) are chapter 2; 5 (the cut-off chart), 6 (warning time and the solution cards) and 7 (the research files and the hand-over) are chapter 3.
+Add `?scene=N` to the URL to start at that scene: 1 (the flood and the radar sweep) and 2 (the reminder) are chapter 1; 3 (firing the radar), 4 (the map and the evidence) and 5 (the cut-off chart and the gaps) are chapter 2; 6 (choosing a next step), 7 (warning time and the solution cards) and 8 (the research files and the hand-over) are chapter 3.
 
 Click, Space, Enter or → moves the story on, and ← or the Back button returns to the previous line. The first press finishes a line that is still typing; a line you have already read comes back whole. The bars beside the progress dots stand for the other chapters; pressing one goes to the start of that chapter. Where the story asks you to do something (drag the radar, press Fire, pick an answer) it waits for that instead. The radar handle also works from the keyboard: → moves it, Enter sends it across. Sound starts when you leave the title screen; `M` or the speaker button turns it off.
 
@@ -43,6 +49,8 @@ Click, Space, Enter or → moves the story on, and ← or the Back button return
 | What the closing card says about the visitor's choices | `src/content/ui.ts` (`ending.briefing`), `src/story/caseNotes.ts` |
 | The map images themselves | `scripts/build_amphan_layers.py`, then `public/assets/analysis/` |
 | Buttons and other fixed interface words | `src/content/ui.ts` |
+| The desk, the evidence sources and what each really shows, the gap markers, the three next steps | `src/content/investigation.ts` |
+| The games in the research files | `src/content/games.ts`, `src/components/FileGames.tsx` |
 | The solution cards | `src/content/solutions.ts` |
 | The warning-time sum: distance, speeds, delays | `src/components/WarningWindow.tsx` |
 | The closing card and its five actions | `src/content/ui.ts` (`ending`) |

@@ -1,15 +1,22 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import { games, type GameKey } from '../content/games'
+import type { NextStepKey } from '../content/investigation'
 import { researchFiles, shelf } from '../content/research'
 import { ui } from '../content/ui'
 import { useResolved, type Resolved } from '../i18n'
 import { EASE } from '../motion'
+import { useCaseNotes } from '../story/caseNotes'
+import { FileGame } from './FileGames'
 import { CloseIcon } from './icons'
 import { Speech } from './Speech'
 import { useSpeech } from './useSpeech'
 
 type FileText = Resolved<(typeof researchFiles)[number]>
 type ShelfText = Resolved<typeof shelf>
+
+/** The file that bears most on each next step: the case, the radar, or the blind spots. */
+const RELEVANT: Record<NextStepKey, string> = { map: '01', warn: '02', plan: '03' }
 
 /**
  * Three research files. Opening one lays it out as a document, with a figure
@@ -27,33 +34,44 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
   const [open, setOpen] = useState<number | null>(null)
   const [line, setLine] = useState(0)
   const [seen, setSeen] = useState<ReadonlySet<number>>(new Set())
+  const [game, setGame] = useState<GameKey | null>(null)
+  const notes = useCaseNotes()
+  const play = useResolved(games.play)
+  const relevant = notes.nextStep ? RELEVANT[notes.nextStep] : null
 
   const file = open == null ? null : files[open]
   const text = file ? file.lines[line] : ''
   const isLast = file ? line === file.lines.length - 1 : true
   const typing = useSpeech(`file-${open}-${line}`, text, 'normal', file != null, tick)
 
+  // Sara steps out while a game is being played: it needs the whole sheet.
   useEffect(() => {
-    onSpeaking(file != null, file != null && !typing.done)
-  }, [file, typing.done, onSpeaking])
+    onSpeaking(file != null && !game, file != null && !game && !typing.done)
+  }, [file, game, typing.done, onSpeaking])
   useEffect(() => () => onSpeaking(false, false), [onSpeaking])
 
   const show = useCallback((index: number | null) => {
     setOpen(index)
     setLine(0)
+    setGame(null)
     if (index != null) setSeen((s) => new Set(s).add(index))
   }, [])
 
   // First press finishes the line that is still typing; the next one moves on.
   const advance = useCallback(() => {
-    if (!file) return
+    if (!file || game) return
     if (!typing.done) typing.finish()
     else if (!isLast) setLine((n) => n + 1)
-  }, [file, typing.done, typing.finish, isLast])
+  }, [file, game, typing.done, typing.finish, isLast])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (open == null) return
+      // A game has the keys while it is open, apart from Escape.
+      if (game) {
+        if (e.key === 'Escape') setGame(null)
+        return
+      }
       if (e.key === 'Escape') show(null)
       else if (['Enter', ' ', 'ArrowRight'].includes(e.key)) {
         // A focused button or link handles Enter and Space itself.
@@ -64,7 +82,7 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [open, show, advance])
+  }, [open, game, show, advance])
 
   return (
     <div
@@ -100,6 +118,7 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
                   <button
                     type="button"
                     className="file-tab"
+                    data-relevant={item.number === relevant}
                     onClick={(e) => {
                       e.stopPropagation()
                       show(i)
@@ -109,6 +128,7 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
                       {t.file} {item.number}
                       {seen.has(i) && <span className="file-tab-read"> · {t.read}</span>}
                     </span>
+                    {item.number === relevant && <span className="file-tab-relevant">{t.relevant}</span>}
                     <span className="file-tab-title">{item.title}</span>
                     <span className="file-tab-teaser">{item.teaser}</span>
                     <span className="file-tab-paper">{item.paper.authors}</span>
@@ -126,8 +146,12 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: EASE }}
           >
-            <OpenFile file={file} t={t} onClose={() => show(null)} />
-            <Speech text={text} count={typing.count} done={typing.done} showHint={!isLast} />
+            {game ? (
+              <FileGame game={game} onClose={() => setGame(null)} />
+            ) : (
+              <OpenFile file={file} t={t} play={play} onPlay={() => setGame(file.game)} onClose={() => show(null)} />
+            )}
+            {!game && <Speech text={text} count={typing.count} done={typing.done} showHint={!isLast} />}
           </motion.div>
         )}
       </AnimatePresence>
@@ -146,7 +170,13 @@ export function ResearchFiles({ onClose, tick, onSpeaking }: {
   )
 }
 
-function OpenFile({ file, t, onClose }: { file: FileText; t: ShelfText; onClose: () => void }) {
+function OpenFile({ file, t, play, onPlay, onClose }: {
+  file: FileText
+  t: ShelfText
+  play: string
+  onPlay: () => void
+  onClose: () => void
+}) {
   return (
     <motion.article
       className="file-page"
@@ -170,6 +200,19 @@ function OpenFile({ file, t, onClose }: { file: FileText; t: ShelfText; onClose:
           {t.file} {file.number}
         </p>
         <h3 className="file-title">{file.title}</h3>
+        <button
+          type="button"
+          className="game-button file-play"
+          onClick={(e) => {
+            e.stopPropagation()
+            onPlay()
+          }}
+        >
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          {play}
+        </button>
         {file.body.map((paragraph) => (
           <p key={paragraph.slice(0, 24)} className="file-paragraph">
             {paragraph}

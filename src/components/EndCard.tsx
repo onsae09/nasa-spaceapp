@@ -1,6 +1,7 @@
 import { motion } from 'motion/react'
 import { music } from '../assets'
 import type { RegionKey } from '../content/analysis'
+import { clues, nextSteps } from '../content/investigation'
 import { sources } from '../content/sources'
 import { ui } from '../content/ui'
 import { useLang, useResolved } from '../i18n'
@@ -19,17 +20,32 @@ export function EndCard({ onRestart }: { onRestart: () => void }) {
   const lang = useLang()
   const notes = useCaseNotes()
   const b = t.ending.briefing
+  const clue = useResolved(clues)
+  const steps = useResolved(nextSteps)
 
   const marked = REGIONS.flatMap((key) => {
     const label = notes.labels[key]
     return label ? [`${b.region} ${key} ${b.as[label]}`] : []
   })
+  const weighed = Object.keys(notes.evidence).length
+  const checked =
+    notes.region && weighed
+      ? b.sources.replace('{count}', String(weighed)).replace('{region}', notes.region)
+      : notes.checkedReference
+        ? b.reference
+        : null
   const cut = notes.cutOff
+  const step = notes.nextStep ? steps.options[notes.nextStep] : null
   const rows = [
     { name: b.marked, value: marked.length ? marked.join(' · ') : b.noRegion, done: marked.length > 0 },
-    { name: b.checked, value: notes.checkedReference ? b.reference : b.noReference, done: notes.checkedReference },
+    { name: b.checked, value: checked ?? b.noReference, done: checked != null },
     {
-      name: b.chose,
+      name: b.read,
+      value: notes.interpretation ? clue.interpretations[notes.interpretation] : b.noReading,
+      done: notes.interpretation != null,
+    },
+    {
+      name: b.cut,
       value: cut
         ? b.cutOff
             .replace('{delta}', `${cut.delta < 0 ? '−' : '+'}${Math.abs(cut.delta).toFixed(1)} dB`)
@@ -39,7 +55,9 @@ export function EndCard({ onRestart }: { onRestart: () => void }) {
         : b.noCutOff,
       done: cut != null,
     },
-    { name: b.needed, value: b.missing, done: true },
+    { name: b.chose, value: step ? step.name : b.noNextStep, done: step != null },
+    // What is still missing depends on what they chose to do; the radar-only gap is always there.
+    { name: b.needed, value: step ? step.needs.join(' · ') : b.missing, done: true },
   ]
 
   return (

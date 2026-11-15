@@ -20,7 +20,9 @@ export const ui = {
       lead: { en: 'Your briefing', ko: '당신의 브리핑' },
       marked: { en: 'You marked', ko: '표시한 곳' },
       checked: { en: 'You checked', ko: '확인한 것' },
-      chose: { en: 'You chose', ko: '고른 기준' },
+      read: { en: 'You read it as', ko: '당신의 해석' },
+      cut: { en: 'Your cut-off', ko: '고른 기준선' },
+      chose: { en: 'You chose', ko: '고른 다음 단계' },
       needed: { en: 'Still needed', ko: '아직 필요한 것' },
       region: { en: 'Region', ko: '지점' },
       as: {
@@ -34,6 +36,9 @@ export const ui = {
         ko: '기준 침수 지도 (띠의 동쪽만 덮음)',
       },
       noReference: { en: 'Evidence not checked', ko: '근거를 확인하지 않음' },
+      sources: { en: '{count} of 3 sources held against region {region}', ko: '{region} 지점에 근거 3개 중 {count}개를 대조함' },
+      noReading: { en: 'No interpretation recorded', ko: '기록한 해석 없음' },
+      noNextStep: { en: 'Next step not selected', ko: '다음 단계를 고르지 않음' },
       cutOff: {
         en: 'A cut-off at {delta} on {channel}: {right} in 10 flags agree, {caught} in 10 floods caught',
         ko: '{channel} {delta} 기준선: 짚은 10곳 중 {right}곳 일치, 잠긴 10곳 중 {caught}곳 발견',
@@ -104,6 +109,13 @@ export const ui = {
     before: { en: 'Before', ko: '전' },
     after: { en: 'After', ko: '후' },
     darker: { en: 'Darker than before', ko: '전보다 어두워짐' },
+    simplified: { en: 'A simplified illustration', ko: '단순화한 설명 그림' },
+    replay: { en: 'Replay', ko: '다시 보기' },
+    whyDark: { en: 'Why does it look dark?', ko: '왜 어둡게 보일까요?' },
+    whyDarkText: {
+      en: 'Calm water is smooth compared with the radar’s wavelength, so it acts like a mirror: the pulse leaves at the angle it arrived, away from the satellite. Rough ground scatters part of it back. Dark means little came home, not that water is certain.',
+      ko: '잔잔한 물은 레이더 파장에 비해 매끄러워 거울처럼 작용해요. 신호는 들어온 각도 그대로 위성 반대쪽으로 나가요. 거친 땅은 일부를 되돌려 보내요. 어둡다는 건 돌아온 신호가 적다는 뜻이지, 물이 확실하다는 뜻은 아니에요.',
+    },
     alt: {
       en: 'A diagram of a radar satellite sending a signal to the ground and receiving its echo.',
       ko: '레이더 위성이 땅으로 신호를 보내고 메아리를 받는 모습을 그린 그림.',

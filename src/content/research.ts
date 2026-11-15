@@ -1,4 +1,5 @@
 import type { L } from '../i18n'
+import type { GameKey } from './games'
 
 /**
  * The research files. Each has the astronaut's spoken lines, the text shown
@@ -18,6 +19,8 @@ export type ResearchFile = {
   number: string
   title: L
   teaser: L
+  /** The game behind the file's Play button (components/FileGames.tsx). */
+  game: GameKey
   lines: L[]
   body: L[]
   figure: Figure
@@ -29,12 +32,13 @@ const same = (text: string): L => ({ en: text, ko: text })
 export const researchFiles: ResearchFile[] = [
   {
     number: '01',
-    title: { en: 'Flooding in Nepal', ko: '네팔의 홍수' },
-    teaser: { en: 'Six years of radar over the Terai lowlands', ko: '테라이 저지대를 6년간 본 레이더' },
+    title: { en: 'The case', ko: '사건' },
+    teaser: { en: 'Where, when, and what changed?', ko: '어디서, 언제, 무엇이 달라졌나?' },
+    game: 'spot',
     lines: [
       {
-        en: 'In one study, researchers compared radar images collected between 2019 and 2024.',
-        ko: '한 연구에서는 2019년부터 2024년 사이에 찍은 레이더 영상을 비교했어요.',
+        en: 'This is the case you worked on: two radar passes over one delta, six days apart.',
+        ko: '당신이 조사한 사건이에요. 한 삼각주를 엿새 간격으로 찍은 두 번의 레이더 촬영이에요.',
       },
       {
         en: 'One image shows where water was on a particular day, but comparing them can help reveal a larger pattern.',
@@ -43,26 +47,30 @@ export const researchFiles: ResearchFile[] = [
     ],
     body: [
       {
-        en: 'The Terai is a lowland region in southern Nepal, where rivers, farmland and communities share the same landscape. During periods of heavy rainfall, flooding can extend beyond river channels and affect the surrounding area.',
-        ko: '테라이는 네팔 남부의 저지대로, 강과 농경지와 마을이 한 땅을 나눠 쓰는 곳입니다. 큰비가 내리면 홍수가 강줄기를 넘어 주변 지역까지 퍼질 수 있습니다.',
+        en: 'Where: a strip of the Ganges–Brahmaputra delta about 84 km long, between 88.4°E and 89.2°E near 22.2°N, where tidal rivers, farmland, villages and mangrove forest share the same low ground.',
+        ko: '어디서: 갠지스–브라마푸트라 삼각주의 약 84km 길이 띠로, 북위 22.2도 부근 동경 88.4도에서 89.2도 사이입니다. 조수가 드나드는 강과 농경지, 마을, 맹그로브 숲이 같은 낮은 땅을 나눠 씁니다.',
       },
       {
-        en: 'In the study, researchers used Sentinel-1 Synthetic Aperture Radar, or SAR, observations to investigate flooding between 2019 and 2024. They used change-detection approaches to examine differences between images taken at different times.',
-        ko: '이 연구는 Sentinel-1 합성개구레이더(SAR) 관측으로 2019년부터 2024년까지의 홍수를 조사했습니다. 서로 다른 시점의 영상 차이를 살피는 변화 탐지 기법을 썼습니다.',
+        en: 'When: Sentinel-1 passed on 16 May and again on 22 May 2020. Cyclone Amphan came ashore between the two, on 20 May.',
+        ko: '언제: Sentinel-1이 2020년 5월 16일과 22일에 지나갔습니다. 사이클론 암판은 그 사이인 5월 20일에 상륙했습니다.',
       },
       {
-        en: 'This kind of comparison can help researchers study where water appears to have spread and how flood patterns vary over time. It can also provide information for people working to understand flood-prone areas, although satellite observation needs to be interpreted alongside other evidence.',
-        ko: '이런 비교는 물이 어디로 퍼진 것으로 보이는지, 홍수 양상이 시간에 따라 어떻게 달라지는지 연구하는 데 도움이 됩니다. 홍수에 취약한 지역을 이해하려는 사람들에게도 정보를 줍니다. 다만 위성 관측은 다른 근거와 함께 해석해야 합니다.',
+        en: 'What changed: patches of land beside the rivers returned a weaker echo on the second pass. A published flood map marks 9.86 km² as newly flooded, 1.58% of the land it covers, and the team’s VH change ranks those places above the rest 88 times in 100.',
+        ko: '무엇이 달라졌나: 강가의 땅 곳곳에서 두 번째 촬영의 메아리가 약해졌습니다. 공개된 침수 지도는 9.86 km²를 새로 잠긴 곳으로 표시하는데, 이는 그 지도가 덮는 땅의 1.58%입니다. 팀의 VH 변화량은 그 지점들을 나머지보다 100번 중 88번 높게 짚습니다.',
+      },
+      {
+        en: 'What backs it up: only that flood map, which was itself made from Sentinel-1 and covers the east of the strip. Nothing independent of radar has been found yet, so the full extent stays uncertain. The same change-detection approach has been used over six years of floods in Nepal’s Terai, in the paper cited here.',
+        ko: '뒷받침하는 것: 그 침수 지도뿐이며, 그 지도도 Sentinel-1로 만들었고 띠의 동쪽만 덮습니다. 레이더와 독립된 자료는 아직 찾지 못했으므로 전체 범위는 불확실합니다. 같은 변화 탐지 방식이 네팔 테라이의 6년치 홍수에도 쓰였고, 그 논문을 여기 인용합니다.',
       },
     ],
     figure: {
       kind: 'facts',
-      heading: { en: 'From the paper’s abstract', ko: '논문 초록에서' },
+      heading: { en: 'From the team’s analysis', ko: '팀의 분석에서' },
       items: [
-        { value: same('2019–2024'), label: { en: 'monthly Sentinel-1 flood maps', ko: '월별 Sentinel-1 홍수 지도' } },
-        { value: { en: '3 districts', ko: '3개 군' }, label: { en: 'Parsa, Bara and Rautahat', ko: '파르사, 바라, 라우타하트' } },
-        { value: same('285 km²'), label: { en: 'passed by two extreme floods', ko: '두 번의 극심한 홍수가 넘긴 면적' } },
-        { value: same('5.94%'), label: { en: 'of the area flooded 3 or 4 times', ko: '3~4번 잠긴 땅의 비율' } },
+        { value: { en: '16 → 22 May', ko: '5월 16 → 22일' }, label: { en: '2020, two Sentinel-1 passes', ko: '2020년, Sentinel-1 두 번 촬영' } },
+        { value: same('9.86 km²'), label: { en: 'marked newly flooded', ko: '새로 잠긴 것으로 표시된 땅' } },
+        { value: same('1.58%'), label: { en: 'of the land the reference covers', ko: '기준 지도가 덮는 땅 가운데' } },
+        { value: { en: '88 in 100', ko: '100번 중 88번' }, label: { en: 'flooded spot ranked above a dry one', ko: '잠긴 곳을 마른 곳보다 높게 짚음' } },
       ],
     },
     paper: {
@@ -75,8 +83,9 @@ export const researchFiles: ResearchFile[] = [
   },
   {
     number: '02',
-    title: { en: 'Seeing through the clouds', ko: '구름을 뚫고 보기' },
-    teaser: { en: 'Why radar works when a camera cannot', ko: '카메라가 못 볼 때 레이더가 보는 이유' },
+    title: { en: 'The radar', ko: '레이더' },
+    teaser: { en: 'Why can radar reveal a hidden surface?', ko: '레이더는 어떻게 가려진 땅을 드러낼까?' },
+    game: 'sprint',
     lines: [
       { en: 'SAR gives us another way to observe Earth.', ko: 'SAR는 지구를 보는 또 다른 방법이에요.' },
       {
@@ -110,8 +119,8 @@ export const researchFiles: ResearchFile[] = [
         ko: '레이더로 본 비스듬한 띠 모양의 땅. 어두운 강이 굽이치고 그 옆에 어두운 얼룩들이 보인다.',
       },
       caption: {
-        en: 'From our own analysis: radar change over Bangladesh, May 2020. Cyan marks new flooding in the reference map.',
-        ko: '우리 분석에서: 2020년 5월 방글라데시의 레이더 변화. 청록색은 기준 지도의 신규 침수입니다.',
+        en: 'From our own analysis: the radar pass of 22 May 2020. Rivers and standing water are dark; darkness alone does not establish flooding.',
+        ko: '우리 분석에서: 2020년 5월 22일의 레이더 촬영. 강과 고인 물은 어둡게 보이지만, 어둡다는 것만으로 침수가 확정되지는 않습니다.',
       },
       onLight: false,
     },
@@ -125,7 +134,8 @@ export const researchFiles: ResearchFile[] = [
   {
     number: '03',
     title: { en: 'The blind spots', ko: '사각지대' },
-    teaser: { en: 'What a flood map can miss', ko: '홍수 지도가 놓칠 수 있는 것' },
+    teaser: { en: 'What could this interpretation miss?', ko: '이 해석이 놓칠 수 있는 것은?' },
+    game: 'pass',
     lines: [
       { en: 'A satellite image is a record of one moment.', ko: '위성 영상은 한순간의 기록이에요.' },
       {
@@ -176,7 +186,9 @@ export const researchFiles: ResearchFile[] = [
 
 export const shelf = {
   title: { en: 'Research files', ko: '연구 파일' },
-  lead: { en: 'Open a file to read it', ko: '파일을 열어 읽어 보세요' },
+  lead: { en: 'Check the evidence behind your choice', ko: '당신의 선택 뒤에 있는 근거를 확인하세요' },
+  /** On the file that bears most on the next step the visitor chose. */
+  relevant: { en: 'For your next step', ko: '당신의 다음 단계와 관련' },
   file: { en: 'File', ko: '파일' },
   read: { en: 'Read', ko: '읽음' },
   basedOn: { en: 'Based on', ko: '바탕이 된 논문:' },

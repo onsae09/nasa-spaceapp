@@ -8,6 +8,7 @@ import { CloudCover } from './components/CloudCover'
 import { EndCard } from './components/EndCard'
 import { FactPanel } from './components/FactPanel'
 import { MapViewer } from './components/MapViewer'
+import { NextStep } from './components/NextStep'
 import { MusicToggle } from './components/MusicToggle'
 import { ResearchFiles } from './components/ResearchFiles'
 import { Sara } from './components/Sara'
@@ -300,7 +301,10 @@ export default function App() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.4, ease: EASE }}
               >
-                {overlay === 'map' && <MapViewer onClose={close} />}
+                {overlay === 'map' && <MapViewer stage="detect" onClose={close} />}
+                {overlay === 'clues' && <MapViewer stage="clues" onClose={close} />}
+                {overlay === 'gaps' && <MapViewer stage="gaps" onClose={close} />}
+                {overlay === 'steps' && <NextStep onClose={close} />}
                 {overlay === 'cards' && <SolutionDeck onClose={close} />}
                 {overlay === 'files' && (
                   <ResearchFiles onClose={close} tick={sound.blip} onSpeaking={onFilesSpeaking} />

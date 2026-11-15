@@ -17,6 +17,9 @@ export const sources: { label: L; href?: string }[] = [
     href: 'https://zenodo.org/records/4390084',
   },
   {
+    label: { en: 'Amphan landfall, 20 May 2020: India Meteorological Department', ko: '암판 상륙일 2020년 5월 20일: 인도 기상청' },
+  },
+  {
     label: { en: 'Nepal image: ESA, CC BY 4.0', ko: '네팔 영상: ESA, CC BY 4.0' },
     href: 'https://commons.wikimedia.org/wiki/File:Nepal_glacier_collapse_and_flood_(after)_(55504451912).jpg',
   },

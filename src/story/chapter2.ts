@@ -145,6 +145,48 @@ export const chapter2: ScriptScene[] = [
         button: { label: { en: 'Open the evidence', ko: '근거 살펴보기' }, at: 'corner' },
       },
       { open: 'map' },
+      // Page 6 of the plan: hold other evidence against the region they took forward.
+      { sara: { pose: 'think', point: null } },
+      {
+        say: {
+          en: 'A claim needs a second source. Check its place and time.',
+          ko: '판단에는 두 번째 근거가 필요해요. 장소와 시점을 확인하세요.',
+        },
+        button: { label: { en: 'Check the evidence', ko: '근거 대조하기' }, at: 'corner' },
+      },
+      { open: 'clues' },
+    ],
+  },
+  {
+    id: 'limits',
+    chapter: 2,
+    steps: [
+      // Why no rule settles it: the team's histogram, with a cut-off to drag.
+      { bg: 'evidence' },
+      { sara: { pose: 'think' } },
+      {
+        do: 'cutoff',
+        say: {
+          en: 'Orange is flooded land, blue is not. Drag one line between them.',
+          ko: '주황은 잠긴 땅, 파랑은 아닌 땅. 선 하나로 갈라 보세요.',
+        },
+      },
+      { sara: { pose: 'idle' } },
+      {
+        say: {
+          en: 'They overlap. Catch more floods, and you flag more dry land.',
+          ko: '둘은 겹쳐요. 홍수를 더 잡으려 하면 마른 땅도 더 짚게 돼요.',
+        },
+      },
+      // Page 7: what the map itself can miss.
+      {
+        say: {
+          en: 'Buildings, trees and timing leave gaps too.',
+          ko: '건물과 나무, 촬영 시점도 빈틈을 남겨요.',
+        },
+        button: { label: { en: 'Show the gaps', ko: '빈틈 보기' }, at: 'corner' },
+      },
+      { open: 'gaps' },
       { bg: 'space' },
       { camera: 'earth' },
       { sara: { pose: 'wave' } },

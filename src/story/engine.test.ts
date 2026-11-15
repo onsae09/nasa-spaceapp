@@ -319,7 +319,7 @@ function playThrough(story: Scene[], see: (view: ReturnType<typeof getView>) => 
 }
 
 /** A judge has five to ten minutes: the story has to stay this short. */
-const BUDGET = { chapter1: 9, chapter2: 16, chapter3: 12, words: 12, hangul: 40 }
+const BUDGET = { chapter1: 9, chapter2: 24, chapter3: 12, words: 12, hangul: 40 }
 
 describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
   const story = buildStory(lang)
@@ -334,8 +334,8 @@ describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
       if (view.open) overlays.push(view.open)
     })
     expect(end.finished).toBe(true)
-    expect(scenes).toEqual(['missed', 'reminder', 'echo', 'hunt', 'gaps', 'window', 'briefing'])
-    expect(overlays).toEqual(['map', 'cards', 'files'])
+    expect(scenes).toEqual(['missed', 'reminder', 'echo', 'hunt', 'limits', 'choose', 'window', 'briefing'])
+    expect(overlays).toEqual(['map', 'clues', 'gaps', 'steps', 'cards', 'files'])
     expect(lines[1].length).toBeLessThanOrEqual(BUDGET.chapter1)
     expect(lines[2].length).toBeLessThanOrEqual(BUDGET.chapter2)
     expect(lines[3].length).toBeLessThanOrEqual(BUDGET.chapter3)

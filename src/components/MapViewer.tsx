@@ -8,6 +8,14 @@ import {
   type RegionLabel,
   type ViewKey,
 } from '../content/analysis'
+import {
+  clues,
+  gaps,
+  type EvidenceKey,
+  type GapKey,
+  type InterpretationKey,
+  type SupportKey,
+} from '../content/investigation'
 import { ui } from '../content/ui'
 import { useResolved } from '../i18n'
 import { caseNotes, useCaseNotes } from '../story/caseNotes'
@@ -27,6 +35,18 @@ const LAYERS: LayerKey[] = ['vh', 'vv']
 const VIEWS: ViewKey[] = ['compare', 'change']
 const REGIONS: RegionKey[] = ['A', 'B', 'C']
 const LABELS: RegionLabel[] = ['changed', 'present', 'unclear']
+const SOURCES: EvidenceKey[] = ['reference', 'vv', 'ground']
+const SUPPORT: SupportKey[] = ['change', 'none', 'silent']
+const INTERPRETATIONS: InterpretationKey[] = ['flood', 'existing', 'uncertain']
+const GAPS: GapKey[] = ['buildings', 'plants', 'coverage', 'timing']
+
+/**
+ * What the visitor is doing on the map.
+ *   detect – label the three regions, and take one forward
+ *   clues  – hold other evidence against that region and record a reading of it
+ *   gaps   – look at what a radar map of this place can miss
+ */
+export type MapStage = 'detect' | 'clues' | 'gaps'
 /** How far the divider can travel across the stage. */
 const SPLIT = { min: 160, max: STAGE_WIDTH - 160 }
 /** Lengths the scale bar may show, in km; the longest that fits is used. */
@@ -54,19 +74,26 @@ function settle(view: View): View {
  * change, something already there, or unclear; the published reference map
  * can be laid on top, and it visibly stops part-way along the strip. What the
  * visitor decides is kept in the case notes for the closing card.
+ *
+ * The same map serves three stops of the story (see MapStage); the region
+ * the visitor takes forward from the first is waiting in the next two.
  */
-export function MapViewer({ onClose }: { onClose: () => void }) {
+export function MapViewer({ stage, onClose }: { stage: MapStage; onClose: () => void }) {
   const text = useResolved(analysis)
+  const clue = useResolved(clues)
+  const gap = useResolved(gaps)
   const words = useResolved(ui)
   const notes = useCaseNotes()
   const root = useRef<HTMLDivElement>(null)
   const [layer, setLayer] = useState<LayerKey>('vh')
   const [mode, setMode] = useState<ViewKey>('compare')
-  const [reference, setReference] = useState(false)
+  const [reference, setReference] = useState(stage === 'gaps')
+  const [source, setSource] = useState<EvidenceKey | null>(null)
+  const [openGap, setOpenGap] = useState<GapKey | null>(null)
   const [view, setView] = useState<View>(HOME)
   const [split, setSplit] = useState(CENTRE.x)
   const [explored, setExplored] = useState(false)
-  const [region, setRegion] = useState<RegionKey | null>(null)
+  const [region, setRegion] = useState<RegionKey | null>(stage === 'detect' ? null : notes.region)
   const [cursor, setCursor] = useState<{ u: number; v: number } | null>(null)
   const drag = useRef<{ x: number; y: number } | null>(null)
   const sliding = useRef(false)
@@ -108,6 +135,41 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
     setRegion(null)
   }, [])
 
+  // The later stops open on the region brought from the first.
+  useEffect(() => {
+    if (stage === 'clues' && notes.region) inspect(notes.region)
+    // Only on arrival: picking another region afterwards moves the map itself.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  /** In the evidence check, picking a region also makes it the one under investigation. */
+  const pick = (key: RegionKey) => {
+    inspect(key)
+    if (stage === 'clues') {
+      caseNotes.investigate(key)
+      setSource(null)
+    }
+  }
+
+  /** Opening a source shows it on the map where it has something to show. */
+  const weighSource = (key: EvidenceKey) => {
+    setSource(key)
+    setMode('compare')
+    if (key === 'reference') showReference(true)
+    else if (key === 'vv') setLayer('vv')
+  }
+
+  const lookAtGap = (key: GapKey) => {
+    setOpenGap(key)
+    caseNotes.seeGap(key)
+  }
+
+  /** Leaving the first stop takes the picked region along. */
+  const leave = () => {
+    if (stage === 'detect' && region) caseNotes.investigate(region)
+    onClose()
+  }
+
   // The wheel listener has to be non-passive to stop the page from scrolling.
   useEffect(() => {
     const el = root.current
@@ -126,7 +188,7 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
       // The divider has the arrow keys while it is focused.
       if (e.target instanceof HTMLElement && e.target.getAttribute('role') === 'slider') return
       const pan = (dx: number, dy: number) => setView((v) => settle({ ...v, x: v.x + dx, y: v.y + dy }))
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') leave()
       else if (e.key === '+' || e.key === '=') zoomAt(STEP)
       else if (e.key === '-') zoomAt(1 / STEP)
       else if (e.key === '0') home()
@@ -139,7 +201,8 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [onClose, zoomAt, home])
+    // `leave` reads the picked region, so the listener follows it.
+  }, [onClose, zoomAt, home, region, stage])
 
   const showReference = (on: boolean) => {
     setReference(on)
@@ -253,7 +316,30 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
             </>
           )}
 
-          {REGIONS.map((key) => {
+          {stage === 'gaps' &&
+            GAPS.map((key) => {
+              const at = gaps.items[key].at
+              return (
+                at && (
+                  <button
+                    key={key}
+                    type="button"
+                    className="map-gap"
+                    data-selected={key === openGap}
+                    data-seen={notes.gaps.includes(key)}
+                    aria-pressed={key === openGap}
+                    style={{ left: `${at.x * 100}%`, top: `${at.y * 100}%`, transform: `scale(${1 / view.zoom})` }}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onDoubleClick={(e) => e.stopPropagation()}
+                    onClick={() => lookAtGap(key)}
+                  >
+                    {gap.items[key].name}
+                  </button>
+                )
+              )
+            })}
+
+          {REGIONS.filter((key) => stage === 'detect' || key === region).map((key) => {
             const { x, y, r } = analysis.regions[key]
             return (
               <button
@@ -267,7 +353,7 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
                 style={{ left: `${x * 100}%`, top: `${y * 100}%`, width: r * 2 * BASE_WIDTH, height: r * 2 * BASE_WIDTH }}
                 onPointerDown={(e) => e.stopPropagation()}
                 onDoubleClick={(e) => e.stopPropagation()}
-                onClick={() => inspect(key)}
+                onClick={() => pick(key)}
               >
                 <span className="map-region-tag" style={{ transform: `scale(${1 / view.zoom})` }}>
                   {key}
@@ -322,14 +408,14 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
         aria-label={text.labels.close}
         onClick={(e) => {
           e.stopPropagation()
-          onClose()
+          leave()
         }}
       >
         <CloseIcon />
       </button>
 
       <header className="map-head">
-        <h2 className="overlay-title">{text.title}</h2>
+        <h2 className="overlay-title">{stage === 'detect' ? text.title : stage === 'clues' ? clue.title : gap.title}</h2>
         <p className="stamp">
           <span className="stamp-lead">{text.place}</span> · {text.dates} · {text.source}
         </p>
@@ -339,6 +425,8 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
 
       {/* The case notes: what to find, and what has been found. */}
       <section className="map-case">
+        {stage === 'detect' && (
+          <>
         <p className="map-finding">{text.task.lead}</p>
         <p className="stamp map-note">{text.task.how}</p>
         <ul className="map-slots">
@@ -351,6 +439,99 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
         </ul>
 
         {found('A') && found('B') && <p className="map-explain map-done">{text.task.done}</p>}
+          </>
+        )}
+
+        {stage === 'clues' && (
+          <>
+            <p className="stamp map-note">{clue.how}</p>
+            <p className="map-group map-group--row">{region ? clue.yours : clue.pick}</p>
+            <div className="map-switch" role="group" aria-label={clue.yours}>
+              {REGIONS.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  className="map-switch-option"
+                  aria-pressed={key === region}
+                  onClick={() => pick(key)}
+                >
+                  {key}
+                </button>
+              ))}
+            </div>
+
+            {region && (
+              <ul className="map-sources">
+                {SOURCES.map((key) => (
+                  <li key={key}>
+                    <button
+                      type="button"
+                      className="map-source"
+                      aria-pressed={key === source}
+                      data-weighed={notes.evidence[key] != null}
+                      onClick={() => weighSource(key)}
+                    >
+                      <span className="map-source-name">{clue.sources[key].name}</span>
+                      <span className="map-source-fact">
+                        {clue.place}: {clue.sources[key].place}
+                      </span>
+                      <span className="map-source-fact">
+                        {clue.date}: {clue.sources[key].date}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {region && source && (
+              <div className="map-ask">
+                <p className="map-group">{clue.ask.replace('{region}', region)}</p>
+                <div className="map-switch" role="group" aria-label={clue.sources[source].name}>
+                  {SUPPORT.map((key) => (
+                    <button
+                      key={key}
+                      type="button"
+                      className="map-switch-option map-switch-option--wide"
+                      aria-pressed={notes.evidence[source] === key}
+                      onClick={() => caseNotes.weigh(source, key)}
+                    >
+                      {clue.support[key]}
+                    </button>
+                  ))}
+                </div>
+                {notes.evidence[source] && (
+                  <p className="map-explain">
+                    {notes.evidence[source] === clues.sources[source].truth[region] ? clue.right : clue.wrong}{' '}
+                    {clue.sources[source].note[region]}
+                  </p>
+                )}
+              </div>
+            )}
+          </>
+        )}
+
+        {stage === 'gaps' && (
+          <>
+            <p className="stamp map-note">{gap.how}</p>
+            <ul className="map-gaps">
+              {GAPS.map((key) => (
+                <li key={key}>
+                  <button
+                    type="button"
+                    className="map-switch-option map-switch-option--wide map-gap-tab"
+                    aria-pressed={key === openGap}
+                    data-seen={notes.gaps.includes(key)}
+                    onClick={() => lookAtGap(key)}
+                  >
+                    {gap.items[key].name}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {openGap && <p className="map-explain">{gap.items[openGap].text}</p>}
+          </>
+        )}
       </section>
 
       <section className="map-panel">
@@ -405,8 +586,9 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
         </ul>
       </section>
 
-      {/* The verdict on the picked region; until one is picked, how well the radar did overall. */}
-      <section className="map-notes">
+      {/* Bottom middle. Finding the change: the verdict on the picked region, or how well the radar did overall. */}
+      {stage === 'detect' && (
+        <section className="map-notes">
         {region ? (
           <div className="map-verdict">
             <p className="map-group">
@@ -449,7 +631,29 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
         ))}
           </>
         )}
-      </section>
+        </section>
+      )}
+
+      {/* Checking the evidence: what the visitor makes of it all. */}
+      {stage === 'clues' && region && (
+        <section className="map-notes">
+          <p className="map-group">{clue.record}</p>
+          <div className="map-stack-options" role="group" aria-label={clue.record}>
+            {INTERPRETATIONS.map((key) => (
+              <button
+                key={key}
+                type="button"
+                className="map-switch-option map-switch-option--wide"
+                aria-pressed={notes.interpretation === key}
+                onClick={() => caseNotes.interpret(key)}
+              >
+                {clue.interpretations[key]}
+              </button>
+            ))}
+          </div>
+          {notes.interpretation && <p className="map-explain map-done">{clue.keep}</p>}
+        </section>
+      )}
 
       <div className="map-scale" aria-hidden="true">
         <span className="map-scale-bar" style={{ width: scaleKm / kmPerPx }} />
@@ -469,8 +673,8 @@ export function MapViewer({ onClose }: { onClose: () => void }) {
         </button>
       </div>
 
-      <button type="button" className="story-button map-continue" onClick={onClose}>
-        {words.continue}
+      <button type="button" className="story-button map-continue" onClick={leave}>
+        {stage === 'detect' && region ? `${text.task.investigate} ${region}` : words.continue}
       </button>
     </div>
   )

@@ -3,11 +3,11 @@ import type { ScriptScene } from './script'
 
 /**
  * Chapter 3 – Choose the next step.
- * What the map cannot tell you, why warning time is what saves people, the
- * team's ideas and the papers behind the story, and the hand-over.
+ * The visitor chooses a next step for their case, sees why warning time is
+ * what saves people, then the team's ideas, the files behind the story with
+ * their games, and the hand-over.
  *
- * The evidence is the team's own: the histogram of flooded and other pixels
- * is from the Amphan analysis (data/amphan/tables), and the Texas figures, the 35 km,
+ * The evidence is the team's own: the Texas figures, the 35 km,
  * the warning-time sum and the five ideas are from the solutions paper
  * (data/Wave_of_Change_Flood_Solutions.pdf, sections 1, 3.2 and 4).
  *
@@ -15,7 +15,7 @@ import type { ScriptScene } from './script'
  */
 export const chapter3: ScriptScene[] = [
   {
-    id: 'gaps',
+    id: 'choose',
     chapter: 3,
     steps: [
       { ui: false },
@@ -25,29 +25,17 @@ export const chapter3: ScriptScene[] = [
       { chapter: { number: 3, title: chapterTitles[3] } },
       { wait: 1600 },
       { chapter: null },
-      { bg: 'evidence' },
       { ui: true },
-      { sara: { show: true, pose: 'think' } },
-      {
-        do: 'cutoff',
-        say: {
-          en: 'Orange is flooded land, blue is not. Drag one line between them.',
-          ko: '주황은 잠긴 땅, 파랑은 아닌 땅. 선 하나로 갈라 보세요.',
-        },
-      },
-      { sara: { pose: 'idle' } },
+      { sara: { show: true, pose: 'present' } },
+      // Page 8 of the plan: three next steps, face up.
       {
         say: {
-          en: 'They overlap. Catch more floods, and you flag more dry land.',
-          ko: '둘은 겹쳐요. 홍수를 더 잡으려 하면 마른 땅도 더 짚게 돼요.',
+          en: 'You have a clue. What happens next?',
+          ko: '단서가 생겼어요. 다음은 무엇일까요?',
         },
+        button: { label: { en: 'Choose a next step', ko: '다음 단계 고르기' }, at: 'center' },
       },
-      {
-        say: {
-          en: 'Buildings, trees and timing leave gaps too.',
-          ko: '건물과 나무, 촬영 시점도 빈틈을 남겨요.',
-        },
-      },
+      { open: 'steps' },
     ],
   },
   {
@@ -107,8 +95,8 @@ export const chapter3: ScriptScene[] = [
     steps: [
       {
         say: {
-          en: 'Three papers stand behind this story. Open any.',
-          ko: '이 이야기 뒤에는 논문 세 편이 있어요. 열어 보세요.',
+          en: 'Three files stand behind your case. Open one, or play.',
+          ko: '당신의 사건 뒤에는 파일 세 개가 있어요. 열거나 놀아 보세요.',
         },
         button: { label: { en: 'Open the files', ko: '파일 열기' }, at: 'center' },
       },

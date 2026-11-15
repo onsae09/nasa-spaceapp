@@ -76,8 +76,8 @@ export const music = {
   } satisfies L,
 }
 
-/** A backdrop that is a picture. The others are drawn in code (RadarLesson, WarningWindow, CutOffExplorer). */
-export type PhotoKey = Exclude<BackdropKey, 'radarLesson' | 'warningWindow' | 'evidence'>
+/** A backdrop that is a picture. The others are drawn in code (RadarLesson, WarningWindow, CutOffExplorer, CaseDesk). */
+export type PhotoKey = Exclude<BackdropKey, 'radarLesson' | 'warningWindow' | 'evidence' | 'desk'>
 
 export const backdrops: Record<PhotoKey, BackdropAsset> = {
   space: {

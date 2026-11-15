@@ -4,6 +4,7 @@ import type { ScriptScene } from './script'
  * Chapter 1 – Hidden in plain sight.
  * No greeting: the visitor falls straight into the flood, loses it under
  * cloud, and clears the cloud with radar themselves before Sara appears.
+ * It ends at the investigation desk, where their case is waiting.
  *
  * Edit lines and their order here; see ./types.ts for what each step does.
  * Every line needs both languages, and the tests hold each one to 12 English
@@ -63,15 +64,22 @@ export const chapter1: ScriptScene[] = [
       },
       { bg: 'brokenCity' },
       { say: { en: 'Floods are a reminder of that.', ko: '홍수는 그 사실을 일깨워요.' }, pace: 'slow' },
-      { bg: 'space' },
-      { camera: 'earth' },
+      // The investigation desk: the case the visitor will work, with its notes still empty.
+      { bg: 'desk' },
       { sara: { pose: 'present' } },
       {
         say: {
-          en: 'Radar sees through. Reading it takes practice. Ready?',
-          ko: '레이더는 뚫고 봐요. 읽는 건 연습이 필요해요. 준비됐나요?',
+          en: 'Your case: two radar views, six days apart. One patch changed.',
+          ko: '당신의 사건: 엿새 간격의 레이더 두 장. 한 곳이 달라졌어요.',
         },
-        button: { label: { en: 'Take the controls', ko: '직접 해 보기' }, at: 'center' },
+      },
+      { sara: { pose: 'idle' } },
+      {
+        say: {
+          en: "You'll choose what to investigate. First, learn to read radar.",
+          ko: '무엇을 조사할지는 당신이 골라요. 먼저 레이더 읽는 법부터.',
+        },
+        button: { label: { en: 'Take the controls', ko: '직접 해 보기' }, at: 'corner' },
       },
     ],
   },
