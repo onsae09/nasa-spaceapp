@@ -8,7 +8,7 @@ Chapter 1 opens on a title screen, shows the Earth from orbit, dives into the Ne
 
 Chapter 2 first explains in four pictures how radar sees water, then shows the team's radar analysis of Cyclone Amphan (Bangladesh, May 2020). The map opens with a short guided tour and is then free to zoom, drag and switch between the VV and VH channels. After it come five solution cards to turn over and three research files to open and read.
 
-The story is in English and Korean. The title screen asks which; `?lang=ko` or `?lang=en` in the URL preselects one.
+The story is in English and Korean. The title screen asks which, with English preselected; `?lang=ko` in the URL preselects Korean, and a visitor's last choice is remembered.
 
 The analysis in chapter 2 uses Sentinel-1 data (NASA/JPL OPERA RTC-S1), not NISAR. A NISAR case study is planned; when it is ready it can replace or join the Amphan one in `src/content/analysis.ts`.
 

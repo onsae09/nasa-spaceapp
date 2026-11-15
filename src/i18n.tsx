@@ -49,7 +49,7 @@ export function useResolved<T>(source: T): Resolved<T> {
 const STORAGE_KEY = 'lang'
 const isLang = (value: unknown): value is Lang => value === 'en' || value === 'ko'
 
-/** `?lang=ko` in the URL, then the last choice, then the browser's language. */
+/** `?lang=ko` in the URL, then the visitor's last choice, then English. */
 export function initialLang(): Lang {
   const fromUrl = new URLSearchParams(window.location.search).get('lang')
   if (isLang(fromUrl)) return fromUrl
@@ -57,9 +57,9 @@ export function initialLang(): Lang {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (isLang(saved)) return saved
   } catch {
-    // No storage: fall through to the browser's language.
+    // No storage: fall through to the default.
   }
-  return navigator.language.toLowerCase().startsWith('ko') ? 'ko' : 'en'
+  return 'en'
 }
 
 export function saveLang(lang: Lang) {
