@@ -36,11 +36,8 @@ type BackdropAsset = {
   position?: string
   stamp?: Stamp
   drift?: Drift
-  /**
-   * contain: show the whole image on a dark ground instead of filling the frame.
-   * paper: a chart with a white ground, shown whole on a sheet of paper.
-   */
-  fit?: 'contain' | 'paper'
+  /** contain: show the whole image on a dark ground instead of filling the frame. */
+  fit?: 'contain'
 }
 
 type PanelAsset = {
@@ -79,23 +76,8 @@ export const music = {
   } satisfies L,
 }
 
-/** A backdrop that is a picture. `radarLesson` is drawn in code (components/RadarLesson.tsx). */
-export type PhotoKey = Exclude<BackdropKey, 'radarLesson' | 'warningWindow'>
-
-/** The team's chart of backscatter change by reference class (data/amphan, panel E). */
-const evidence: BackdropAsset = {
-  src: url('analysis/amphan-distributions.png'),
-  alt: {
-    en: 'Two histograms of radar backscatter change, one per channel. In each, the orange bars for newly flooded pixels sit to the left of the blue bars for other pixels, and the two overlap in the middle.',
-    ko: '채널별 레이더 메아리 변화 히스토그램 두 개. 새로 잠긴 픽셀을 나타내는 주황 막대가 다른 픽셀의 파랑 막대보다 왼쪽에 있고, 가운데에서 둘이 겹친다.',
-  },
-  fit: 'paper',
-  stamp: {
-    place: { en: 'Southwestern Bangladesh', ko: '방글라데시 남서부' },
-    date: { en: 'Cyclone Amphan, May 2020', ko: '사이클론 암판, 2020년 5월' },
-    source: { en: 'the team’s analysis of Sentinel-1', ko: '팀의 Sentinel-1 분석' },
-  },
-}
+/** A backdrop that is a picture. The others are drawn in code (RadarLesson, WarningWindow, CutOffExplorer). */
+export type PhotoKey = Exclude<BackdropKey, 'radarLesson' | 'warningWindow' | 'evidence'>
 
 export const backdrops: Record<PhotoKey, BackdropAsset> = {
   space: {
@@ -132,21 +114,20 @@ export const backdrops: Record<PhotoKey, BackdropAsset> = {
     },
     drift: { from: 1, to: 1.08, seconds: 30, pace: 'steady' },
   },
-  // The radar change map from the team's Cyclone Amphan analysis (see data/amphan).
+  // The radar strip from the team's Cyclone Amphan analysis (see data/amphan); drawn by MapBackdrop.
   amphanSwath: {
-    src: url('analysis/amphan-vh.webp'),
+    src: url('analysis/amphan-pre-vh.webp'),
     alt: {
-      en: 'A slanted strip of land seen by radar, mostly dark speckle, with bright cyan patches where new flooding was mapped.',
-      ko: '레이더로 본 비스듬한 띠 모양의 땅. 대부분 어두운 알갱이 무늬이고, 새로 잠긴 곳은 밝은 청록색 얼룩으로 보인다.',
+      en: 'A slanted strip of land seen by radar in grey: bright fields and forest crossed by dark winding rivers.',
+      ko: '레이더로 본 비스듬한 띠 모양의 땅. 밝은 들판과 숲 사이로 어두운 강이 굽이친다.',
     },
     fit: 'contain',
     stamp: {
-      place: { en: 'Southwestern Bangladesh 22.2°N 89.0°E', ko: '방글라데시 남서부 22.2°N 89.0°E' },
+      place: { en: 'Southwestern Bangladesh 22.2°N 88.8°E', ko: '방글라데시 남서부 22.2°N 88.8°E' },
       date: { en: '16 → 22 May 2020', ko: '2020년 5월 16일 → 22일' },
       source: same('Sentinel-1 · NASA/JPL OPERA'),
     },
   },
-  evidence,
 }
 
 export const panels: Record<PanelKey, PanelAsset> = {
@@ -242,7 +223,9 @@ export const allImageUrls = [
   earth.src,
   ...Object.values(backdrops).map((b) => b.src),
   ...Object.values(panels).flatMap((p) => [p.src, p.flag]),
-  url('analysis/amphan-vv.webp'),
+  ...(['vh', 'vv'] as const).flatMap((pol) =>
+    (['pre', 'post', 'change'] as const).map((layer) => url(`analysis/amphan-${layer}-${pol}.webp`)),
+  ),
+  url('analysis/amphan-reference.png'),
   url('analysis/amphan-distributions.png'),
-  url('analysis/amphan-comparison.png'),
 ]

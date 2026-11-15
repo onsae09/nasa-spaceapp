@@ -104,10 +104,10 @@ export const researchFiles: ResearchFile[] = [
     ],
     figure: {
       kind: 'image',
-      src: url('analysis/amphan-vh.webp'),
+      src: url('analysis/amphan-post-vh.webp'),
       alt: {
-        en: 'A slanted strip of land seen by radar, with bright cyan patches where new flooding was mapped.',
-        ko: '레이더로 본 비스듬한 띠 모양의 땅. 새로 잠긴 곳은 밝은 청록색 얼룩으로 보인다.',
+        en: 'A slanted strip of land seen by radar in grey, with dark winding rivers and dark patches beside them.',
+        ko: '레이더로 본 비스듬한 띠 모양의 땅. 어두운 강이 굽이치고 그 옆에 어두운 얼룩들이 보인다.',
       },
       caption: {
         en: 'From our own analysis: radar change over Bangladesh, May 2020. Cyan marks new flooding in the reference map.',

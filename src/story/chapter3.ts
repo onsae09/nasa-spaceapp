@@ -6,8 +6,8 @@ import type { ScriptScene } from './script'
  * What the map cannot tell you, why warning time is what saves people, the
  * team's ideas and the papers behind the story, and the hand-over.
  *
- * The evidence is the team's own: the chart of flooded and other pixels is
- * from the Amphan analysis (data/amphan), and the Texas figures, the 35 km,
+ * The evidence is the team's own: the histogram of flooded and other pixels
+ * is from the Amphan analysis (data/amphan/tables), and the Texas figures, the 35 km,
  * the warning-time sum and the five ideas are from the solutions paper
  * (data/Wave_of_Change_Flood_Solutions.pdf, sections 1, 3.2 and 4).
  *
@@ -29,22 +29,17 @@ export const chapter3: ScriptScene[] = [
       { ui: true },
       { sara: { show: true, pose: 'think' } },
       {
-        do: 'choice',
+        do: 'cutoff',
         say: {
-          en: 'Orange is flooded land, blue is not. Can one line split them?',
-          ko: '주황은 잠긴 땅, 파랑은 아닌 땅. 선 하나로 가를 수 있을까요?',
+          en: 'Orange is flooded land, blue is not. Drag one line between them.',
+          ko: '주황은 잠긴 땅, 파랑은 아닌 땅. 선 하나로 갈라 보세요.',
         },
-        options: [
-          { en: 'Yes', ko: '네' },
-          { en: 'No', ko: '아니요' },
-        ],
-        answer: 1,
       },
       { sara: { pose: 'idle' } },
       {
         say: {
-          en: 'No. They overlap, so every cut-off flags dry land too.',
-          ko: '아니요. 겹쳐 있어서, 어떤 기준선도 마른 땅까지 짚어요.',
+          en: 'They overlap. Catch more floods, and you flag more dry land.',
+          ko: '둘은 겹쳐요. 홍수를 더 잡으려 하면 마른 땅도 더 짚게 돼요.',
         },
       },
       {

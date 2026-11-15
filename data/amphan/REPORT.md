@@ -112,7 +112,9 @@ Figures in this folder:
 - `figures/amphan_summary.png` — all six panels: reference inundation, VV and VH backscatter change, OPERA/reference comparison, class-wise distributions, spatial holdout performance.
 - `figures/amphan_spatial_holdout_auc.png` — spatial holdout performance.
 
-The report was written against these individual figures, which have not been added to this repository yet:
+Separate maps arrived on 16 November 2026 and are in `maps/`: the VV and VH backscatter of each pass, the VV and VH change without the reference overlay, and the reference inundation on its own. Their grid, corner coordinates and pixel counts are in `maps_summary.json`, and the histogram of backscatter change by reference class is in `tables/`.
+
+The report was written against these individual figures, which have not been added to this repository:
 
 - `../maps/amphan_native_resolution_flood.png` — reference inundation at native resolution.
 - `../maps/amphan_flood_comparison.png` — reference and OPERA-grid comparison.

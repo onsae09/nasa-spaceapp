@@ -22,7 +22,7 @@ export type ScriptStep =
   | { say: L; button?: { label: L; at: 'center' | 'corner' }; pace?: Pace }
   | { wait: number }
   | { open: OverlayKey }
-  | { do: 'sweep' | 'pulse' | 'window'; say: L }
+  | { do: 'sweep' | 'pulse' | 'window' | 'cutoff'; say: L }
   | { do: 'choice'; say: L; options: L[]; answer: number }
   | { bg: BackdropKey }
   | { triptych: [PanelKey, PanelKey, PanelKey] }

@@ -4,6 +4,9 @@ Background figures collected by the analysis team for storytelling. No sources
 were recorded with them, and several are ranges, so none of these are shown in
 the app yet. Add a source next to a figure before using it on screen.
 
+Sources were asked for on 16 November 2026 together with the map layers. The
+layers, grid corners and histogram arrived; sources for these figures did not.
+
 ## Key flood and impact statistics
 
 - Landfall date: 20 May 2020

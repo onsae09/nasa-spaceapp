@@ -1,0 +1,66 @@
+{
+  "event": "Cyclone Amphan, May 2020",
+  "pre_event_acquisition": "16 May 2020, Sentinel-1A",
+  "post_event_acquisition": "22 May 2020, Sentinel-1B",
+  "input_backscatter": "OPERA RTC-S1 linear gamma-zero intensity converted to dB",
+  "change_definition": "post-event dB minus pre-event dB",
+  "reference_definition": "pre-event non-water (0) and post-event water (1)",
+  "reference_source_files": [
+    "data/raw/reference/BNG_L_pre_binary.tif",
+    "data/raw/reference/BNG_L_post_binary.tif"
+  ],
+  "reference_is_independent_validation": false,
+  "validation_warning": "Reference water masks are Sentinel-1-derived. Metrics describe agreement with this reference and are not independent ground-truth validation or operational flood-mapping accuracy.",
+  "grid": {
+    "crs": "EPSG:32645",
+    "width": 3092,
+    "height": 1522,
+    "bounds_projected": {
+      "left": 636690.0,
+      "bottom": 2433660.0,
+      "right": 729450.0,
+      "top": 2479320.0
+    },
+    "pixel_area_m2": 900.0
+  },
+  "corner_coordinates_WGS84": {
+    "northwest": {
+      "longitude_east": 88.32805808615117,
+      "latitude_north": 22.41457600029808
+    },
+    "northeast": {
+      "longitude_east": 89.22888207518794,
+      "latitude_north": 22.404661075576698
+    },
+    "southeast": {
+      "longitude_east": 89.22238252412635,
+      "latitude_north": 21.992465456251548
+    },
+    "southwest": {
+      "longitude_east": 88.32418288038501,
+      "latitude_north": 22.00217919223873
+    }
+  },
+  "pixel_counts": {
+    "common_valid": 695477,
+    "newly_inundated_reference": 10973,
+    "other_valid_reference_pixels": 684504
+  },
+  "area_approximation": {
+    "newly_inundated_km2_projected_pixel_area": 9.8757,
+    "valid_overlap_km2_projected_pixel_area": 625.9293,
+    "note": "Approximation using constant projected pixel area."
+  },
+  "outputs": [
+    "maps/pre_event_VV_16May2020.png",
+    "maps/post_event_VV_22May2020.png",
+    "maps/pre_event_VH_16May2020.png",
+    "maps/post_event_VH_22May2020.png",
+    "maps/SAR_backscatter_change_VV_VH_no_reference_overlay.png",
+    "maps/reference_new_inundation_standalone.png",
+    "tables/backscatter_change_histogram_counts.csv",
+    "tables/threshold_metrics_full_overlap.csv",
+    "aligned_reference_new_inundation_OPERA_grid.tif"
+  ],
+  "threshold_metrics_note": "Threshold table evaluates all common-valid pixels; it is descriptive and must not be presented as held-out or independent validation."
+}

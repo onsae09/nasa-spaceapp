@@ -6,8 +6,8 @@ const same = (text: string) => ({ en: text, ko: text })
 /**
  * Chapter 2 – Follow the signal.
  * The visitor fires the radar at dry ground and at water, guesses what comes
- * back, then reads the team's Cyclone Amphan change map and guesses how far
- * to trust it. Every figure is from src/content/analysis.ts.
+ * back, then reads the team's two radar passes over Cyclone Amphan, guesses
+ * how far to trust a flag, and judges three places on the map themselves. Every figure is from src/content/analysis.ts.
  *
  * Edit lines and their order here; see ./types.ts for what each step does.
  * Every line needs both languages and at most 12 English words.
@@ -85,6 +85,7 @@ export const chapter2: ScriptScene[] = [
           ko: '그 계곡의 레이더는 아직 없어요. 2020년 5월 방글라데시로 가요.',
         },
       },
+      { look: 'after' },
       { sara: { point: 'stamp' } },
       {
         say: {
@@ -100,7 +101,7 @@ export const chapter2: ScriptScene[] = [
           ko: '청록색은 다른 연구팀이 새로 잠겼다고 표시한 땅이에요.',
         },
       },
-      { look: 'whole' },
+      { look: 'marked' },
       { sara: { pose: 'present', point: null } },
       {
         say: {
@@ -113,8 +114,8 @@ export const chapter2: ScriptScene[] = [
       {
         do: 'choice',
         say: {
-          en: 'Now draw one cut-off. Of 10 places flagged, how many flooded?',
-          ko: '기준선을 하나 그어요. 짚은 10곳 중 몇 곳이 잠겼을까요?',
+          en: 'Radar flags 10 places as flooded. How many really are?',
+          ko: '레이더가 10곳을 침수로 짚었어요. 실제로는 몇 곳일까요?',
         },
         options: [same('9'), same('5'), same('1')],
         answer: 2,
@@ -123,8 +124,8 @@ export const chapter2: ScriptScene[] = [
       { sara: { pose: 'alarm' } },
       {
         say: {
-          en: 'About 1. The other nine were not flooded in the reference map.',
-          ko: '1곳쯤이에요. 나머지 아홉 곳은 기준 지도에서 잠기지 않았어요.',
+          en: 'About 1. The reference map shows the other nine dry.',
+          ko: '1곳쯤이에요. 나머지 아홉 곳은 기준 지도에서 마른 땅이에요.',
         },
       },
       { sara: { pose: 'idle' } },
@@ -138,10 +139,10 @@ export const chapter2: ScriptScene[] = [
       { sara: { point: 'map' } },
       {
         say: {
-          en: 'Radar gives you a lead, not a verdict. Look closer.',
-          ko: '레이더는 단서를 줄 뿐 판결은 아니에요. 더 가까이 봐요.',
+          en: 'A lead, not a verdict. Three places need your call.',
+          ko: '단서일 뿐 판결은 아니에요. 세 곳을 직접 판단해 보세요.',
         },
-        button: { label: { en: 'Explore the map', ko: '지도 살펴보기' }, at: 'corner' },
+        button: { label: { en: 'Open the evidence', ko: '근거 살펴보기' }, at: 'corner' },
       },
       { open: 'map' },
       { bg: 'space' },

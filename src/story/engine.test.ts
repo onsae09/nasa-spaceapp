@@ -383,6 +383,7 @@ describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
       if (view.interaction?.kind === 'sweep') expect(view.cover).toBe('clouds')
       if (view.interaction?.kind === 'pulse') expect(view.backdrop).toEqual({ kind: 'image', key: 'radarLesson' })
       if (view.interaction?.kind === 'window') expect(view.backdrop).toEqual({ kind: 'image', key: 'warningWindow' })
+      if (view.interaction?.kind === 'cutoff') expect(view.backdrop).toEqual({ kind: 'image', key: 'evidence' })
       if (view.interaction?.kind === 'choice') {
         expect(view.interaction.options[view.interaction.answer]).toBeDefined()
       }

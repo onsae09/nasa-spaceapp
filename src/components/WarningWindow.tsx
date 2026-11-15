@@ -61,7 +61,7 @@ export function WarningWindow({ task }: { task?: WindowTask }) {
   const x = (minutes: number) => LEFT + minutes * PER_MINUTE
 
   return (
-    <div className="window" onClick={(e) => e.stopPropagation()}>
+    <div className="window">
       <svg className="window-art" viewBox="0 0 1696 584" role="img" aria-label={t.alt}>
         <text className="lesson-label lesson-label--lead" x={LEFT} y={BAR.y - 72}>
           {t.axis}
@@ -109,7 +109,7 @@ export function WarningWindow({ task }: { task?: WindowTask }) {
         </text>
       </svg>
 
-      <div className="window-controls">
+      <div className="window-controls" onClick={(e) => e.stopPropagation()}>
         <p className="map-group">{t.speed}</p>
         <div className="map-switch" role="group" aria-label={t.speed}>
           {SPEEDS.map((value) => (

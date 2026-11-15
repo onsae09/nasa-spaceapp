@@ -5,7 +5,7 @@ export type BackdropKey =
   | 'brokenCity'
   | 'amphanSwath'
   | 'radarLesson'
-  /** The team's chart of how flooded and other pixels changed (a figure on paper). */
+  /** The team's histogram of flooded and other pixels, with a cut-off to drag (components/CutOffExplorer.tsx). */
   | 'evidence'
   /** The warning-time calculation, drawn in code (components/WarningWindow.tsx). */
   | 'warningWindow'
@@ -75,20 +75,28 @@ export type AnchorKey = 'valley' | 'satellite' | 'ground' | 'tile' | 'tiles' | '
  */
 export type SaraCue = { show?: boolean; at?: SaraSpot; pose?: SaraPose; point?: AnchorKey | null }
 
-/** How the radar map backdrop is framed: the whole strip, or close on one flooded patch. */
-export type MapLook = 'whole' | 'patch'
+/**
+ * What the radar map backdrop shows.
+ *   whole  – the whole strip on the pass before the cyclone
+ *   after  – the whole strip on the pass after it
+ *   patch  – close on one field that went dark, with the reference map over it
+ *   marked – the whole strip after the cyclone, with the reference map over it
+ */
+export type MapLook = 'whole' | 'after' | 'patch' | 'marked'
 
 /**
  * Something the visitor does themselves.
  *   sweep  – drag the radar beam across the cloud
  *   pulse  – fire the radar and watch the echo
  *   window – find the village enough warning time
+ *   cutoff – drag one cut-off across the histogram and keep it
  *   choice – pick an answer
  */
 export type Interaction =
   | { kind: 'sweep' }
   | { kind: 'pulse' }
   | { kind: 'window' }
+  | { kind: 'cutoff' }
   | { kind: 'choice'; options: string[]; answer: number }
 
 /** The card shown at the start of a chapter. */
@@ -122,13 +130,13 @@ export type ButtonSpec = {
  *   chapter   – show a chapter card, or null to take it away
  *   lesson    – which picture of the radar lesson to show
  *   sara      – show, hide, pose or point the character
- *   look      – how the radar map backdrop is framed; reset by a new background
+ *   look      – what the radar map backdrop shows; reset by a new background
  */
 export type Step =
   | { say: string; button?: ButtonSpec; pace?: Pace }
   | { wait: number }
   | { open: OverlayKey }
-  | { do: 'sweep' | 'pulse' | 'window'; say: string }
+  | { do: 'sweep' | 'pulse' | 'window' | 'cutoff'; say: string }
   | { do: 'choice'; say: string; options: string[]; answer: number }
   | { bg: BackdropKey }
   | { triptych: [PanelKey, PanelKey, PanelKey] }

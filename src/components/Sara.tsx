@@ -40,8 +40,13 @@ export function Sara({ show, at, pose, point, talking }: {
         {show && target && target.r > 0 && (
           <motion.div
             key={point}
-            className="sara-target"
-            style={{ left: target.x, top: target.y, width: target.r * 2, height: target.r * 2 }}
+            className={target.box ? 'sara-target sara-target--box' : 'sara-target'}
+            style={{
+              left: target.x,
+              top: target.y,
+              width: target.box?.width ?? target.r * 2,
+              height: target.box?.height ?? target.r * 2,
+            }}
             initial={{ opacity: 0, scale: 1.25 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}

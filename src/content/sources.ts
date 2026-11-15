@@ -8,8 +8,8 @@ import type { L } from '../i18n'
 export const sources: { label: L; href?: string }[] = [
   {
     label: {
-      en: 'Radar: OPERA RTC-S1, NASA/JPL (Sentinel-1)',
-      ko: '레이더: OPERA RTC-S1, NASA/JPL (Sentinel-1)',
+      en: 'Radar: OPERA RTC-S1, NASA/JPL (Sentinel-1A 16 May 2020, Sentinel-1B 22 May 2020)',
+      ko: '레이더: OPERA RTC-S1, NASA/JPL (Sentinel-1A 2020년 5월 16일, Sentinel-1B 5월 22일)',
     },
   },
   {

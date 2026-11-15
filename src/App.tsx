@@ -5,6 +5,7 @@ import { useSoundtrack } from './audio/useSoundtrack'
 import { BackdropLayer } from './components/BackdropLayer'
 import { Choice } from './components/Choice'
 import { CloudCover } from './components/CloudCover'
+import { EndCard } from './components/EndCard'
 import { FactPanel } from './components/FactPanel'
 import { MapViewer } from './components/MapViewer'
 import { MusicToggle } from './components/MusicToggle'
@@ -15,11 +16,11 @@ import { Speech } from './components/Speech'
 import { Stage } from './components/Stage'
 import { StoryNav } from './components/StoryNav'
 import { useSpeech } from './components/useSpeech'
-import { sources } from './content/sources'
 import { chapterLabel, ui } from './content/ui'
 import { LANGS, LangProvider, initialLang, resolve, saveLang, type Lang } from './i18n'
 import { EASE } from './motion'
 import { buildStory } from './story'
+import { caseNotes } from './story/caseNotes'
 import type { Backdrop } from './story/types'
 import { useStory } from './story/useStory'
 
@@ -143,6 +144,13 @@ export default function App() {
     [interaction?.kind, sound.ping, done],
   )
   const task = useMemo(() => ({ armed: interaction?.kind === 'window', onDone: done }), [interaction?.kind, done])
+  const cut = useMemo(() => ({ armed: interaction?.kind === 'cutoff', onDone: done }), [interaction?.kind, done])
+
+  /** Back to the first line, with an empty set of case notes. */
+  const startOver = useCallback(() => {
+    caseNotes.reset()
+    restart()
+  }, [restart])
 
   // Load every image up front so scene changes do not flash.
   useEffect(() => {
@@ -158,7 +166,7 @@ export default function App() {
     <LangProvider value={lang}>
       <MotionConfig reducedMotion="user">
         <Stage onClick={advance} chapter={playing ? view.chapterNo : 1}>
-          <BackdropLayer backdrop={backdrop} camera={camera} lesson={view.lesson} look={view.look} pulse={pulse} task={task} />
+          <BackdropLayer backdrop={backdrop} camera={camera} lesson={view.lesson} look={view.look} pulse={pulse} task={task} cut={cut} />
           <CloudCover cover={cover} drag={interaction?.kind === 'sweep'} onSwept={onSwept} />
 
           {/* Chapter 2 is framed like an instrument; the CSS shows this only there. */}
@@ -219,7 +227,7 @@ export default function App() {
             {chapter && (
               <motion.div
                 key={`chapter-${chapter.number}`}
-                className="title"
+                className="title title--chapter"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
@@ -301,47 +309,7 @@ export default function App() {
             )}
           </AnimatePresence>
 
-          {/* The final briefing: the closing line, and what the visitor can do next. */}
-          {view.finished && (
-            <motion.div
-              className="end-card"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, ease: EASE }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <p className="end-card-eyebrow">{t.ending.thanks}</p>
-              <h1 className="end-card-title">{t.ending.title}</h1>
-              <p className="end-card-note">{t.ending.lead}</p>
-              <ol className="end-card-actions">
-                {t.ending.actions.map((action) => (
-                  <li key={action.name}>
-                    <span className="end-card-action">{action.name}</span>
-                    {action.line}
-                  </li>
-                ))}
-              </ol>
-              <button type="button" className="story-button title-lang end-card-restart" onClick={restart}>
-                {t.backToStart}
-              </button>
-              <p className="stamp end-card-sources">
-                <span className="stamp-lead">{t.ending.sources}</span>
-                {sources.map((source) => (
-                  <span key={source.label.en}>
-                    {' · '}
-                    {source.href ? (
-                      <a href={source.href} target="_blank" rel="noreferrer">
-                        {source.label[lang]}
-                      </a>
-                    ) : (
-                      source.label[lang]
-                    )}
-                  </span>
-                ))}
-              </p>
-              <p className="stamp end-card-credit">{music.credit[lang]}</p>
-            </motion.div>
-          )}
+          {view.finished && <EndCard onRestart={startOver} />}
 
           <Sara
             show={saraShown}

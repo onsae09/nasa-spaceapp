@@ -209,6 +209,11 @@ body {
   justify-content: center;
 }
 
+/* A chapter card comes up with the Earth filling the right of the frame. */
+.title--chapter {
+  background: linear-gradient(90deg, rgba(7, 8, 13, 0.92) 0%, rgba(7, 8, 13, 0.78) 40%, rgba(7, 8, 13, 0) 72%);
+}
+
 .title-name {
   margin: 16px 0 0;
   font-size: 112px;
@@ -427,7 +432,7 @@ body {
   right: 112px;
   top: 708px;
   height: 276px;
-  padding: 0 144px 0 288px;
+  padding: 0 144px 0 352px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -769,12 +774,146 @@ body {
   will-change: transform;
 }
 
-.map-layer {
+.map-layer,
+.map-stack {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   transition: opacity 200ms var(--ease);
+}
+
+/* In the story the later pass fades in slowly enough to watch the land change. */
+.map-layer--slow {
+  transition-duration: 1400ms;
+}
+
+/* The edge of the reference map: where there is nothing to check against. */
+.map-coverage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.map-coverage polygon {
+  fill: none;
+  stroke: #3fe0f0;
+  stroke-width: 2;
+  stroke-dasharray: 10 8;
+  vector-effect: non-scaling-stroke;
+}
+
+.map-coverage-label {
+  position: absolute;
+  margin: 8px 0 0;
+  padding: 4px 12px;
+  color: #3fe0f0;
+  background: var(--chip);
+  border-radius: 8px;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+/* A place to judge: a ring on the map with its letter. */
+.map-region {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 0;
+  background: none;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.map-region[data-selected='true'] {
+  border-color: var(--text);
+  box-shadow: 0 0 0 3px rgba(7, 8, 13, 0.6);
+}
+
+.map-region:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 4px;
+}
+
+.map-region-tag {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  width: 44px;
+  height: 44px;
+  margin: 0 0 6px -22px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  font-weight: 500;
+  color: var(--ink-1);
+  background: var(--accent);
+  border-radius: 12px;
+  transform-origin: 50% 100%;
+}
+
+.map-region[data-found='true'] .map-region-tag {
+  background: var(--text);
+}
+
+/* The line between the two passes, and the grip that moves it. */
+.map-divider {
+  position: absolute;
+  top: 168px;
+  bottom: 248px;
+  width: 0;
+  border-left: 2px solid var(--text);
+  pointer-events: none;
+}
+
+.map-divider-grip {
+  position: absolute;
+  left: -33px;
+  top: 0;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--ink-1);
+  background: var(--accent);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: ew-resize;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.map-divider-grip svg {
+  width: 30px;
+  height: 30px;
+}
+
+.map-divider-grip:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.map-divider-date {
+  position: absolute;
+  top: 8px;
+  padding: 6px 14px;
+  color: var(--text);
+  background: var(--chip);
+  border-radius: 8px;
+}
+
+.map-divider-date--before {
+  right: 46px;
+}
+
+.map-divider-date--after {
+  left: 44px;
 }
 
 .map-head {
@@ -810,19 +949,166 @@ body {
   left: 112px;
   bottom: 32px;
   width: 640px;
+  padding: 20px 24px;
 }
 
-.map-result {
+.map-case {
+  position: absolute;
   right: 112px;
   top: 32px;
-  width: 560px;
+  width: 600px;
+  padding: 20px 24px;
+  background: var(--chip);
+  border-radius: 16px;
 }
 
 .map-notes {
   left: 784px;
   bottom: 32px;
-  width: 432px;
-  padding: 16px;
+  width: 440px;
+  padding: 16px 20px;
+}
+
+.map-notes .map-scores {
+  margin: 12px 0;
+  gap: 4px;
+}
+
+.map-notes .map-score {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.map-controls {
+  display: flex;
+  gap: 32px;
+}
+
+.map-controls .map-group {
+  margin-bottom: 8px;
+}
+
+.map-switch-option.map-switch-option--wide {
+  width: auto;
+  padding: 0 18px;
+  white-space: nowrap;
+  font-family: var(--font-ui);
+  font-size: 22px;
+  font-weight: 500;
+}
+
+/* The clues found so far. */
+.map-slots {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+
+.map-slot {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  gap: 16px;
+  padding: 8px 14px;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text-2);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.map-slot[data-filled='true'] {
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.map-slot-name {
+  font-weight: 500;
+}
+
+.map-slot-value {
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
+
+.map-verdict .map-group {
+  margin-bottom: 8px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+}
+
+.map-verdict .map-explain {
+  margin-top: 12px;
+  font-size: 22px;
+  line-height: 30px;
+}
+
+.map-done {
+  color: var(--accent);
+  font-size: 22px;
+  line-height: 30px;
+}
+
+/* A switch for the reference map. */
+.map-check {
+  margin-top: 14px;
+  min-height: 52px;
+  padding: 8px 18px 8px 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font: inherit;
+  font-size: 22px;
+  font-weight: 500;
+  color: var(--text);
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(238, 240, 245, 0.28);
+  cursor: pointer;
+}
+
+.map-check:hover,
+.map-check[aria-pressed='true'] {
+  box-shadow: inset 0 0 0 2px #3fe0f0;
+}
+
+.map-check:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.map-check-box {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 2px var(--text-2);
+}
+
+.map-check[aria-pressed='true'] .map-check-box {
+  background: #3fe0f0;
+  box-shadow: none;
+}
+
+.map-scale {
+  position: absolute;
+  right: 112px;
+  bottom: 204px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--chip);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.map-scale-bar {
+  height: 8px;
+  border: 2px solid var(--text);
+  border-top: 0;
 }
 
 .map-switch {
@@ -864,7 +1150,7 @@ body {
 }
 
 .map-legend {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
@@ -1604,6 +1890,11 @@ body {
   pointer-events: none;
 }
 
+/* A frame, for something square whose labels a ring would cut through. */
+.sara-target--box {
+  border-radius: 20px;
+}
+
 /* With no Sara beside it, the line is centred in the box. */
 .ui--plain .dialogue {
   padding: 0 144px;
@@ -1857,7 +2148,7 @@ body {
   font-weight: 500;
   font-variant-numeric: tabular-nums;
   color: var(--text);
-  background: var(--chip);
+  background: var(--ink-2);
   border: 0;
   border-radius: 16px;
   /* Equal choices stay neutral; the accent appears only under the pointer. */
@@ -1935,51 +2226,6 @@ body {
   bottom: 120px;
 }
 
-/* Above Continue: the same map as the analysis drew it. */
-.story-button.map-figure-open {
-  position: absolute;
-  right: 112px;
-  bottom: 200px;
-}
-
-.map-figure {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  background: rgba(7, 8, 13, 0.8);
-}
-
-.map-figure-page {
-  position: relative;
-  width: 1520px;
-  margin: 0;
-  padding: 32px 32px 24px;
-  color: var(--paper-ink);
-  background: var(--white);
-  border-radius: 24px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
-}
-
-.map-figure-page img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.map-figure-page figcaption {
-  margin-top: 16px;
-  font-size: 22px;
-  line-height: 32px;
-  color: var(--paper-ink-2);
-}
-
-.map-figure-close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-}
-
 /* ================= the closing card ================= */
 
 .end-card {
@@ -1989,31 +2235,63 @@ body {
 /* A sentence, not a name: smaller than the title screen's. */
 .end-card .end-card-title {
   max-width: 1400px;
-  font-size: 72px;
-  line-height: 80px;
   text-align: center;
   text-wrap: balance;
 }
 
-.end-card .end-card-note {
-  margin: 48px 0 0;
+.end-card .end-card-title {
+  font-size: 60px;
+  line-height: 68px;
 }
 
+/* The visitor's own case on the left, what they can do on the right. */
+.end-card-columns {
+  width: 100%;
+  margin-top: 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+
+.end-card .end-card-note {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.end-card-briefing,
 .end-card-actions {
-  margin: 20px 0 0;
+  margin: 16px 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 8px;
-  font-size: 24px;
-  line-height: 32px;
+  gap: 10px;
+  font-size: 21px;
+  line-height: 29px;
   color: var(--text-2);
 }
 
+.end-card-briefing div,
 .end-card-actions li {
   display: grid;
-  grid-template-columns: 320px auto;
-  gap: 24px;
+  grid-template-columns: 200px 1fr;
+  gap: 20px;
+}
+
+.end-card-briefing dt,
+.end-card-briefing dd {
+  margin: 0;
+}
+
+.end-card-briefing dt {
+  font-weight: 500;
+  color: var(--text);
+}
+
+.end-card-briefing div[data-done='true'] dd {
+  color: var(--text);
 }
 
 .end-card-action {
@@ -2022,26 +2300,117 @@ body {
 }
 
 .story-button.end-card-restart {
-  margin-top: 48px;
+  margin-top: 36px;
+  margin-bottom: 96px;
 }
 
-/* ================= a chart on paper ================= */
+/* ================= the cut-off chart ================= */
+
+.cut {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+  cursor: default;
+}
 
 /* The same window above the dialogue box that the map uses. */
-.paper-figure {
+.cut-art {
   position: absolute;
-  left: 392px;
-  top: 96px;
-  width: 1136px;
-  padding: 16px;
-  background: var(--white);
-  border-radius: 16px;
+  left: 112px;
+  top: 72px;
+  width: 1696px;
+  height: 584px;
+  overflow: visible;
+  cursor: ew-resize;
+  touch-action: none;
 }
 
-.paper-figure img {
-  display: block;
+.cut-small {
+  font-size: 20px;
+}
+
+.cut-end {
+  text-anchor: end;
+}
+
+.cut-bar--flooded {
+  fill: #f2a65a;
+  opacity: 0.85;
+}
+
+.cut-bar--other {
+  fill: #5b8def;
+  opacity: 0.7;
+}
+
+.cut-flagged {
+  fill: var(--accent);
+  opacity: 0.14;
+}
+
+.cut-flagged-label {
+  fill: var(--accent);
+}
+
+.cut-line path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 4;
+}
+
+.cut-line circle {
+  fill: var(--accent);
+}
+
+.cut-line text {
+  fill: var(--text);
+  font-family: var(--font-mono);
+}
+
+.cut-controls {
+  position: absolute;
+  right: 112px;
+  top: 96px;
+  width: 520px;
+}
+
+.cut-readout {
+  margin: 20px 0 0;
+  display: grid;
+  grid-template-columns: 132px 1fr;
+  gap: 20px;
+  align-items: center;
+  font-size: 22px;
+  line-height: 30px;
+  color: var(--text-2);
+}
+
+.cut-figure {
+  font-size: 72px;
+  line-height: 80px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.cut-range {
   width: 100%;
-  height: auto;
+  margin: 24px 0 0;
+  accent-color: var(--accent);
+  cursor: ew-resize;
+}
+
+.story-button.cut-keep {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.story-button.cut-keep:disabled {
+  color: var(--text-2);
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  cursor: default;
 }
 
 /* ================= the warning-time sum ================= */

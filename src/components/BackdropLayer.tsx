@@ -4,6 +4,7 @@ import { backdrops, type PhotoKey } from '../assets'
 import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { Backdrop, CameraShot, LessonStep, MapLook } from '../story/types'
+import { CutOffExplorer, type CutOffTask } from './CutOffExplorer'
 import { MapBackdrop } from './MapBackdrop'
 import { RadarLesson, type Pulse } from './RadarLesson'
 import { SpaceScene } from './SpaceScene'
@@ -13,13 +14,14 @@ import { WarningWindow, type WindowTask } from './WarningWindow'
 const keyOf = (b: Backdrop) => (b.kind === 'image' ? b.key : `triptych:${b.keys.join(',')}`)
 
 /** The background. A new one fades in on top of the old one. */
-export function BackdropLayer({ backdrop, camera, lesson, look, pulse, task }: {
+export function BackdropLayer({ backdrop, camera, lesson, look, pulse, task, cut }: {
   backdrop: Backdrop | null
   camera: CameraShot
   lesson: LessonStep
   look: MapLook
   pulse: Pulse
   task: WindowTask
+  cut: CutOffTask
 }) {
   // Count every change, so that returning to a backdrop mounts a fresh layer
   // on top. Reusing the key would revive the old layer where it was, under
@@ -51,6 +53,8 @@ export function BackdropLayer({ backdrop, camera, lesson, look, pulse, task }: {
             <RadarLesson step={lesson} pulse={pulse} />
           ) : backdrop.key === 'warningWindow' ? (
             <WarningWindow task={task} />
+          ) : backdrop.key === 'evidence' ? (
+            <CutOffExplorer task={cut} />
           ) : backdrop.key === 'amphanSwath' ? (
             <MapBackdrop look={look} />
           ) : (
@@ -69,18 +73,6 @@ function PhotoBackdrop({ id }: { id: Exclude<PhotoKey, 'amphanSwath'> }) {
       <span className="stamp-lead">{stamp.place}</span> · {stamp.date} · {stamp.source}
     </p>
   )
-  // A chart keeps its white ground: it is laid on the dark stage as a sheet of paper.
-  if (fit === 'paper') {
-    return (
-      <>
-        <div className="backdrop-ground" />
-        <div className="paper-figure">
-          <img src={src} alt={alt} draggable={false} />
-        </div>
-        {credit}
-      </>
-    )
-  }
   return (
     <>
       {/* A contained image leaves gaps, so it needs its own ground to cover the last backdrop. */}

@@ -58,11 +58,11 @@ export function CloudCover({ cover, drag = false, onSwept }: {
     [progress, onSwept],
   )
 
-  /** Follows the pointer, but never gives ground back to the cloud. */
+  /** Follows the pointer both ways: dragging back lets the cloud close in again. */
   const pull = (clientX: number) => {
     const rect = root.current?.getBoundingClientRect()
     if (!rect || swept.current) return
-    const p = Math.max(progress.get(), Math.min((clientX - rect.left) / rect.width, 1))
+    const p = Math.min(Math.max((clientX - rect.left) / rect.width, START), 1)
     progress.set(p)
     if (p >= ENOUGH) finish(0.25)
   }
@@ -123,8 +123,8 @@ export function CloudCover({ cover, drag = false, onSwept }: {
                 aria-valuenow={Math.round(progress.get() * 100)}
                 style={{ x: beamX }}
                 onKeyDown={(e) => {
-                  if (e.key === 'ArrowRight') {
-                    const p = Math.min(progress.get() + 0.1, 1)
+                  if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    const p = Math.min(Math.max(progress.get() + (e.key === 'ArrowRight' ? 0.1 : -0.1), START), 1)
                     progress.set(p)
                     if (p >= ENOUGH) finish(0.25)
                   } else if (e.key === 'Enter' || e.key === ' ') finish(SCAN_SECONDS * (1 - progress.get()))
