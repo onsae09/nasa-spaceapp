@@ -31,6 +31,14 @@ export function useStory(script: Scene[], startScene = 0, running = true) {
     restart: useCallback(() => dispatch({ type: 'restart' }), []),
     /** Returns to the previous line. */
     back: useCallback(() => dispatch({ type: 'back' }), []),
+    /** Goes to the start of a chapter. */
+    toChapter: useCallback(
+      (chapter: number) => {
+        const scene = script.findIndex((s) => s.chapter === chapter)
+        if (scene >= 0) dispatch({ type: 'jump', scene })
+      },
+      [script],
+    ),
     /** The visitor finished what the current step asked them to do. */
     done: useCallback(() => dispatch({ type: 'done' }), []),
     /** Closes the interactive overlay the story is waiting on. */

@@ -4,13 +4,15 @@ import { chapterTitles } from '../story'
 
 /**
  * Where the visitor is: a way back to the previous line, the chapter's name,
- * and a dot for each of its stops. The other chapters show as one bar each.
+ * and a dot for each of its stops. The other chapters show as one bar each;
+ * pressing a bar goes to the start of that chapter.
  */
-export function StoryNav({ chapter, progress, canBack, onBack, showProgress }: {
+export function StoryNav({ chapter, progress, canBack, onBack, onChapter, showProgress }: {
   chapter: number
   progress: { index: number; total: number }
   canBack: boolean
   onBack: () => void
+  onChapter: (chapter: number) => void
   showProgress: boolean
 }) {
   const lang = useLang()
@@ -45,7 +47,16 @@ export function StoryNav({ chapter, progress, canBack, onBack, showProgress }: {
                   />
                 ))
               ) : (
-                <li key={n} className="nav-bar" data-state={n < chapter ? 'done' : 'ahead'} />
+                <li key={n}>
+                  <button
+                    type="button"
+                    className="nav-bar"
+                    data-state={n < chapter ? 'done' : 'ahead'}
+                    aria-label={`${chapterLabel(n, t.chapter, lang)} · ${titles[n]}`}
+                    title={`${chapterLabel(n, t.chapter, lang)} · ${titles[n]}`}
+                    onClick={() => onChapter(n)}
+                  />
+                </li>
               ),
             )}
           </ol>

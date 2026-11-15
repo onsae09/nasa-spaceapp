@@ -278,6 +278,18 @@ describe('going back, and things the visitor does', () => {
     expect(pick.interaction).toEqual({ kind: 'choice', options: ['x', 'y'], answer: 1 })
   })
 
+  it('jumps to the start of a scene, and remembers how far the visitor got', () => {
+    const far = play(start(acts), 'next', 'done', 'next', 'waitDone')
+    expect(line(far)).toBe('pick')
+    const home = reduce(acts, far, { type: 'jump', scene: 0 })
+    expect(line(home)).toBe('one')
+    expect(getView(acts, home).revisit).toBe(true)
+    // Jumping ahead of anything seen is a first visit: the chapter card's pause runs.
+    const ahead = reduce(acts, start(acts), { type: 'jump', scene: 1 })
+    expect(getView(acts, ahead).waitMs).toBe(500)
+    expect(getView(acts, ahead).revisit).toBe(false)
+  })
+
   it('counts the stops of the current chapter', () => {
     expect(getView(acts, start(acts)).progress).toEqual({ index: 1, total: 3 })
     const pick = getView(acts, play(start(acts), 'next', 'done', 'next', 'waitDone'))

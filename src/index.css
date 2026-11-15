@@ -612,6 +612,24 @@ body {
   text-align: center;
 }
 
+/* What the story is built on, just above the music credit. */
+.end-card-sources {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  bottom: 72px;
+  font-size: 18px;
+  line-height: 28px;
+  text-align: center;
+  white-space: normal;
+}
+
+.end-card-sources a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .sara-art,
   .sara-wave,
@@ -1660,16 +1678,38 @@ body {
   background: var(--accent);
 }
 
-/* A whole chapter, drawn as one bar: read, to come, or not built yet. */
+/* A whole chapter, drawn as one bar. It is a button: pressing it goes there. */
+.nav-track li {
+  display: flex;
+}
+
 .nav-bar {
   width: 40px;
   height: 4px;
+  padding: 0;
+  border: 0;
   border-radius: 2px;
   background: var(--hairline);
+  background-clip: content-box;
+  /* A taller target than the bar it draws. */
+  box-sizing: content-box;
+  padding-block: 12px;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: background-color 150ms var(--ease);
+}
+
+.nav-bar:hover {
+  background-color: var(--accent);
+}
+
+.nav-bar:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
 }
 
 .nav-bar[data-state='done'] {
-  background: var(--text-2);
+  background-color: var(--text-2);
 }
 
 /* ================= things the visitor does ================= */

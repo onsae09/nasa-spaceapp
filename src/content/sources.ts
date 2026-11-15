@@ -1,0 +1,32 @@
+import type { L } from '../i18n'
+
+/**
+ * What the story is built on, listed on the closing card. Each entry is
+ * documented in full, with its licence, in README.md; keep the two in step.
+ * An entry has a link only where the README gives one.
+ */
+export const sources: { label: L; href?: string }[] = [
+  {
+    label: {
+      en: 'Radar: OPERA RTC-S1, NASA/JPL (Sentinel-1)',
+      ko: '레이더: OPERA RTC-S1, NASA/JPL (Sentinel-1)',
+    },
+  },
+  {
+    label: { en: 'Reference flood map: Zenodo 4390084', ko: '기준 침수 지도: Zenodo 4390084' },
+    href: 'https://zenodo.org/records/4390084',
+  },
+  {
+    label: { en: 'Nepal image: ESA, CC BY 4.0', ko: '네팔 영상: ESA, CC BY 4.0' },
+    href: 'https://commons.wikimedia.org/wiki/File:Nepal_glacier_collapse_and_flood_(after)_(55504451912).jpg',
+  },
+  {
+    label: { en: 'Nepal toll: NDRRMA, 5 Oct 2026', ko: '네팔 피해 집계: NDRRMA, 2026년 10월 5일' },
+  },
+  {
+    label: { en: 'Texas and warning time: the team’s solutions paper', ko: '텍사스와 경보 시간: 팀의 해결책 문서' },
+  },
+  { label: { en: 'Khatiwada 2025', ko: 'Khatiwada 2025' }, href: 'https://doi.org/10.1016/j.rsase.2025.101860' },
+  { label: { en: 'Amitrano 2024', ko: 'Amitrano 2024' }, href: 'https://doi.org/10.3390/rs16040656' },
+  { label: { en: 'Zhao 2025', ko: 'Zhao 2025' }, href: 'https://doi.org/10.1109/MGRS.2024.3496075' },
+]

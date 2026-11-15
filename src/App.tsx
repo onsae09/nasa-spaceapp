@@ -15,6 +15,7 @@ import { Speech } from './components/Speech'
 import { Stage } from './components/Stage'
 import { StoryNav } from './components/StoryNav'
 import { useSpeech } from './components/useSpeech'
+import { sources } from './content/sources'
 import { chapterLabel, ui } from './content/ui'
 import { LANGS, LangProvider, initialLang, resolve, saveLang, type Lang } from './i18n'
 import { EASE } from './motion'
@@ -45,7 +46,7 @@ export default function App() {
 
   const story = useMemo(() => buildStory(lang), [lang])
   const t = useMemo(() => resolve(ui, lang), [lang])
-  const { view, stepId, next, pressButton, restart, back, done, close } = useStory(story, sceneFromUrl(), playing)
+  const { view, stepId, next, pressButton, restart, back, toChapter, done, close } = useStory(story, sceneFromUrl(), playing)
   const sound = useSoundtrack(music.src)
 
   // A line the visitor has already read comes back whole and silent.
@@ -323,6 +324,21 @@ export default function App() {
               <button type="button" className="story-button title-lang end-card-restart" onClick={restart}>
                 {t.backToStart}
               </button>
+              <p className="stamp end-card-sources">
+                <span className="stamp-lead">{t.ending.sources}</span>
+                {sources.map((source) => (
+                  <span key={source.label.en}>
+                    {' · '}
+                    {source.href ? (
+                      <a href={source.href} target="_blank" rel="noreferrer">
+                        {source.label[lang]}
+                      </a>
+                    ) : (
+                      source.label[lang]
+                    )}
+                  </span>
+                ))}
+              </p>
               <p className="stamp end-card-credit">{music.credit[lang]}</p>
             </motion.div>
           )}
@@ -341,6 +357,7 @@ export default function App() {
               progress={view.progress}
               canBack={view.canBack}
               onBack={back}
+              onChapter={toChapter}
               showProgress={!view.finished}
             />
           )}

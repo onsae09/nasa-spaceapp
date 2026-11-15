@@ -15,6 +15,7 @@ export const ui = {
       ko: '더 가까이 보는 일이 더 안전한 미래의 시작이 될 수 있어요',
     },
     lead: { en: 'What someone like you can do', ko: '당신 같은 사람이 할 수 있는 일' },
+    sources: { en: 'Data and sources', ko: '자료와 출처' },
     actions: [
       {
         name: { en: 'Know your risk', ko: '위험을 알아 두기' },

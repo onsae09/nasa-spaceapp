@@ -29,7 +29,7 @@ npm run build    # type-check and build to dist/
 
 Add `?scene=N` to the URL to start at that scene: 1 (the flood and the radar sweep) and 2 (the reminder) are chapter 1; 3 (firing the radar) and 4 (the map) are chapter 2; 5 (the overlap), 6 (warning time and the solution cards) and 7 (the research files and the hand-over) are chapter 3.
 
-Click, Space, Enter or → moves the story on, and ← or the Back button returns to the previous line. The first press finishes a line that is still typing; a line you have already read comes back whole. Where the story asks you to do something (drag the radar, press Fire, pick an answer) it waits for that instead. The radar handle also works from the keyboard: → moves it, Enter sends it across. Sound starts when you leave the title screen; `M` or the speaker button turns it off.
+Click, Space, Enter or → moves the story on, and ← or the Back button returns to the previous line. The first press finishes a line that is still typing; a line you have already read comes back whole. The bars beside the progress dots stand for the other chapters; pressing one goes to the start of that chapter. Where the story asks you to do something (drag the radar, press Fire, pick an answer) it waits for that instead. The radar handle also works from the keyboard: → moves it, Enter sends it across. Sound starts when you leave the title screen; `M` or the speaker button turns it off.
 
 ## Where things are
 
@@ -43,6 +43,7 @@ Click, Space, Enter or → moves the story on, and ← or the Back button return
 | The solution cards | `src/content/solutions.ts` |
 | The warning-time sum: distance, speeds, delays | `src/components/WarningWindow.tsx` |
 | The closing card and its five actions | `src/content/ui.ts` (`ending`) |
+| The data and sources listed on the closing card | `src/content/sources.ts` |
 | The research files: spoken lines, text, figures, papers | `src/content/research.ts` |
 | Typing speed and pauses at punctuation | `src/story/pacing.ts` |
 | Images, photo stamps, figures, music | `src/assets.ts` and `public/assets/` |

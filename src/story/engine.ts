@@ -35,6 +35,8 @@ export type Action =
   /** The visitor finished the interaction of a `do` step. */
   | { type: 'done' }
   | { type: 'back' }
+  /** Go straight to the start of a scene (used to move between chapters). */
+  | { type: 'jump'; scene: number }
   | { type: 'restart' }
 
 /** Sara as the screen should draw her now. */
@@ -118,6 +120,11 @@ const isRevisit = (state: State) => position(state.scene, state.step) < state.re
 
 export function reduce(script: Scene[], state: State, action: Action): State {
   if (action.type === 'restart') return start(script)
+
+  if (action.type === 'jump') {
+    const at = settle(script, Math.min(Math.max(action.scene, 0), script.length - 1), 0)
+    return { ...at, reached: Math.max(state.reached, position(at.scene, at.step)) }
+  }
 
   if (action.type === 'back') {
     const at = settleBack(script, state.scene, state.step)
