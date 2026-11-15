@@ -15,13 +15,25 @@
   --text-2: #a3a9b8;
   --accent: #ee5a6f;
 
+  /* Light surfaces: a turned-over card, an open research file. */
+  --paper: #f5f7fa;
+  --paper-ink: #111827;
+  --paper-ink-2: #4b5565;
+  --hairline: rgba(238, 240, 245, 0.12);
+  /* A raised dark surface: the back of a card. */
+  --ink-2: #11141c;
+  --white: #ffffff;
+  /* Cloud white, for the white-out at the end of the dive. */
+  --cloud: #e8eef7;
+
   --panel: rgba(11, 13, 20, 0.8);
   --chip: rgba(7, 8, 13, 0.76);
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
 
-  --font-ui: 'Figtree Variable', system-ui, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  /* Latin from Figtree and IBM Plex Mono; Hangul falls through to Pretendard. */
+  --font-ui: 'Figtree Variable', 'Pretendard Variable', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Pretendard Variable', ui-monospace, monospace;
 
   font-family: var(--font-ui);
 }
@@ -42,6 +54,11 @@ body {
   background: var(--ink-0);
   color: var(--text);
   overflow: hidden;
+}
+
+/* Korean breaks between words, never inside one. */
+:lang(ko) {
+  word-break: keep-all;
 }
 
 .sr-only {
@@ -174,7 +191,7 @@ body {
 .haze {
   position: absolute;
   inset: 0;
-  background: #e8eef7;
+  background: var(--cloud);
   pointer-events: none;
 }
 
@@ -201,8 +218,8 @@ body {
 
 .title-line {
   margin: 16px 0 0;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 36px;
+  line-height: 44px;
   color: var(--text-2);
 }
 
@@ -211,6 +228,26 @@ body {
   font-size: 28px;
   line-height: 36px;
   color: var(--text);
+}
+
+.title-langs {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+}
+
+/* Two equal choices: the one being looked at fills in. */
+.story-button.title-lang {
+  min-width: 200px;
+  color: var(--text);
+  background: var(--chip);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.story-button.title-lang:hover,
+.story-button.title-lang[aria-pressed='true'] {
+  color: var(--ink-1);
+  background: var(--text);
 }
 
 /* ---------- figures ---------- */
@@ -234,8 +271,8 @@ body {
 
 .fact-figure {
   min-width: 320px;
-  font-size: 120px;
-  line-height: 128px;
+  font-size: 112px;
+  line-height: 120px;
   font-weight: 500;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -249,6 +286,19 @@ body {
 
 .fact-source {
   margin-top: 16px;
+}
+
+/* A photo shown whole, on its own dark ground, clear of the dialogue box. */
+.backdrop-ground {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+}
+
+.backdrop-image--contain {
+  position: relative;
+  object-fit: contain;
+  padding: 96px 112px 400px;
 }
 
 /*
@@ -341,8 +391,8 @@ body {
 
 .triptych-country {
   margin-top: 20px;
-  font-size: 40px;
-  line-height: 48px;
+  font-size: 36px;
+  line-height: 44px;
   font-weight: 500;
 }
 
@@ -477,7 +527,7 @@ body {
 }
 
 .story-button:hover {
-  background: #fff;
+  background: var(--white);
 }
 
 .story-button:active {
@@ -496,7 +546,7 @@ body {
   translate: -50% 0;
   height: 96px;
   padding: 0 64px;
-  font-size: 40px;
+  font-size: 36px;
 }
 
 .story-button--corner {
@@ -573,8 +623,8 @@ body {
 
 .end-card-note {
   margin: 12px 0 64px;
-  font-size: 32px;
-  line-height: 40px;
+  font-size: 28px;
+  line-height: 36px;
   color: var(--text-2);
 }
 
@@ -591,6 +641,883 @@ body {
   .cloud-layer,
   .dialogue::before,
   .dialogue::after {
+    animation: none;
+  }
+}
+
+/* ================= chapter 2: interactive overlays ================= */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  cursor: default;
+}
+
+.overlay-title {
+  margin: 0;
+  font-size: 44px;
+  line-height: 52px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.overlay-lead {
+  margin: 8px 0 0;
+  font-size: 28px;
+  line-height: 36px;
+  color: var(--text-2);
+}
+
+.icon-button {
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--text-2);
+  background: var(--chip);
+  border: 0;
+  border-radius: 16px;
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    scale 150ms var(--ease);
+}
+
+.icon-button:hover {
+  color: var(--text);
+}
+
+.icon-button:active {
+  scale: 0.98;
+}
+
+.icon-button:focus-visible,
+.text-button:focus-visible,
+.map-switch-option:focus-visible,
+.deck-card:focus-visible,
+.file-tab:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.icon-button svg {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-button--on-paper {
+  color: var(--paper-ink-2);
+  background: rgba(17, 24, 39, 0.06);
+}
+
+.icon-button--on-paper:hover {
+  color: var(--paper-ink);
+}
+
+.icon-button--on-paper:focus-visible {
+  outline-color: var(--paper-ink);
+}
+
+.text-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  font: inherit;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 500;
+  color: inherit;
+  background: none;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.text-button svg {
+  width: 32px;
+  height: 32px;
+  transition: translate 150ms var(--ease);
+}
+
+.text-button:hover svg {
+  translate: 4px 0;
+}
+
+/* ---------- the radar map ---------- */
+
+.map {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--ink-0);
+}
+
+.map-surface {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+  touch-action: none;
+}
+
+.map-surface:active {
+  cursor: grabbing;
+}
+
+.map-image {
+  position: absolute;
+  will-change: transform;
+}
+
+.map-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 200ms var(--ease);
+}
+
+.map-head {
+  position: absolute;
+  left: 112px;
+  top: 32px;
+  padding: 16px 24px;
+  background: var(--chip);
+  border-radius: 16px;
+  pointer-events: none;
+}
+
+.map-head .stamp {
+  margin-top: 4px;
+}
+
+.map-close {
+  position: absolute;
+  top: 32px;
+  right: 32px;
+}
+
+.map-panel,
+.map-result,
+.map-notes {
+  position: absolute;
+  padding: 24px;
+  background: var(--chip);
+  border-radius: 16px;
+}
+
+.map-panel {
+  left: 112px;
+  bottom: 32px;
+  width: 640px;
+}
+
+.map-result {
+  right: 112px;
+  top: 32px;
+  width: 560px;
+}
+
+.map-notes {
+  left: 784px;
+  bottom: 32px;
+  width: 432px;
+  padding: 16px;
+}
+
+.map-switch {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.map-switch-option {
+  width: 96px;
+  height: 48px;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--text-2);
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    background-color 150ms var(--ease);
+}
+
+.map-switch-option:hover {
+  color: var(--text);
+}
+
+.map-switch-option[aria-pressed='true'] {
+  color: var(--ink-1);
+  background: var(--text);
+}
+
+.map-explain {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.map-legend {
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text-2);
+}
+
+.map-legend li {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.map-swatch {
+  width: 20px;
+  height: 20px;
+  margin-top: 4px;
+  border-radius: 4px;
+}
+
+/* Stands for the blue-and-red speckle of the change map itself. */
+.map-swatch--speckle {
+  background: linear-gradient(135deg, #1f2a6b 50%, #7a3550 50%);
+}
+
+.map-finding {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.map-scores {
+  margin: 20px 0 0;
+  display: grid;
+  gap: 12px;
+}
+
+.map-score {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  gap: 16px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--text-2);
+}
+
+.map-score dt,
+.map-score dd {
+  margin: 0;
+}
+
+.map-score-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--hairline);
+}
+
+.map-score-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 4px;
+  background: var(--text-2);
+  transition: background-color 200ms var(--ease);
+}
+
+.map-score-value {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.map-score[data-active='true'] {
+  color: var(--text);
+}
+
+.map-score[data-active='true'] .map-score-bar span {
+  background: var(--text);
+}
+
+.map-note + .map-note {
+  margin-top: 8px;
+}
+
+.map-note {
+  font-size: 18px;
+  line-height: 26px;
+  white-space: normal;
+}
+
+.map-zoom {
+  position: absolute;
+  right: 112px;
+  bottom: 32px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.map-hint {
+  margin-right: 12px;
+}
+
+/* ---------- the solution cards ---------- */
+
+.deck {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 8, 13, 0.6);
+}
+
+.deck-head {
+  position: absolute;
+  left: 112px;
+  top: 128px;
+}
+
+/* A zero-size anchor far below the stage. The cards sit on a wide arc
+   around it, so they spread sideways with only a slight overlap. */
+.deck-fan {
+  position: absolute;
+  left: 960px;
+  top: 1528px;
+}
+
+.deck-card {
+  position: absolute;
+  left: -116px;
+  top: -320px;
+  width: 232px;
+  height: 320px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  font: inherit;
+  color: var(--text);
+  background: var(--ink-2);
+  border: 0;
+  border-radius: 16px;
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transform-origin: 50% 100%;
+  transform: rotate(var(--tilt)) translateY(-888px);
+  transition:
+    transform 180ms var(--ease),
+    background-color 180ms var(--ease),
+    color 180ms var(--ease);
+}
+
+.deck-card:hover {
+  transform: rotate(var(--tilt)) translateY(-892px);
+}
+
+/* A card that has been read stays face up. */
+.deck-card[data-seen='true'] {
+  color: var(--paper-ink);
+  background: var(--paper);
+}
+
+.deck-card-number {
+  font-family: var(--font-mono);
+  font-size: 36px;
+  line-height: 44px;
+}
+
+/* Narrow enough to stay clear of the next card, which overlaps the right edge. */
+.deck-card-name {
+  max-width: 152px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+
+.deck-holder {
+  position: absolute;
+  left: 800px;
+  top: 652px;
+  width: 320px;
+  pointer-events: none;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+}
+
+.deck-source {
+  margin-top: 16px;
+}
+
+.deck-scrim {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(7, 8, 13, 0.72);
+  perspective: 1600px;
+}
+
+.deck-face {
+  position: relative;
+  width: 960px;
+  min-height: 560px;
+  padding: 56px 64px 40px;
+  display: flex;
+  flex-direction: column;
+  color: var(--paper-ink);
+  background: var(--paper);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+.deck-face .stamp,
+.file-page .stamp {
+  color: var(--paper-ink-2);
+}
+
+.deck-face .stamp-lead,
+.file-page .stamp-lead {
+  color: var(--paper-ink);
+}
+
+.deck-face-title {
+  margin: 16px 0 0;
+  font-size: 64px;
+  line-height: 72px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.deck-face-plain {
+  margin: 24px 0 0;
+  font-size: 36px;
+  line-height: 48px;
+}
+
+.deck-face-note {
+  margin: 16px 0 0;
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--paper-ink-2);
+}
+
+.deck-face-foot {
+  margin-top: auto;
+  padding-top: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.deck-face-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  color: var(--paper-ink-2);
+  background: rgba(17, 24, 39, 0.06);
+}
+
+.deck-face-close:hover {
+  color: var(--paper-ink);
+}
+
+.deck-face .text-button:focus-visible,
+.deck-face-close:focus-visible {
+  outline-color: var(--paper-ink);
+}
+
+/* ---------- the research files ---------- */
+
+.files {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 8, 13, 0.72);
+}
+
+.files-shelf,
+.files-open {
+  position: absolute;
+  inset: 0;
+}
+
+.files-open {
+  cursor: pointer;
+}
+
+.files-head {
+  position: absolute;
+  left: 112px;
+  top: 176px;
+}
+
+.files-row {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 368px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 32px;
+}
+
+.file-tab {
+  width: 100%;
+  height: 440px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  font: inherit;
+  color: var(--paper-ink);
+  background: var(--paper);
+  border: 0;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: translate 180ms var(--ease);
+}
+
+.file-tab:hover {
+  translate: 0 -4px;
+}
+
+.file-tab-number,
+.file-tab-paper,
+.file-number {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--paper-ink-2);
+}
+
+.file-tab-title {
+  margin-top: 16px;
+  font-size: 44px;
+  line-height: 52px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.file-tab-teaser {
+  margin-top: 12px;
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--paper-ink-2);
+}
+
+.file-tab-paper {
+  margin-top: auto;
+}
+
+/* The open file ends above the dialogue box; its left column stops short so
+   the astronaut's helmet does not cover the caption. */
+.file-page {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 48px;
+  height: 636px;
+  padding: 40px 48px;
+  display: grid;
+  grid-template-columns: 600px 1fr;
+  gap: 48px;
+  color: var(--paper-ink);
+  background: var(--paper);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+  cursor: default;
+}
+
+/* Figure, then the paper it is based on. Stops 100px short of the page's
+   bottom edge, where the astronaut's helmet overlaps. */
+.file-side {
+  min-height: 0;
+  margin-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-figure {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.file-figure figcaption {
+  margin-top: 12px;
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--paper-ink-2);
+}
+
+.file-image {
+  flex: 1;
+  min-height: 0;
+  padding: 16px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--ink-0);
+  border-radius: 12px;
+}
+
+.file-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.file-image--light {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1px rgba(17, 24, 39, 0.1);
+}
+
+.file-figure-heading {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+}
+
+.file-facts {
+  flex: 1;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+
+.file-facts div {
+  display: grid;
+  grid-template-columns: 216px 1fr;
+  gap: 24px;
+  align-items: baseline;
+}
+
+.file-facts dt {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.file-facts dd {
+  margin: 0;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--paper-ink-2);
+}
+
+.file-text {
+  min-height: 0;
+  padding-right: 72px;
+  overflow-y: auto;
+}
+
+.file-number {
+  margin: 0;
+}
+
+.file-title {
+  margin: 8px 0 0;
+  font-size: 44px;
+  line-height: 52px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.file-paragraph {
+  margin: 16px 0 0;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.file-paper {
+  margin: 12px 0 0;
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--paper-ink-2);
+}
+
+.file-paper a {
+  color: var(--paper-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.file-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+/* ================= the radar lesson ================= */
+
+.lesson {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+}
+
+/* Sits above the dialogue box. */
+.lesson-art {
+  position: absolute;
+  left: 112px;
+  top: 64px;
+  width: 1696px;
+  height: 600px;
+  overflow: visible;
+}
+
+.lesson-line {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lesson-line--soft {
+  stroke: var(--text-2);
+  stroke-width: 3;
+}
+
+.lesson-echo {
+  stroke-dasharray: 16 14;
+}
+
+.lesson-surface {
+  fill: none;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.lesson-surface--ground {
+  stroke: var(--text-2);
+}
+
+.lesson-surface--faint {
+  stroke-width: 3;
+  opacity: 0.45;
+}
+
+.lesson-label {
+  fill: var(--text-2);
+  font-size: 28px;
+}
+
+.lesson-label--centre {
+  text-anchor: middle;
+}
+
+.lesson-label--lead {
+  font-family: var(--font-mono);
+  font-size: 20px;
+}
+
+.lesson-label--strong {
+  fill: var(--text);
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.lesson-tile {
+  stroke: var(--hairline);
+  stroke-width: 2;
+}
+
+/* The brightness the radar would record: a strong echo, and almost none. */
+.lesson-tile--bright {
+  fill: #c9cfdb;
+}
+
+.lesson-tile--dark {
+  fill: #151923;
+}
+
+/* ================= the map tour ================= */
+
+.map--touring {
+  cursor: pointer;
+}
+
+.map--touring .map-surface {
+  cursor: pointer;
+}
+
+/* Glides between tour stops; off while dragging so the map follows the hand. */
+.map-image--gliding {
+  transition: transform 900ms var(--ease);
+}
+
+.map-ring {
+  position: absolute;
+  left: 960px;
+  width: 360px;
+  height: 360px;
+  translate: -50% -50%;
+  border: 4px solid var(--text);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ring-in 600ms 700ms var(--ease) both;
+}
+
+@keyframes ring-in {
+  from {
+    opacity: 0;
+    scale: 1.2;
+  }
+}
+
+.map-skip {
+  position: absolute;
+  top: 44px;
+  right: 128px;
+  padding: 4px 16px;
+  color: var(--text-2);
+  background: var(--chip);
+}
+
+.map-skip:hover {
+  color: var(--text);
+}
+
+.map-group {
+  margin: 0 0 12px;
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--text-2);
+}
+
+.map-method {
+  margin-top: 16px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-image--gliding {
+    transition: none;
+  }
+
+  .map-ring {
     animation: none;
   }
 }

@@ -1,5 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
+import { ui } from '../content/ui'
+import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { Cover } from '../story/types'
 
@@ -13,6 +15,7 @@ export const SCAN_SECONDS = 2.8
  */
 export function CloudCover({ cover }: { cover: Cover | null }) {
   const scanning = cover === 'scan'
+  const label = useResolved(ui.scan)
   return (
     <AnimatePresence>
       {cover && (
@@ -49,7 +52,7 @@ export function CloudCover({ cover }: { cover: Cover | null }) {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4, ease: EASE }}
               >
-                <span className="stamp-lead">Synthetic aperture radar</span> · sees through cloud, day or night
+                <span className="stamp-lead">{label.lead}</span> · {label.rest}
               </motion.p>
             </>
           )}

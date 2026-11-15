@@ -1,11 +1,12 @@
 import { motion } from 'motion/react'
 import { facts } from '../assets'
+import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { FactKey } from '../story/types'
 
 /** Figures shown large and still, with their source underneath. */
 export function FactPanel({ id }: { id: FactKey }) {
-  const { rows, source } = facts[id]
+  const { rows, source } = useResolved(facts[id])
   return (
     <motion.div
       className="fact"

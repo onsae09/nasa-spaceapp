@@ -1,4 +1,17 @@
-import type { Backdrop, ButtonSpec, CameraShot, Cover, FactKey, MusicCue, Pace, Scene, Step } from './types'
+import type {
+  Backdrop,
+  ButtonSpec,
+  CameraShot,
+  ChapterMark,
+  Cover,
+  FactKey,
+  LessonStep,
+  MusicCue,
+  OverlayKey,
+  Pace,
+  Scene,
+  Step,
+} from './types'
 
 /** Where the story is. Always rests on a blocking step, or is finished. */
 export type State = {
@@ -11,6 +24,7 @@ export type Action =
   | { type: 'next' }
   | { type: 'pressButton' }
   | { type: 'waitDone' }
+  | { type: 'close' }
   | { type: 'restart' }
 
 /** Everything the screen needs to draw the current moment. */
@@ -22,6 +36,10 @@ export type View = {
   music: MusicCue
   fact: FactKey | null
   cover: Cover | null
+  chapter: ChapterMark | null
+  lesson: LessonStep
+  /** The interactive overlay the story is waiting on, if any. */
+  open: OverlayKey | null
   line: string | null
   pace: Pace
   button: ButtonSpec | null
@@ -29,7 +47,7 @@ export type View = {
   finished: boolean
 }
 
-const isBlocking = (step: Step) => 'say' in step || 'wait' in step
+const isBlocking = (step: Step) => 'say' in step || 'wait' in step || 'open' in step
 
 /** Move forward from (scene, step) to the first blocking step at or after it. */
 function settle(script: Scene[], scene: number, step: number): State {
@@ -70,6 +88,8 @@ export function reduce(script: Scene[], state: State, action: Action): State {
       return 'say' in step && step.button ? advance() : state
     case 'waitDone':
       return 'wait' in step ? advance() : state
+    case 'close':
+      return 'open' in step ? advance() : state
   }
 }
 
@@ -80,6 +100,8 @@ export function getView(script: Scene[], state: State): View {
   let music: MusicCue = 'silence'
   let fact: FactKey | null = null
   let cover: Cover | null = null
+  let chapter: ChapterMark | null = null
+  let lesson: LessonStep = 'send'
 
   // Replay every instant step up to the current position.
   const lastScene = Math.min(state.scene, script.length - 1)
@@ -95,6 +117,8 @@ export function getView(script: Scene[], state: State): View {
         backdrop = { kind: 'triptych', keys: step.triptych }
         cover = null
       } else if ('cover' in step) cover = step.cover
+      else if ('chapter' in step) chapter = step.chapter
+      else if ('lesson' in step) lesson = step.lesson
       else if ('ui' in step) uiVisible = step.ui
       else if ('camera' in step) camera = step.camera
       else if ('music' in step) music = step.music
@@ -111,6 +135,9 @@ export function getView(script: Scene[], state: State): View {
     music,
     fact,
     cover,
+    chapter,
+    lesson,
+    open: step && 'open' in step ? step.open : null,
     line: step && 'say' in step ? step.say : null,
     pace: step && 'say' in step ? (step.pace ?? 'normal') : 'normal',
     button: step && 'say' in step ? (step.button ?? null) : null,

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { getView, reduce, start, type State } from './engine'
-import { chapter1 } from './chapter1'
+import { buildStory } from './index'
 import type { Scene } from './types'
 
 const script: Scene[] = [
@@ -120,6 +120,35 @@ describe('story engine', () => {
     expect([at(0), at(1), at(2)]).toEqual(['clouds', 'scan', null])
   })
 
+  it('waits on an overlay until it is closed, and shows chapter cards', () => {
+    const interactive: Scene[] = [
+      {
+        id: 'a',
+        steps: [
+          { chapter: { number: 2, title: 'Observation' } },
+          { wait: 100 },
+          { chapter: null },
+          { say: 'look' },
+          { open: 'map' },
+          { say: 'after' },
+        ],
+      },
+    ]
+    let s = start(interactive)
+    expect(getView(interactive, s).chapter).toEqual({ number: 2, title: 'Observation' })
+    s = reduce(interactive, s, { type: 'waitDone' })
+    expect(getView(interactive, s).chapter).toBeNull()
+    s = reduce(interactive, s, { type: 'next' })
+    expect(getView(interactive, s).open).toBe('map')
+    expect(getView(interactive, s).line).toBeNull()
+    // Clicks and timers do not get past an open overlay.
+    expect(reduce(interactive, s, { type: 'next' })).toEqual(s)
+    expect(reduce(interactive, s, { type: 'waitDone' })).toEqual(s)
+    s = reduce(interactive, s, { type: 'close' })
+    expect(getView(interactive, s).open).toBeNull()
+    expect(getView(interactive, s).line).toBe('after')
+  })
+
   it('finishes after the last line and keeps the last backdrop', () => {
     const done = run(start(script), 'next', 'pressButton', 'waitDone', 'next', 'next')
     const view = getView(script, done)
@@ -141,20 +170,56 @@ describe('story engine', () => {
   })
 })
 
-describe('chapter 1 script', () => {
-  it('plays through all 13 lines in three scenes and then finishes', () => {
-    let state = start(chapter1)
+
+describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
+  const story = buildStory(lang)
+
+  it('plays both chapters, opening each interactive part once', () => {
+    let state = start(story)
     const lines: string[] = []
-    const scenes = new Set<string>()
-    for (let guard = 0; guard < 100 && !state.finished; guard++) {
-      const view = getView(chapter1, state)
-      if (view.sceneId) scenes.add(view.sceneId)
+    const scenes: string[] = []
+    const overlays: string[] = []
+    for (let guard = 0; guard < 300 && !state.finished; guard++) {
+      const view = getView(story, state)
+      if (view.sceneId && scenes.at(-1) !== view.sceneId) scenes.push(view.sceneId)
       if (view.line) lines.push(view.line)
-      const type = view.waitMs != null ? 'waitDone' : view.button ? 'pressButton' : 'next'
-      state = reduce(chapter1, state, { type })
+      if (view.open) overlays.push(view.open)
+      const type =
+        view.open != null ? 'close' : view.waitMs != null ? 'waitDone' : view.button ? 'pressButton' : 'next'
+      state = reduce(story, state, { type })
     }
     expect(state.finished).toBe(true)
-    expect(lines).toHaveLength(13)
-    expect([...scenes]).toEqual(['character-intro', 'trigger-line', 'the-problem'])
+    expect(scenes).toEqual([
+      'character-intro',
+      'trigger-line',
+      'the-problem',
+      'observation',
+      'solutions',
+      'deeper-observations',
+    ])
+    expect(overlays).toEqual(['map', 'cards', 'files'])
+    // 13 lines in chapter 1, 18 in chapter 2 (4 of them the radar lesson).
+    expect(lines).toHaveLength(31)
+    expect(lines.every((line) => line.trim().length > 0)).toBe(true)
+  })
+
+  it('uses Hangul in Korean and none in English', () => {
+    const lines = story.flatMap((scene) => scene.steps.flatMap((step) => ('say' in step ? [step.say] : [])))
+    const hangul = lines.filter((line) => /[가-힣]/.test(line)).length
+    expect(hangul).toBe(lang === 'ko' ? lines.length : 0)
+  })
+
+  it('never opens an overlay while the UI is hidden or a chapter card is up', () => {
+    let state = start(story)
+    for (let guard = 0; guard < 300 && !state.finished; guard++) {
+      const view = getView(story, state)
+      if (view.open) {
+        expect(view.uiVisible).toBe(true)
+        expect(view.chapter).toBeNull()
+      }
+      const type =
+        view.open != null ? 'close' : view.waitMs != null ? 'waitDone' : view.button ? 'pressButton' : 'next'
+      state = reduce(story, state, { type })
+    }
   })
 })

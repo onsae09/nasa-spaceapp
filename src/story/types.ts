@@ -1,5 +1,5 @@
 /** Full-screen backgrounds. Paths live in src/assets.ts. */
-export type BackdropKey = 'space' | 'nepalFlood' | 'brokenCity'
+export type BackdropKey = 'space' | 'nepalFlood' | 'brokenCity' | 'amphanSwath' | 'radarLesson'
 
 /** Vertical panels used by the three-way split. */
 export type PanelKey = 'bangladesh' | 'india' | 'us'
@@ -27,11 +27,31 @@ export type MusicCue = 'ambience' | 'silence' | 'theme'
  */
 export type Cover = 'clouds' | 'scan'
 
+/**
+ * Which picture the radar lesson is showing (background `radarLesson`).
+ *   send    – the satellite sends its signal down
+ *   dry     – dry ground scatters it; part comes back; bright
+ *   wet     – calm water bounces it away; little comes back; dark
+ *   compare – the same place before and after: darker means water may have come
+ */
+export type LessonStep = 'send' | 'dry' | 'wet' | 'compare'
+
 /** How fast a line is typed. Heavy lines are slow, greetings are quick. */
 export type Pace = 'slow' | 'normal' | 'quick'
 
 /** Figures shown large beside the dialogue. Content lives in src/assets.ts. */
 export type FactKey = 'nepalToll'
+
+/**
+ * A full-screen interactive part of the story. The story waits until it is closed.
+ *   map   – the radar change map: zoom, drag, switch layers
+ *   cards – the solution cards: turn them over
+ *   files – the research files: open and read
+ */
+export type OverlayKey = 'map' | 'cards' | 'files'
+
+/** The card shown at the start of a chapter. */
+export type ChapterMark = { number: number; title: string }
 
 export type ButtonSpec = {
   label: string
@@ -45,6 +65,7 @@ export type ButtonSpec = {
  * Blocking steps (the story waits on them):
  *   say   – a line of dialogue; waits for a click, or for its button if it has one
  *   wait  – pauses for the given milliseconds; clicks are ignored
+ *   open  – opens an interactive overlay; waits until the visitor closes it
  *
  * Instant steps (applied, then the story moves on):
  *   bg        – replace the background with a full-screen image
@@ -55,10 +76,13 @@ export type ButtonSpec = {
  *   fact      – show figures beside the dialogue, or null to clear them
  *   cover     – put cloud over the image, or sweep it away with radar;
  *               cleared automatically when the background changes
+ *   chapter   – show a chapter card, or null to take it away
+ *   lesson    – which picture of the radar lesson to show
  */
 export type Step =
   | { say: string; button?: ButtonSpec; pace?: Pace }
   | { wait: number }
+  | { open: OverlayKey }
   | { bg: BackdropKey }
   | { triptych: [PanelKey, PanelKey, PanelKey] }
   | { ui: boolean }
@@ -66,6 +90,8 @@ export type Step =
   | { music: MusicCue }
   | { fact: FactKey | null }
   | { cover: Cover | null }
+  | { chapter: ChapterMark | null }
+  | { lesson: LessonStep }
 
 export type Scene = {
   id: string

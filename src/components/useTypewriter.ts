@@ -23,7 +23,9 @@ export function useTypewriter(id: string, text: string, pace: Pace = 'normal') {
     }
     setProgress({ id, count: 0 })
 
-    const delay = charDelay(pace)
+    // A Hangul block carries about as much as two or three Latin letters, so
+    // Korean is typed more slowly to be read at the same pace.
+    const delay = charDelay(pace) * (/[가-힣]/.test(text) ? 1.7 : 1)
     let typed = 0
     let timer = 0
     const type = () => {

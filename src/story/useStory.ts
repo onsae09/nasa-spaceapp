@@ -27,5 +27,7 @@ export function useStory(script: Scene[], startScene = 0, running = true) {
     next: useCallback(() => dispatch({ type: 'next' }), []),
     pressButton: useCallback(() => dispatch({ type: 'pressButton' }), []),
     restart: useCallback(() => dispatch({ type: 'restart' }), []),
+    /** Closes the interactive overlay the story is waiting on. */
+    close: useCallback(() => dispatch({ type: 'close' }), []),
   }
 }

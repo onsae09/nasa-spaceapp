@@ -1,0 +1,12 @@
+{
+    "event": "Cyclone Amphan, May 2020",
+    "reference_resolution": "Native approximately 10 m geographic grid",
+    "valid_overlap_pixels": 6789968,
+    "newly_inundated_pixels": 107052,
+    "valid_overlap_area_km2": 625.7582,
+    "newly_inundated_area_km2": 9.8631,
+    "inundated_percentage": 1.5766,
+    "area_method": "WGS84 geodesic pixel-area calculation",
+    "reference_definition": "Pre-event non-water and post-event water",
+    "limitation": "Reference classification is Sentinel-1-derived. Comparison with OPERA is not independent validation."
+}

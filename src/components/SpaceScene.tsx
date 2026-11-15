@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { motion } from 'motion/react'
 import { backdrops, earth } from '../assets'
+import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { CameraShot } from '../story/types'
 
@@ -28,6 +29,7 @@ const MOVES = {
 
 /** Open space with softly twinkling stars and the Earth, moved by the camera shot. */
 export function SpaceScene({ camera }: { camera: CameraShot }) {
+  const earthAlt = useResolved(earth.alt)
   return (
     <div className="space">
       <img className="backdrop-image" src={backdrops.space.src} alt="" draggable={false} />
@@ -35,7 +37,7 @@ export function SpaceScene({ camera }: { camera: CameraShot }) {
       <motion.img
         className="earth"
         src={earth.src}
-        alt="The Earth seen from orbit, with Asia and the Indian Ocean facing us."
+        alt={earthAlt}
         draggable={false}
         style={{ transformOrigin: `${NEPAL.x}px ${NEPAL.y}px` }}
         initial={false}

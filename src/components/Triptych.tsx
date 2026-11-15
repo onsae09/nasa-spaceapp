@@ -1,5 +1,6 @@
 import { motion } from 'motion/react'
 import { panels } from '../assets'
+import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { PanelKey } from '../story/types'
 
@@ -11,10 +12,11 @@ const STAGGER_SECONDS = 0.22
  * from the top, left to right, and its flag follows once it is open.
  */
 export function Triptych({ keys }: { keys: [PanelKey, PanelKey, PanelKey] }) {
+  const all = useResolved(panels)
   return (
     <div className="triptych">
       {keys.map((key, i) => {
-        const panel = panels[key]
+        const panel = all[key]
         const delay = 0.15 + i * STAGGER_SECONDS
         return (
           <motion.figure

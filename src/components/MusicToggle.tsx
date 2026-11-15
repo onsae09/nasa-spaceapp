@@ -1,13 +1,17 @@
+import { ui } from '../content/ui'
+import { useResolved } from '../i18n'
+
 const SPEAKER =
   'M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z'
 
 /** Turns the background music on and off. */
 export function MusicToggle({ muted, onToggle }: { muted: boolean; onToggle: () => void }) {
+  const t = useResolved(ui)
   return (
     <button
       type="button"
       className="music-toggle"
-      aria-label={muted ? 'Turn music on' : 'Turn music off'}
+      aria-label={muted ? t.musicOn : t.musicOff}
       aria-pressed={!muted}
       onClick={(e) => {
         e.stopPropagation()

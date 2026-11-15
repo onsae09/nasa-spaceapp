@@ -1,0 +1,22 @@
+{
+  "status": "PASSED",
+  "errors": [],
+  "warnings": [
+    "Reference inundation and OPERA observations are Sentinel-1-derived; the comparison is not independent validation.",
+    "Pre-event and post-event OPERA acquisitions use Sentinel-1A and Sentinel-1B respectively.",
+    "Spatial holdout has no spatial buffer.",
+    "Low threshold-based precision limits operational interpretation."
+  ],
+  "auc_values": {
+    "VV_pooled": 0.8332112171862252,
+    "VH_pooled": 0.8820222597346785,
+    "VV_train": 0.8266173353813899,
+    "VV_test": 0.8601942619071891,
+    "VH_train": 0.8816897376943531,
+    "VH_test": 0.8834261947484978
+  },
+  "reference_area_km2": 9.8631,
+  "reference_overlap_area_km2": 625.7582,
+  "recorded_inundated_percentage": 1.5766,
+  "area_derived_inundated_percentage": 1.5761838997874897
+}
