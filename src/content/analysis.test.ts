@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import thresholds from '../../data/amphan/tables/threshold_metrics_full_overlap.csv?raw'
 import { analysis, formatLonLat, lonLat } from './analysis'
 import { BINS, TOTAL, cutOff, edge, histogram } from './histogram'
 
@@ -47,6 +48,26 @@ describe('the cut-off chart', () => {
     const vh = near('vh', 2.00218872)
     expect(Math.abs(vh.hits - 10416) / 10416).toBeLessThan(0.01)
     expect(Math.abs(vh.falseAlarms - 462508) / 462508).toBeLessThan(0.02)
+  })
+
+  it('agrees with every row of the threshold table that lies inside the histogram', () => {
+    const table = thresholds.trim().split('\n').slice(1)
+    let checked = 0
+    for (const line of table) {
+      const [pol, , delta, tp, fp] = line.split(',')
+      const channel = pol.toLowerCase() as 'vv' | 'vh'
+      const { min, max, flooded, other, below } = histogram[channel]
+      const at = ((Number(delta) - min) / (max - min)) * BINS
+      if (at <= 0 || at >= BINS) continue
+      // Whole bins below the cut-off, and a share of the one it falls in.
+      const whole = Math.floor(at)
+      const count = (bins: number[], tail: number) =>
+        tail + bins.slice(0, whole).reduce((a, b) => a + b, 0) + bins[whole] * (at - whole)
+      expect(Math.abs(count(flooded, below[0]) - Number(tp)) / Number(tp)).toBeLessThan(0.005)
+      expect(Math.abs(count(other, below[1]) - Number(fp)) / Number(fp)).toBeLessThan(0.005)
+      checked++
+    }
+    expect(checked).toBe(398)
   })
 
   it('trades hits for false alarms: no cut-off gets both right', () => {

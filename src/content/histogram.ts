@@ -7,7 +7,7 @@
  * The histogram leaves out the far tails. `below` is the number of pixels
  * under the first bin, worked out from the team's threshold table
  * (data/amphan/tables/README.md says how), so that counts at a cut-off agree
- * with that table to within about 1%.
+ * with every row of that table to within 0.5%.
  */
 export type Channel = 'vh' | 'vv'
 
@@ -45,7 +45,7 @@ export const histogram: Record<Channel, Counts> = {
       22326, 22032, 21530, 20932, 20276, 19252, 18425, 17243, 16338, 15263, 14209, 12758, 11969, 10728, 9758, 8801, 7728, 6989, 6232, 5518,
       4832, 4305, 3606, 3169, 2757, 2382, 1956, 1784, 1515, 1260, 1113, 904, 852, 662, 600, 497, 448, 332, 299, 229,
     ],
-    below: [941, 459],
+    below: [946, 451],
   },
   vv: {
     min: -11.86084348,

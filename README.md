@@ -92,7 +92,7 @@ Casualty figures for the 26 August 2026 Nepal flood (1,455 dead, 5,285 missing i
 
 Photos are resized to 1920 px wide and cropped on screen; nothing else is altered.
 
-Radar analysis: OPERA RTC-S1 products from the NASA/JPL OPERA archive (Sentinel-1A, 16 May 2020, and Sentinel-1B, 22 May 2020). Reference flood map: Bangladesh Cyclone Amphan inundation dataset, [Zenodo record 4390084](https://zenodo.org/records/4390084). Method, results and limits are in `data/amphan/REPORT.md`; the maps, grid corners and histogram behind the map viewer and the cut-off chart are in `data/amphan/maps/`, `maps_summary.json` and `tables/`.
+Radar analysis: OPERA RTC-S1 products from the NASA/JPL OPERA archive (Sentinel-1A, 16 May 2020, and Sentinel-1B, 22 May 2020). Reference flood map: Bangladesh Cyclone Amphan inundation dataset, [Zenodo record 4390084](https://zenodo.org/records/4390084). Method, results and limits are in `data/amphan/REPORT.md`; the maps, grid corners, histogram and threshold table behind the map viewer and the cut-off chart are in `data/amphan/maps/`, `maps_summary.json` and `tables/`.
 
 The Texas figures (136 deaths in July 2025, 2 in July 2026), the 35 km distance, the warning-time sum and the five ideas are from the team's solutions paper, `data/Wave_of_Change_Flood_Solutions.pdf`, which lists its own sources (AP, 18 July 2026, for Texas). Its speeds are illustrative, and the screen says so.
 
