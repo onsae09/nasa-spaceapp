@@ -1,120 +1,77 @@
-import type { L } from '../i18n'
 import type { ScriptScene } from './script'
 
-/** Placeholder until the team picks a name. */
-export const CHARACTER_NAME: L = { en: 'SARA', ko: '사라' }
-
 /**
- * Chapter 1 – Introduction.
+ * Chapter 1 – What the world missed.
+ * No greeting: the visitor falls straight into the flood, loses it under
+ * cloud, and clears the cloud with radar themselves before Sara appears.
+ *
  * Edit lines and their order here; see ./types.ts for what each step does.
- * Every line needs both languages.
+ * Every line needs both languages, and the tests hold each one to 12 English
+ * words, so keep them short.
  */
 export const chapter1: ScriptScene[] = [
   {
-    id: 'character-intro',
+    id: 'missed',
+    chapter: 1,
     steps: [
+      // Fall from orbit into the flood.
       { bg: 'space' },
-      { camera: 'far' },
-      { music: 'ambience' },
-      { ui: true },
-      {
-        say: { en: `Hello! I'm ${CHARACTER_NAME.en}!`, ko: `안녕하세요! 저는 ${CHARACTER_NAME.ko}예요!` },
-        pace: 'quick',
-      },
-      // The camera closes in on Earth as she mentions it.
-      { camera: 'earth' },
-      {
-        say: {
-          en: "I've been keeping an eye on Earth from up here.",
-          ko: '저는 이 위에서 지구를 쭉 지켜보고 있었어요.',
-        },
-      },
-      { say: { en: 'And you must be the one taking over.', ko: '이제 당신이 이어받을 차례인가 봐요.' } },
-      {
-        say: { en: "Come on, let me show you what I've found.", ko: '자, 제가 찾아낸 걸 보여 드릴게요.' },
-        button: { label: { en: "Let's start", ko: '시작하기' }, at: 'center' },
-      },
-    ],
-  },
-  {
-    id: 'trigger-line',
-    steps: [
-      // Fall from orbit into the flood: the music cuts, the screen whites out,
-      // and the photo is left alone in silence before anyone speaks.
+      { camera: 'dive' },
       { ui: false },
       { music: 'silence' },
-      { camera: 'dive' },
       { wait: 1800 },
       { bg: 'nepalFlood' },
-      { wait: 3000 },
+      { wait: 1000 },
       { ui: true },
       { music: 'theme' },
       {
         say: {
-          en: 'What if the water that gives us life becomes the reason we lose our homes and our lives?',
-          ko: '우리에게 생명을 주는 물이, 집과 목숨을 앗아 가는 이유가 된다면 어떨까요?',
-        },
-        pace: 'slow',
-      },
-      {
-        say: {
-          en: 'Just like we can see from the recent flood in Nepal.',
-          ko: '최근 네팔에서 일어난 홍수가 바로 그랬어요.',
+          en: '26 August 2026. Rasuwa, Nepal. A flash flood fills this valley.',
+          ko: '2026년 8월 26일, 네팔 라수와. 돌발 홍수가 계곡을 덮쳤어요.',
         },
       },
       { fact: 'nepalToll' },
-      {
-        say: {
-          en: 'It caused at least 1,455 deaths and left 5,285 people missing in Nepal alone, and there are more victims in the Tibet Autonomous Region of China.',
-          ko: '네팔에서만 최소 1,455명이 숨지고 5,285명이 실종됐고, 중국 티베트 자치구에서도 희생자가 나왔어요.',
-        },
-        pace: 'slow',
-      },
-      {
-        say: {
-          en: 'This is how countless families lost their loved ones and their everyday lives.',
-          ko: '수많은 가족이 이렇게 사랑하는 사람과 평범한 일상을 잃었어요.',
-        },
-        pace: 'slow',
-      },
+      { say: { en: '1,455 dead. 5,285 still missing.', ko: '사망 1,455명. 실종 5,285명.' }, pace: 'slow' },
       { fact: null },
-      { triptych: ['bangladesh', 'india', 'us'] },
+      { cover: 'clouds' },
+      { say: { en: 'From orbit, a camera gets cloud.', ko: '궤도의 카메라에는 구름만 찍혀요.' } },
+      // The visitor drags the radar beam across; the cloud clears behind it.
+      { do: 'sweep', say: { en: 'Here is what the world missed.', ko: '세상이 놓친 장면이 여기 있어요.' } },
+      { cover: null },
+      { sara: { show: true, pose: 'wave', point: 'valley' } },
       {
         say: {
-          en: "It's not just this flood… Many other floods have repeatedly devastated different parts of the world!",
-          ko: '이 홍수만이 아니에요… 세계 곳곳이 홍수로 거듭 큰 피해를 입어 왔어요!',
+          en: "You just looked through cloud. I'm Sara. That was radar.",
+          ko: '방금 구름을 뚫고 봤어요. 저는 사라, 그게 레이더예요.',
         },
       },
     ],
   },
   {
-    id: 'the-problem',
+    id: 'reminder',
+    chapter: 1,
     steps: [
+      // The only two sentimental lines; the photographs carry them.
+      { triptych: ['bangladesh', 'india', 'us'] },
+      { sara: { pose: 'idle' } },
+      {
+        say: {
+          en: 'The water that gives us life also takes it.',
+          ko: '생명을 주는 물이 생명을 앗아 가기도 해요.',
+        },
+        pace: 'slow',
+      },
+      { bg: 'brokenCity' },
+      { say: { en: 'Floods are a reminder of that.', ko: '홍수는 그 사실을 일깨워요.' }, pace: 'slow' },
       { bg: 'space' },
       { camera: 'earth' },
-      { say: { en: "Floods don't just leave water behind.", ko: '홍수는 물만 남기고 가지 않아요.' } },
-      { bg: 'brokenCity' },
+      { sara: { pose: 'present' } },
       {
         say: {
-          en: 'They can damage homes, cut off roads, and keep people from getting the help they need.',
-          ko: '집을 무너뜨리고, 길을 끊고, 사람들이 도움을 받지 못하게 만들어요.',
+          en: 'Radar sees through. Reading it takes practice. Ready?',
+          ko: '레이더는 뚫고 봐요. 읽는 건 연습이 필요해요. 준비됐나요?',
         },
-      },
-      // Back above Nepal. Cloud closes over the valley as she says it is hard
-      // to see; then a radar sweep clears it, which is what chapter 2 is about.
-      { bg: 'nepalFlood' },
-      { cover: 'clouds' },
-      {
-        say: {
-          en: "And when the rain doesn't stop, it can be difficult to see where the water has spread.",
-          ko: '비가 그치지 않으면 물이 어디까지 퍼졌는지 알기도 어려워요.',
-        },
-      },
-      { cover: 'scan' },
-      {
-        say: { en: "That's why we need a better view.", ko: '그래서 우리에겐 더 잘 볼 방법이 필요해요.' },
-        pace: 'slow',
-        button: { label: { en: 'Continue', ko: '계속' }, at: 'corner' },
+        button: { label: { en: 'Take the controls', ko: '직접 해 보기' }, at: 'center' },
       },
     ],
   },

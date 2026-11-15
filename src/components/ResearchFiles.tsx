@@ -13,9 +13,14 @@ type ShelfText = Resolved<typeof shelf>
 
 /**
  * Three research files. Opening one lays it out as a document, with a figure
- * on the left and the text on the right, while the astronaut talks it through.
+ * on the left and the text on the right, while Sara says two lines about it.
+ * `onSpeaking` tells the app when a file is open, so it can bring her in.
  */
-export function ResearchFiles({ onClose, tick }: { onClose: () => void; tick: () => void }) {
+export function ResearchFiles({ onClose, tick, onSpeaking }: {
+  onClose: () => void
+  tick: () => void
+  onSpeaking: (speaking: boolean, typing: boolean) => void
+}) {
   const files = useResolved(researchFiles)
   const t = useResolved(shelf)
   const words = useResolved(ui)
@@ -27,6 +32,11 @@ export function ResearchFiles({ onClose, tick }: { onClose: () => void; tick: ()
   const text = file ? file.lines[line] : ''
   const isLast = file ? line === file.lines.length - 1 : true
   const typing = useSpeech(`file-${open}-${line}`, text, 'normal', file != null, tick)
+
+  useEffect(() => {
+    onSpeaking(file != null, file != null && !typing.done)
+  }, [file, typing.done, onSpeaking])
+  useEffect(() => () => onSpeaking(false, false), [onSpeaking])
 
   const show = useCallback((index: number | null) => {
     setOpen(index)

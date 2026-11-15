@@ -4,8 +4,9 @@
  * what they look like on screen.
  *
  * Colour lives in the photographs and the astronaut. The dialogue box, buttons
- * and stamps stay on one ink-tinted neutral ramp; the accent marks only the
- * "your turn" cue.
+ * and stamps stay on one ink-tinted neutral ramp; the accent marks what is
+ * the visitor's to do (the radar handle, Fire, where Sara points) and where
+ * they are in the story. Each chapter has its own accent: see the end of the file.
  */
 
 :root {
@@ -482,31 +483,6 @@ body {
   color: var(--accent);
 }
 
-.character {
-  position: absolute;
-  left: 120px;
-  top: 568px;
-  width: 264px;
-}
-
-/* She is in orbit: a slow weightless drift. */
-.character-art {
-  display: block;
-  width: 100%;
-  height: auto;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
-  animation: weightless 7s ease-in-out infinite alternate;
-}
-
-@keyframes weightless {
-  from {
-    transform: translateY(4px) rotate(-1.2deg);
-  }
-  to {
-    transform: translateY(-8px) rotate(1.2deg);
-  }
-}
-
 /* ---------- buttons ---------- */
 
 .story-button {
@@ -637,7 +613,12 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .character-art,
+  .sara-art,
+  .sara-wave,
+  .sara-eyes,
+  .sara-art--talking .sara-mouth,
+  .lesson-fire::after,
+  .sweep-handle::after,
   .cloud-layer,
   .dialogue::before,
   .dialogue::after {
@@ -1046,15 +1027,6 @@ body {
   font-weight: 500;
 }
 
-.deck-holder {
-  position: absolute;
-  left: 800px;
-  top: 652px;
-  width: 320px;
-  pointer-events: none;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
-}
-
 .deck-source {
   margin-top: 16px;
 }
@@ -1454,53 +1426,6 @@ body {
   fill: #151923;
 }
 
-/* ================= the map tour ================= */
-
-.map--touring {
-  cursor: pointer;
-}
-
-.map--touring .map-surface {
-  cursor: pointer;
-}
-
-/* Glides between tour stops; off while dragging so the map follows the hand. */
-.map-image--gliding {
-  transition: transform 900ms var(--ease);
-}
-
-.map-ring {
-  position: absolute;
-  left: 960px;
-  width: 360px;
-  height: 360px;
-  translate: -50% -50%;
-  border: 4px solid var(--text);
-  border-radius: 50%;
-  pointer-events: none;
-  animation: ring-in 600ms 700ms var(--ease) both;
-}
-
-@keyframes ring-in {
-  from {
-    opacity: 0;
-    scale: 1.2;
-  }
-}
-
-.map-skip {
-  position: absolute;
-  top: 44px;
-  right: 128px;
-  padding: 4px 16px;
-  color: var(--text-2);
-  background: var(--chip);
-}
-
-.map-skip:hover {
-  color: var(--text);
-}
-
 .map-group {
   margin: 0 0 12px;
   font-size: 20px;
@@ -1512,12 +1437,545 @@ body {
   margin-top: 16px;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .map-image--gliding {
-    transition: none;
-  }
 
-  .map-ring {
-    animation: none;
+/* ================= Sara ================= */
+
+/* Placed and scaled by the component; drawn in a 260×450 box. */
+.sara {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+/* She is in orbit: a slow weightless drift. */
+.sara-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+  animation: weightless 7s ease-in-out infinite alternate;
+}
+
+@keyframes weightless {
+  from {
+    transform: translateY(4px) rotate(-1.2deg);
+  }
+  to {
+    transform: translateY(-8px) rotate(1.2deg);
+  }
+}
+
+.sara-art rect,
+.sara-art circle,
+.sara-art ellipse {
+  stroke: #1b2233;
+  stroke-width: 5;
+  stroke-linejoin: round;
+}
+
+.sara-suit {
+  fill: #f4f5f7;
+}
+
+.sara-trim,
+.sara-glove {
+  fill: #d9dce3;
+}
+
+/* The pack and the chest stripe take the chapter's colour. */
+.sara-pack,
+.sara-stripe {
+  fill: var(--accent);
+}
+
+.sara-art .sara-stripe,
+.sara-art .sara-light,
+.sara-art .sara-eyes circle {
+  stroke: none;
+}
+
+.sara-light {
+  fill: #1b2233;
+}
+
+.sara-visor {
+  fill: #10131c;
+}
+
+.sara-shine {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 9;
+  stroke-linecap: round;
+  opacity: 0.85;
+}
+
+/* Arms, head and body turn smoothly from one pose to the next. */
+.sara-part {
+  transition: transform 600ms var(--ease);
+}
+
+.sara-wave {
+  animation: sara-wave 480ms ease-in-out infinite alternate;
+}
+
+@keyframes sara-wave {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(13deg);
+  }
+}
+
+.sara-eyes {
+  fill: var(--text);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: sara-blink 5s infinite;
+}
+
+.sara-eyes--wide {
+  animation: none;
+  transform: scale(1.25);
+}
+
+@keyframes sara-blink {
+  0%,
+  94%,
+  100% {
+    transform: scaleY(1);
+  }
+  97% {
+    transform: scaleY(0.1);
+  }
+}
+
+.sara-mouth {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 5;
+  stroke-linecap: round;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.sara-mouth--open {
+  fill: var(--text);
+  stroke: none;
+}
+
+.sara-art--talking .sara-mouth {
+  animation: sara-talk 170ms ease-in-out infinite alternate;
+}
+
+@keyframes sara-talk {
+  to {
+    transform: scaleY(0.3);
+  }
+}
+
+/* What she is pointing at. */
+.sara-target {
+  position: absolute;
+  translate: -50% -50%;
+  border: 4px solid var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* With no Sara beside it, the line is centred in the box. */
+.ui--plain .dialogue {
+  padding: 0 144px;
+}
+
+/* ================= where you are ================= */
+
+.nav {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.nav-back {
+  position: absolute;
+  left: 112px;
+  bottom: 12px;
+  padding: 8px 20px 8px 12px;
+  font-size: 24px;
+  color: var(--text-2);
+  background: var(--chip);
+  border-radius: 12px;
+  pointer-events: auto;
+  transition: color 150ms var(--ease);
+}
+
+.nav-back:hover {
+  color: var(--text);
+}
+
+.nav-back:hover svg {
+  translate: -4px 0;
+}
+
+/* A tab on the top edge of the dialogue box. */
+.nav-progress {
+  position: absolute;
+  left: 50%;
+  top: 664px;
+  translate: -50% 0;
+  height: 44px;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: var(--panel);
+  border-radius: 12px 12px 0 0;
+}
+
+.nav-track {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--hairline);
+  transition: background-color 300ms var(--ease);
+}
+
+.nav-dot[data-state='done'] {
+  background: var(--text-2);
+}
+
+.nav-dot[data-state='here'] {
+  background: var(--accent);
+}
+
+/* A whole chapter, drawn as one bar: read, to come, or not built yet. */
+.nav-bar {
+  width: 40px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--hairline);
+}
+
+.nav-bar[data-state='done'] {
+  background: var(--text-2);
+}
+
+.nav-bar[data-state='unbuilt'] {
+  background: repeating-linear-gradient(to right, var(--text-2) 0 6px, transparent 6px 12px);
+  opacity: 0.6;
+}
+
+/* ================= things the visitor does ================= */
+
+/* Catches the drag across the whole frame while the radar is theirs to move. */
+.sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: ew-resize;
+}
+
+.sweep-handle {
+  position: absolute;
+  left: -40px;
+  top: 500px;
+  width: 80px;
+  height: 80px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  color: var(--ink-1);
+  background: var(--accent);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: ew-resize;
+}
+
+.sweep-handle svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* A ring that opens outward three times, then rests: this is yours to move. */
+.sweep-handle::after,
+.lesson-fire::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--accent);
+  border-radius: inherit;
+  opacity: 0;
+  animation: beckon 1.4s var(--ease) 3;
+}
+
+@keyframes beckon {
+  from {
+    opacity: 1;
+  }
+  to {
+    scale: 1.7;
+    opacity: 0;
+  }
+}
+
+.sweep-handle:focus-visible,
+.lesson-fire:focus-visible,
+.choice-option:focus-visible {
+  outline: 4px solid var(--text);
+  outline-offset: 4px;
+}
+
+.sweep-prompt {
+  position: absolute;
+  left: 64px;
+  top: 516px;
+  margin: 0;
+  padding: 8px 20px;
+  font-size: 28px;
+  line-height: 32px;
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--text);
+  background: var(--chip);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+.lesson-wave {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 7;
+  stroke-linecap: round;
+}
+
+.lesson-trail {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.lesson-trail--soft {
+  stroke-dasharray: 14 12;
+}
+
+/* What comes back, or leaves, is weaker than what went down. */
+.lesson-wave--soft {
+  stroke-width: 4;
+  opacity: 0.7;
+}
+
+/* Under the satellite's dish. */
+.lesson-fire {
+  position: absolute;
+  left: 362px;
+  top: 252px;
+  translate: -50% 0;
+  height: 64px;
+  padding: 0 36px;
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 500;
+  color: var(--ink-1);
+  background: var(--accent);
+  border: 0;
+  border-radius: 32px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+}
+
+.lesson-fire:active {
+  scale: 0.97;
+}
+
+.choice {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 572px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  cursor: default;
+}
+
+.choice-option {
+  min-width: 220px;
+  height: 80px;
+  padding: 0 40px;
+  font: inherit;
+  font-size: 32px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+  background: var(--chip);
+  border: 0;
+  border-radius: 16px;
+  /* Equal choices stay neutral; the accent appears only under the pointer. */
+  box-shadow: inset 0 0 0 1px rgba(238, 240, 245, 0.28);
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    background-color 150ms var(--ease),
+    opacity 150ms var(--ease);
+}
+
+.choice-option:hover:enabled {
+  color: var(--ink-1);
+  background: var(--accent);
+}
+
+.choice-option[data-state='right'] {
+  color: var(--ink-1);
+  background: var(--text);
+  box-shadow: none;
+}
+
+.choice-option[data-state='wrong'] {
+  text-decoration: line-through;
+  color: var(--text-2);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+.choice-option[data-state='other'] {
+  opacity: 0.4;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+
+/* Ten places the radar flagged; the lit ones were flooded in the reference map. */
+.fact-dots {
+  margin: 20px 0 0;
+  display: flex;
+  gap: 12px;
+}
+
+.fact-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px var(--text-2);
+}
+
+.fact-dot--lit {
+  background: #3fe0f0;
+  box-shadow: none;
+}
+
+/* ================= the radar map as a backdrop ================= */
+
+/* A window above the dialogue box; the map zooms inside it. */
+.mapdrop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 700px;
+  overflow: hidden;
+}
+
+.mapdrop-image {
+  position: absolute;
+  object-fit: contain;
+  transition: transform 900ms var(--ease);
+}
+
+/* Above the zoom buttons. */
+.map-continue {
+  position: absolute;
+  right: 112px;
+  bottom: 120px;
+}
+
+/* ================= the closing card ================= */
+
+.end-card-doors {
+  display: flex;
+  gap: 24px;
+}
+
+.end-card-restart {
+  margin-top: 40px;
+  padding: 8px 16px;
+  color: var(--text-2);
+}
+
+.end-card-restart:hover {
+  color: var(--text);
+}
+
+/* ================= each chapter's look ================= */
+
+/* Chapter 1 keeps the coral accent and the bare photographs. */
+
+/* Chapter 2 is the instrument: amber, and corner brackets round the frame. */
+.stage[data-chapter='2'] {
+  --accent: #f4b740;
+}
+
+.stage[data-chapter='2'] .dialogue::before,
+.stage[data-chapter='2'] .dialogue::after {
+  background: var(--accent);
+}
+
+.hud-frame {
+  position: absolute;
+  inset: 12px;
+  display: none;
+  pointer-events: none;
+}
+
+.stage[data-chapter='2'] .hud-frame {
+  display: block;
+}
+
+.hud-frame span {
+  position: absolute;
+  width: 44px;
+  height: 44px;
+  border: 0 solid var(--accent);
+}
+
+.hud-frame span:nth-child(1) {
+  left: 0;
+  top: 0;
+  border-width: 2px 0 0 2px;
+}
+
+.hud-frame span:nth-child(2) {
+  right: 0;
+  top: 0;
+  border-width: 2px 2px 0 0;
+}
+
+.hud-frame span:nth-child(3) {
+  left: 0;
+  bottom: 0;
+  border-width: 0 0 2px 2px;
+}
+
+.hud-frame span:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-width: 0 2px 2px 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sara-part,
+  .mapdrop-image {
+    transition: none;
   }
 }

@@ -33,26 +33,9 @@ export const researchFiles: ResearchFile[] = [
     teaser: { en: 'Six years of radar over the Terai lowlands', ko: '테라이 저지대를 6년간 본 레이더' },
     lines: [
       {
-        en: 'This file takes us to the Terai region, a lowland area in southern Nepal.',
-        ko: '이 파일은 네팔 남부의 저지대, 테라이 지역으로 우리를 데려가요.',
-      },
-      {
-        en: 'During the rainy season, rivers can overflow and water can spread into nearby communities and farmland.',
-        ko: '우기가 되면 강이 넘쳐서 물이 가까운 마을과 농경지로 퍼지곤 해요.',
-      },
-      {
-        en: 'To understand what happened, researchers need to know where water went and how the affected area changed over time.',
-        ko: '무슨 일이 있었는지 알려면, 물이 어디로 갔고 피해 지역이 시간에 따라 어떻게 달라졌는지 알아야 해요.',
-      },
-      {
         en: 'In one study, researchers compared radar images collected between 2019 and 2024.',
         ko: '한 연구에서는 2019년부터 2024년 사이에 찍은 레이더 영상을 비교했어요.',
       },
-      {
-        en: 'Instead of looking at just one moment, they examined observations from different years to study flooding across the region.',
-        ko: '한순간만 본 게 아니라, 여러 해의 관측을 살펴서 지역 전체의 홍수를 연구했어요.',
-      },
-      { en: 'Think of it like keeping a record of the same place.', ko: '같은 장소를 꾸준히 기록해 두는 것과 비슷해요.' },
       {
         en: 'One image shows where water was on a particular day, but comparing them can help reveal a larger pattern.',
         ko: '영상 한 장은 그날 물이 어디 있었는지만 보여 주지만, 여러 장을 비교하면 더 큰 흐름이 드러나요.',
@@ -95,31 +78,10 @@ export const researchFiles: ResearchFile[] = [
     title: { en: 'Seeing through the clouds', ko: '구름을 뚫고 보기' },
     teaser: { en: 'Why radar works when a camera cannot', ko: '카메라가 못 볼 때 레이더가 보는 이유' },
     lines: [
-      {
-        en: 'When you picture a satellite image, you might imagine a photograph taken from space.',
-        ko: '위성 영상이라고 하면 우주에서 찍은 사진을 떠올릴 거예요.',
-      },
-      {
-        en: 'But a camera can only show us the ground when it has a clear enough view.',
-        ko: '하지만 카메라는 시야가 충분히 트여 있을 때만 땅을 보여 줄 수 있어요.',
-      },
-      {
-        en: 'That can be a problem during a flood. The same storm that brings heavy rain can also cover the area in clouds, hiding what’s happening below.',
-        ko: '홍수 때는 그게 문제가 돼요. 큰비를 몰고 온 바로 그 폭풍이 구름으로 땅을 덮어서, 아래에서 벌어지는 일을 가려 버리거든요.',
-      },
       { en: 'SAR gives us another way to observe Earth.', ko: 'SAR는 지구를 보는 또 다른 방법이에요.' },
       {
         en: 'Instead of relying on sunlight, it sends radar signals toward the ground and measures the signals that return.',
         ko: '햇빛에 기대지 않고, 땅을 향해 레이더 신호를 보낸 다음 돌아오는 신호를 재요.',
-      },
-      { en: 'Different surfaces reflect those signals differently.', ko: '표면마다 그 신호를 반사하는 방식이 달라요.' },
-      {
-        en: 'Researchers can study those differences and compare observations from before and after a flood to look for areas where water may have spread.',
-        ko: '연구자들은 그 차이를 살피고 홍수 전후의 관측을 비교해서, 물이 퍼졌을 만한 곳을 찾아요.',
-      },
-      {
-        en: 'It’s not quite the same as taking a photograph, but it gives us information we might otherwise miss.',
-        ko: '사진을 찍는 것과 똑같지는 않지만, 놓쳤을지도 모를 정보를 알려 줘요.',
       },
     ],
     body: [
@@ -165,35 +127,10 @@ export const researchFiles: ResearchFile[] = [
     title: { en: 'The blind spots', ko: '사각지대' },
     teaser: { en: 'What a flood map can miss', ko: '홍수 지도가 놓칠 수 있는 것' },
     lines: [
-      {
-        en: 'From up here, a satellite can observe a large area at once.',
-        ko: '이 위에서는 위성이 넓은 지역을 한꺼번에 볼 수 있어요.',
-      },
-      {
-        en: 'That makes it useful during a flood, but a wide view doesn’t always mean a complete one.',
-        ko: '홍수 때 큰 도움이 되지만, 넓게 본다고 해서 다 보는 건 아니에요.',
-      },
-      {
-        en: 'In a city, buildings can block radar signals or cause them to bounce in complicated ways.',
-        ko: '도시에서는 건물이 레이더 신호를 막거나 복잡하게 튕겨 내요.',
-      },
-      {
-        en: 'Trees and other plants can also make it harder to tell whether water is underneath.',
-        ko: '나무와 풀도 그 아래에 물이 있는지 알아보기 어렵게 만들어요.',
-      },
-      { en: 'There’s another thing to keep in mind.', ko: '기억해 둘 게 하나 더 있어요.' },
       { en: 'A satellite image is a record of one moment.', ko: '위성 영상은 한순간의 기록이에요.' },
-      {
-        en: 'If it passes before the water reaches its highest point, or after some of the water has drained away, it may not show the full extent of the flood.',
-        ko: '물이 가장 높이 차오르기 전에 지나가거나 물이 어느 정도 빠진 뒤에 지나가면, 홍수의 전체 범위를 담지 못할 수 있어요.',
-      },
       {
         en: 'So when you look at a flood map, remember that it’s evidence, not a perfect view of everything on the ground.',
         ko: '그러니 홍수 지도를 볼 때는 그게 증거일 뿐, 땅 위의 모든 것을 완벽하게 보여 주는 건 아니라는 걸 기억하세요.',
-      },
-      {
-        en: 'The more carefully we compare it with other information, the better we can understand what really happened.',
-        ko: '다른 정보와 꼼꼼히 비교할수록 실제로 무슨 일이 있었는지 더 잘 알 수 있어요.',
       },
     ],
     body: [

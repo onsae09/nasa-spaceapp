@@ -188,13 +188,22 @@ export const panels: Record<PanelKey, PanelAsset> = {
 }
 
 /** Figures shown large beside the dialogue, always with where they come from. */
-export const facts: Record<FactKey, { rows: { figure: string; label: L }[]; source: L }> = {
+export const facts: Record<
+  FactKey,
+  { rows: { figure: string; label: L }[]; source: L; dots?: { total: number; lit: number } }
+> = {
   nepalToll: {
     rows: [
       { figure: '1,455', label: { en: 'confirmed dead', ko: '확인된 사망' } },
       { figure: '5,285', label: { en: 'still missing', ko: '아직 실종' } },
     ],
     source: { en: 'Nepal · NDRRMA, 5 Oct 2026', ko: '네팔 재난관리청(NDRRMA) · 2026년 10월 5일' },
+  },
+  // Precision at the chosen cut-off, 10.4% (see src/content/analysis.ts).
+  oneInTen: {
+    rows: [{ figure: '1 / 10', label: { en: 'flagged places were flooded', ko: '짚은 곳 중 실제로 잠긴 곳' } }],
+    dots: { total: 10, lit: 1 },
+    source: { en: 'Reference map: Zenodo record 4390084', ko: '기준 지도: Zenodo 4390084' },
   },
 }
 

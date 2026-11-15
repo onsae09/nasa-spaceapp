@@ -1,18 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { analysis, type LayerKey, type TourStop } from '../content/analysis'
+import { analysis, type LayerKey } from '../content/analysis'
+import { ui } from '../content/ui'
 import { useResolved } from '../i18n'
 import { STAGE_WIDTH } from './Stage'
 import { CloseIcon, FitIcon, MinusIcon, PlusIcon } from './icons'
-import { Speech } from './Speech'
-import { useSpeech } from './useSpeech'
 
 /** Size of the map at rest, in stage pixels, and where its centre sits. */
 const BASE_WIDTH = 1700
 const BASE_HEIGHT = (BASE_WIDTH * analysis.size.height) / analysis.size.width
 const CENTRE = { x: STAGE_WIDTH / 2, y: 510 }
-
-/** During the tour the dialogue box covers the bottom, so the map sits higher. */
-const TOUR_LIFT = -150
 
 const MAX_ZOOM = 6
 const STEP = 1.5
@@ -33,54 +29,19 @@ function settle(view: View): View {
   }
 }
 
-/** The view that puts a tour stop's focus point in the middle of the visible map. */
-function frame(focus: TourStop['focus']): View {
-  if (!focus) return { x: 0, y: TOUR_LIFT, zoom: 1 }
-  const scale = BASE_WIDTH / analysis.size.width
-  const px = (focus.x - analysis.size.width / 2) * scale
-  const py = (focus.y - analysis.size.height / 2) * scale
-  return { zoom: focus.zoom, x: -px * focus.zoom, y: -py * focus.zoom + TOUR_LIFT }
-}
-
 /**
- * The radar change map, full screen. It opens with a short tour, in which the
- * astronaut points out what the picture shows and what the team found. After
- * that it is free to explore: scroll or use the buttons to zoom, drag to
- * move, and switch between the two radar channels in place.
+ * The radar change map, full screen, free to explore: scroll or use the
+ * buttons to zoom, drag to move, and switch between the two radar channels
+ * in place. The story has already walked through what it shows.
  */
-export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => void }) {
+export function MapViewer({ onClose }: { onClose: () => void }) {
   const text = useResolved(analysis)
+  const words = useResolved(ui)
   const root = useRef<HTMLDivElement>(null)
   const [layer, setLayer] = useState<LayerKey>('vh')
-  const [view, setView] = useState<View>(() => frame(analysis.tour[0].focus))
+  const [view, setView] = useState<View>(HOME)
   const [explored, setExplored] = useState(false)
   const drag = useRef<{ x: number; y: number } | null>(null)
-
-  // The tour: `stop` is the step being shown, or null once it is over.
-  const [stop, setStop] = useState<number | null>(0)
-  const touring = stop != null
-  const current = touring ? text.tour[stop] : null
-  const typing = useSpeech(`tour-${stop}`, current?.line ?? '', 'normal', touring, tick)
-  // The map glides between tour stops, but must follow the hand at once when dragged.
-  const [gliding, setGliding] = useState(true)
-
-  useEffect(() => {
-    setGliding(true)
-    if (stop != null) {
-      setView(frame(analysis.tour[stop].focus))
-      return
-    }
-    setView(HOME)
-    const id = setTimeout(() => setGliding(false), 800)
-    return () => clearTimeout(id)
-  }, [stop])
-
-  // First press finishes the line that is still typing; the next one moves on.
-  const advance = useCallback(() => {
-    if (stop == null) return
-    if (!typing.done) typing.finish()
-    else setStop(stop + 1 < analysis.tour.length ? stop + 1 : null)
-  }, [stop, typing.done, typing.finish])
 
   /** A point on screen, in stage pixels measured from the map's resting centre. */
   const toStage = useCallback((clientX: number, clientY: number) => {
@@ -106,7 +67,7 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
   // The wheel listener has to be non-passive to stop the page from scrolling.
   useEffect(() => {
     const el = root.current
-    if (!el || touring) return
+    if (!el) return
     const onWheel = (e: WheelEvent) => {
       e.preventDefault()
       const p = toStage(e.clientX, e.clientY)
@@ -114,17 +75,12 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
     }
     el.addEventListener('wheel', onWheel, { passive: false })
     return () => el.removeEventListener('wheel', onWheel)
-  }, [touring, toStage, zoomAt])
+  }, [toStage, zoomAt])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
-      else if (touring) {
-        if (!['Enter', ' ', 'ArrowRight'].includes(e.key)) return
-        // A focused button handles Enter and Space itself.
-        if (e.target instanceof HTMLButtonElement && e.key !== 'ArrowRight') return
-        advance()
-      } else {
+      else {
         const pan = (dx: number, dy: number) => setView((v) => settle({ ...v, x: v.x + dx, y: v.y + dy }))
         if (e.key === '+' || e.key === '=') zoomAt(STEP)
         else if (e.key === '-') zoomAt(1 / STEP)
@@ -139,23 +95,19 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [touring, advance, onClose, zoomAt])
+  }, [onClose, zoomAt])
 
   const active = text.layers[layer]
 
   return (
     <div
       ref={root}
-      className={touring ? 'map map--touring' : 'map'}
-      onClick={(e) => {
-        e.stopPropagation()
-        advance()
-      }}
+      className="map"
+      onClick={(e) => e.stopPropagation()}
     >
       <div
         className="map-surface"
         onPointerDown={(e) => {
-          if (touring) return
           e.currentTarget.setPointerCapture(e.pointerId)
           drag.current = { x: e.clientX, y: e.clientY }
         }}
@@ -171,13 +123,12 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
         onPointerUp={() => (drag.current = null)}
         onPointerCancel={() => (drag.current = null)}
         onDoubleClick={(e) => {
-          if (touring) return
           const p = toStage(e.clientX, e.clientY)
           zoomAt(STEP, p.x, p.y)
         }}
       >
         <div
-          className={gliding ? 'map-image map-image--gliding' : 'map-image'}
+          className="map-image"
           style={{
             left: CENTRE.x - BASE_WIDTH / 2,
             top: CENTRE.y - BASE_HEIGHT / 2,
@@ -211,23 +162,6 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
         <CloseIcon />
       </button>
 
-      {touring ? (
-        <>
-          {current?.ring && <div className="map-ring" style={{ top: CENTRE.y + TOUR_LIFT }} />}
-          <button
-            type="button"
-            className="text-button map-skip"
-            onClick={(e) => {
-              e.stopPropagation()
-              setStop(null)
-            }}
-          >
-            {text.labels.skip}
-          </button>
-          <Speech text={current?.line ?? null} count={typing.count} done={typing.done} showHint />
-        </>
-      ) : (
-        <>
           <header className="map-head">
             <h2 className="overlay-title">{text.title}</h2>
             <p className="stamp">
@@ -304,8 +238,9 @@ export function MapViewer({ onClose, tick }: { onClose: () => void; tick: () => 
               <FitIcon />
             </button>
           </div>
-        </>
-      )}
+      <button type="button" className="story-button map-continue" onClick={onClose}>
+        {words.continue}
+      </button>
     </div>
   )
 }

@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { character } from '../assets'
 import { deck, solutions } from '../content/solutions'
 import { ui } from '../content/ui'
 import { useResolved } from '../i18n'
@@ -13,9 +12,8 @@ const SPREAD = 11
 const pad = (n: number) => String(n + 1).padStart(2, '0')
 
 /**
- * The astronaut holds the solution cards face down. Choosing one lifts it to
- * the middle of the screen and turns it over. Cards already read stay face
- * up in her hand.
+ * The solution cards, fanned out face down. Choosing one lifts it to the
+ * middle of the screen and turns it over. Cards already read stay face up.
  */
 export function SolutionDeck({ onClose }: { onClose: () => void }) {
   const cards = useResolved(solutions)
@@ -74,9 +72,6 @@ export function SolutionDeck({ onClose }: { onClose: () => void }) {
           </button>
         ))}
       </div>
-
-      {/* PLACEHOLDER pose: the final illustration shows her holding the cards. */}
-      <img className="deck-holder" src={character.src} alt="" draggable={false} />
 
       <button type="button" className="story-button story-button--corner" onClick={onClose}>
         {words.continue}

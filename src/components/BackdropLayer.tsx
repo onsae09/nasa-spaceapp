@@ -3,18 +3,21 @@ import { AnimatePresence, motion } from 'motion/react'
 import { backdrops, type PhotoKey } from '../assets'
 import { useResolved } from '../i18n'
 import { EASE } from '../motion'
-import type { Backdrop, CameraShot, LessonStep } from '../story/types'
-import { RadarLesson } from './RadarLesson'
+import type { Backdrop, CameraShot, LessonStep, MapLook } from '../story/types'
+import { MapBackdrop } from './MapBackdrop'
+import { RadarLesson, type Pulse } from './RadarLesson'
 import { SpaceScene } from './SpaceScene'
 import { Triptych } from './Triptych'
 
 const keyOf = (b: Backdrop) => (b.kind === 'image' ? b.key : `triptych:${b.keys.join(',')}`)
 
 /** The background. A new one fades in on top of the old one. */
-export function BackdropLayer({ backdrop, camera, lesson }: {
+export function BackdropLayer({ backdrop, camera, lesson, look, pulse }: {
   backdrop: Backdrop | null
   camera: CameraShot
   lesson: LessonStep
+  look: MapLook
+  pulse: Pulse
 }) {
   // Count every change, so that returning to a backdrop mounts a fresh layer
   // on top. Reusing the key would revive the old layer where it was, under
@@ -43,7 +46,9 @@ export function BackdropLayer({ backdrop, camera, lesson }: {
           ) : backdrop.key === 'space' ? (
             <SpaceScene camera={camera} />
           ) : backdrop.key === 'radarLesson' ? (
-            <RadarLesson step={lesson} />
+            <RadarLesson step={lesson} pulse={pulse} />
+          ) : backdrop.key === 'amphanSwath' ? (
+            <MapBackdrop look={look} />
           ) : (
             <PhotoBackdrop id={backdrop.key} />
           )}
@@ -53,7 +58,7 @@ export function BackdropLayer({ backdrop, camera, lesson }: {
   )
 }
 
-function PhotoBackdrop({ id }: { id: PhotoKey }) {
+function PhotoBackdrop({ id }: { id: Exclude<PhotoKey, 'amphanSwath'> }) {
   const { src, alt, stamp, position, drift, fit } = useResolved(backdrops[id])
   return (
     <>

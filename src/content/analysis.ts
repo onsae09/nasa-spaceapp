@@ -1,7 +1,8 @@
 import type { L } from '../i18n'
 
 /**
- * The team's radar analysis, as shown in the map viewer and its guided tour.
+ * The team's radar analysis, as shown in the map viewer. The story walks
+ * through it first (src/story/chapter2.ts) and uses the same figures.
  * Numbers come from data/amphan/REPORT.md and its JSON outputs; change them
  * there first, then here.
  *
@@ -14,15 +15,6 @@ import type { L } from '../i18n'
 const url = (path: string) => `${import.meta.env.BASE_URL}assets/${path}`
 
 export type LayerKey = 'vh' | 'vv'
-
-/** Where the map looks during one step of the tour, and what is said. */
-export type TourStop = {
-  /** A point in the image (pixels of the 1570×639 picture) to centre on, or null for the whole strip. */
-  focus: { x: number; y: number; zoom: number } | null
-  /** Draw a ring around the focus point. */
-  ring?: boolean
-  line: L
-}
 
 export const analysis = {
   title: { en: 'How the radar echo changed', ko: '레이더 메아리는 어떻게 변했을까' } satisfies L,
@@ -98,62 +90,7 @@ export const analysis = {
     { en: 'Reference map: Zenodo record 4390084', ko: '기준 지도: Zenodo 4390084' },
   ] satisfies L[],
 
-  /** The astronaut walks through the map before handing it over. */
-  tour: [
-    {
-      focus: null,
-      line: {
-        en: 'This slanted strip is the part of southwestern Bangladesh that both radar passes covered.',
-        ko: '이 비스듬한 띠가 두 번의 레이더 촬영이 모두 지나간 방글라데시 남서부 땅이에요.',
-      },
-    },
-    {
-      focus: null,
-      line: {
-        en: 'The blue and red grain is mostly radar speckle: the echo flickers a little even where nothing changed.',
-        ko: '파랗고 붉은 알갱이는 대부분 레이더 특유의 잡음이에요. 아무 변화가 없는 곳에서도 메아리는 조금씩 흔들려요.',
-      },
-    },
-    {
-      focus: { x: 549, y: 364, zoom: 3 },
-      ring: true,
-      line: {
-        en: 'The cyan patches are land that another research team mapped as newly flooded.',
-        ko: '청록색 얼룩은 다른 연구팀이 새로 물에 잠겼다고 표시한 땅이에요.',
-      },
-    },
-    {
-      focus: { x: 549, y: 364, zoom: 3 },
-      line: {
-        en: 'We asked a simple question: can the change in the radar echo alone point to those places?',
-        ko: '우리가 물은 건 단순해요. 레이더 메아리의 변화만으로 저 자리를 짚어 낼 수 있을까요?',
-      },
-    },
-    {
-      focus: null,
-      line: {
-        en: 'Mostly, yes. Take one flooded spot and one that is not, and the radar ranks the flooded one higher about 88 times out of 100.',
-        ko: '대체로 그래요. 잠긴 곳과 안 잠긴 곳을 하나씩 뽑으면, 100번 중 88번쯤은 레이더가 잠긴 쪽을 더 높게 짚어요.',
-      },
-    },
-    {
-      focus: null,
-      line: {
-        en: 'But it is far from perfect. With one fixed cut-off, only about 1 in 10 of the places it flagged were flooded in the reference map.',
-        ko: '하지만 완벽과는 거리가 멀어요. 기준선 하나로 가르면, 레이더가 짚은 곳 10곳 중 1곳 정도만 기준 지도에서 잠긴 곳이었어요.',
-      },
-    },
-    {
-      focus: null,
-      line: {
-        en: 'Now look around for yourself. Scroll to zoom, drag to move, and try the other channel.',
-        ko: '이제 직접 둘러보세요. 스크롤로 확대하고, 끌어서 움직이고, 다른 채널도 눌러 보세요.',
-      },
-    },
-  ] satisfies TourStop[],
-
   labels: {
-    skip: { en: 'Skip the tour', ko: '안내 건너뛰기' },
     hint: { en: 'Scroll to zoom · drag to move', ko: '스크롤로 확대 · 끌어서 이동' },
     close: { en: 'Close the map', ko: '지도 닫기' },
     zoomIn: { en: 'Zoom in', ko: '확대' },

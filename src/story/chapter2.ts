@@ -1,143 +1,159 @@
+import { chapterTitles } from './titles'
 import type { ScriptScene } from './script'
 
+const same = (text: string) => ({ en: text, ko: text })
+
 /**
- * Chapter 2 – Observation.
- * How radar sees water, the team's radar analysis, the solution cards, and
- * the research files. Edit lines and their order here; see ./types.ts for
- * what each step does. Every line needs both languages.
+ * Chapter 2 – Your turn at the radar.
+ * The visitor fires the radar at dry ground and at water, guesses what comes
+ * back, then reads the team's Cyclone Amphan change map and guesses how far
+ * to trust it. Every figure is from src/content/analysis.ts.
+ *
+ * Edit lines and their order here; see ./types.ts for what each step does.
+ * Every line needs both languages and at most 12 English words.
  */
 export const chapter2: ScriptScene[] = [
   {
-    id: 'observation',
+    id: 'echo',
+    chapter: 2,
     steps: [
       { ui: false },
       { music: 'ambience' },
       { bg: 'space' },
       { camera: 'earth' },
-      { chapter: { number: 2, title: { en: 'Observation', ko: '관측' } } },
-      { wait: 2600 },
+      { chapter: { number: 2, title: chapterTitles[2] } },
+      { wait: 1600 },
       { chapter: null },
-      { bg: 'amphanSwath' },
-      { ui: true },
-      { say: { en: "Here's what we found from above.", ko: '위에서 찾아낸 걸 보여 드릴게요.' } },
-      // Added to the plan's lines: chapter 1 was in Nepal, so say where this is.
-      {
-        say: {
-          en: 'This is southwestern Bangladesh in May 2020. Cyclone Amphan came ashore between these two radar passes.',
-          ko: '여기는 2020년 5월의 방글라데시 남서부예요. 두 번의 레이더 촬영 사이에 사이클론 암판이 상륙했어요.',
-        },
-      },
-      {
-        say: {
-          en: 'These observations show the area before and after the flood.',
-          ko: '이 관측 자료는 홍수 전과 후의 모습을 보여 줘요.',
-        },
-      },
-      {
-        say: {
-          en: 'They use something called SAR: a kind of radar that can observe Earth through clouds, day or night.',
-          ko: '여기에 쓰인 건 SAR라는 레이더예요. 낮이든 밤이든 구름을 뚫고 지구를 볼 수 있어요.',
-        },
-      },
-
-      // Added: how to read a radar image, before showing one to explore.
       { bg: 'radarLesson' },
       { lesson: 'send' },
+      { ui: true },
+      { sara: { show: true, pose: 'idle', point: 'satellite' } },
       {
         say: {
-          en: 'A radar satellite does not wait for sunlight. It sends its own signal down and listens for the echo.',
-          ko: '레이더 위성은 햇빛을 기다리지 않아요. 직접 신호를 쏘고, 돌아오는 메아리를 들어요.',
+          en: 'This is your radar. It makes its own light.',
+          ko: '이게 당신의 레이더예요. 스스로 빛을 쏴요.',
         },
       },
+      { sara: { point: 'ground' } },
+      { do: 'pulse', say: { en: 'Fire a pulse at dry ground.', ko: '마른 땅에 신호를 쏴 보세요.' } },
       { lesson: 'dry' },
+      { sara: { point: 'tile' } },
       {
         say: {
-          en: 'Dry, rough ground scatters the signal in every direction, so part of it comes back. The radar sees that as bright.',
-          ko: '마르고 울퉁불퉁한 땅은 신호를 사방으로 흩뜨려서 일부가 되돌아와요. 레이더에는 밝게 보여요.',
+          en: 'Rough ground scatters it. Part comes back. You see bright.',
+          ko: '거친 땅은 신호를 흩뜨려요. 일부가 돌아와 밝게 보여요.',
         },
       },
+      { lesson: 'flood' },
+      { sara: { pose: 'think', point: null } },
+      {
+        do: 'choice',
+        say: { en: 'Now the field floods. What will you see?', ko: '이제 들판이 물에 잠겨요. 어떻게 보일까요?' },
+        options: [
+          { en: 'Brighter', ko: '더 밝게' },
+          { en: 'Darker', ko: '더 어둡게' },
+        ],
+        answer: 1,
+      },
+      { sara: { pose: 'idle', point: 'ground' } },
+      { do: 'pulse', say: { en: 'Fire again.', ko: '다시 쏴 보세요.' } },
       { lesson: 'wet' },
+      { sara: { pose: 'alarm', point: null } },
       {
         say: {
-          en: 'Calm water works like a mirror and bounces the signal away. Almost nothing comes back, so it looks dark.',
-          ko: '잔잔한 물은 거울처럼 신호를 다른 쪽으로 튕겨 내요. 돌아오는 게 거의 없어서 어둡게 보여요.',
+          en: 'Nothing came home. Calm water is a mirror. Dark.',
+          ko: '아무것도 안 돌아와요. 잔잔한 물은 거울, 어두워요.',
         },
       },
       { lesson: 'compare' },
+      { sara: { pose: 'idle', point: 'tiles' } },
       {
-        say: {
-          en: 'So when a place turns darker between two passes, water may have arrived there.',
-          ko: '그래서 두 번의 촬영 사이에 어두워진 곳은 물이 들어찼을 가능성이 있어요.',
-        },
+        say: { en: 'So you hunt for ground that went dark.', ko: '그러니 어두워진 땅을 찾으면 돼요.' },
         pace: 'slow',
       },
-
+    ],
+  },
+  {
+    id: 'hunt',
+    chapter: 2,
+    steps: [
       { bg: 'amphanSwath' },
+      // Chapter 1 was in Nepal; say plainly that this map is somewhere else.
       {
         say: {
-          en: 'By comparing the two, we can look for places where water appears to have spread.',
-          ko: '이렇게 둘을 비교하면 물이 퍼진 것으로 보이는 곳을 찾을 수 있어요.',
+          en: 'No radar of that valley here yet. Try Bangladesh, May 2020.',
+          ko: '그 계곡의 레이더는 아직 없어요. 2020년 5월 방글라데시로 가요.',
         },
       },
+      { sara: { point: 'stamp' } },
       {
         say: {
-          en: 'You can always come back by pressing X on the top right.',
-          ko: '오른쪽 위의 X를 누르면 언제든 돌아올 수 있어요.',
+          en: 'Two passes, six days apart. Cyclone Amphan struck between them.',
+          ko: '엿새 간격의 두 번 촬영. 그 사이 사이클론 암판이 덮쳤어요.',
         },
-        button: { label: { en: 'Open the map', ko: '지도 열기' }, at: 'corner' },
+      },
+      { look: 'patch' },
+      { sara: { point: 'patch' } },
+      {
+        say: {
+          en: 'Cyan marks land another team mapped as newly flooded.',
+          ko: '청록색은 다른 연구팀이 새로 잠겼다고 표시한 땅이에요.',
+        },
+      },
+      { look: 'whole' },
+      { sara: { pose: 'present', point: null } },
+      {
+        say: {
+          en: 'One flooded spot, one not. Radar ranks them right 88 in 100.',
+          ko: '잠긴 곳 하나, 안 잠긴 곳 하나. 레이더는 100번 중 88번 맞혀요.',
+        },
+      },
+      // The honest limit, as a guess the visitor makes before seeing it.
+      { sara: { pose: 'think' } },
+      {
+        do: 'choice',
+        say: {
+          en: 'Now draw one cut-off. Of 10 places flagged, how many flooded?',
+          ko: '기준선을 하나 그어요. 짚은 10곳 중 몇 곳이 잠겼을까요?',
+        },
+        options: [same('9'), same('5'), same('1')],
+        answer: 2,
+      },
+      { fact: 'oneInTen' },
+      { sara: { pose: 'alarm' } },
+      {
+        say: {
+          en: 'About 1. The other nine were not flooded in the reference map.',
+          ko: '1곳쯤이에요. 나머지 아홉 곳은 기준 지도에서 잠기지 않았어요.',
+        },
+      },
+      { sara: { pose: 'idle' } },
+      {
+        say: {
+          en: 'And that reference map is Sentinel-1 too. A comparison, not proof.',
+          ko: '그 기준 지도도 Sentinel-1이에요. 증명이 아닌 비교예요.',
+        },
+      },
+      { fact: null },
+      { sara: { point: 'map' } },
+      {
+        say: {
+          en: 'Radar gives you a lead, not a verdict. Look closer.',
+          ko: '레이더는 단서를 줄 뿐 판결은 아니에요. 더 가까이 봐요.',
+        },
+        button: { label: { en: 'Explore the map', ko: '지도 살펴보기' }, at: 'corner' },
       },
       { open: 'map' },
-    ],
-  },
-  {
-    id: 'solutions',
-    steps: [
       { bg: 'space' },
       { camera: 'earth' },
-      { say: { en: 'Seeing the flood is just the first part.', ko: '홍수를 보는 건 시작일 뿐이에요.' } },
+      { sara: { pose: 'wave' } },
       {
         say: {
-          en: 'The next part is figuring out how to reduce the damage.',
-          ko: '다음은 피해를 어떻게 줄일지 찾는 일이에요.',
-        },
-        button: { label: { en: 'See the ideas', ko: '아이디어 보기' }, at: 'center' },
-      },
-      { open: 'cards' },
-      {
-        say: {
-          en: 'No single action can solve the problem, but together they can make a difference.',
-          ko: '한 가지 방법만으로는 해결할 수 없지만, 함께라면 달라질 수 있어요.',
+          en: 'Next time cloud hides a flood, you know where to look.',
+          ko: '다음에 구름이 홍수를 가리면, 어디를 볼지 알 거예요.',
         },
         pace: 'slow',
-        button: { label: { en: 'Continue', ko: '계속' }, at: 'corner' },
       },
-    ],
-  },
-  {
-    id: 'deeper-observations',
-    steps: [
-      { say: { en: "There's more to the story.", ko: '이야기는 여기서 끝이 아니에요.' } },
-      {
-        say: {
-          en: 'Researchers use satellite data to study when floods happen and how water moves across the land.',
-          ko: '연구자들은 위성 자료로 홍수가 언제 일어나고 물이 땅 위를 어떻게 움직이는지 연구해요.',
-        },
-      },
-      { say: { en: 'But every observation has limits.', ko: '하지만 모든 관측에는 한계가 있어요.' }, pace: 'slow' },
-      {
-        say: {
-          en: 'Buildings and plants can make floodwater hard to detect, and a satellite can only show us what it observed at a particular time.',
-          ko: '건물과 식물은 물을 알아보기 어렵게 만들고, 위성은 지나가는 그 순간에 본 것만 보여 줄 수 있어요.',
-        },
-      },
-      {
-        say: {
-          en: 'So we compare what we see with other information, and keep asking questions.',
-          ko: '그래서 우리는 본 것을 다른 정보와 비교하고, 계속 질문해요.',
-        },
-        button: { label: { en: 'Open the files', ko: '파일 열기' }, at: 'center' },
-      },
-      { open: 'files' },
     ],
   },
 ]

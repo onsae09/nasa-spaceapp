@@ -1,51 +1,94 @@
-import { useEffect, useRef } from 'react'
-import { AnimatePresence, motion } from 'motion/react'
+import { useCallback, useEffect, useRef } from 'react'
+import { AnimatePresence, animate, motion, useMotionValue, useTransform } from 'motion/react'
 import { ui } from '../content/ui'
 import { useResolved } from '../i18n'
 import { EASE } from '../motion'
 import type { Cover } from '../story/types'
+import { STAGE_WIDTH } from './Stage'
 
 export const SCAN_SECONDS = 2.8
 
+/** In drag mode the beam starts a little way in, so it can be seen and grabbed. */
+const START = 0.05
+/** Dragged this far, the sweep finishes itself. */
+const ENOUGH = 0.92
+
 /**
  * Cloud that rolls in over a satellite image, and the radar sweep that
- * clears it. The sweep uncovers the image that was already there; it does
- * not show radar data. When chapter 2 has a real SAR frame of this area,
- * put it under the cloud here so the sweep reveals the radar view itself.
+ * clears it. With `drag`, the visitor pulls the beam across themselves (or
+ * presses Enter on its handle to have it cross on its own); `onSwept` fires
+ * once it is across. With cover `scan` it crosses by itself.
+ *
+ * The sweep uncovers the image that was already there; it does not show
+ * radar data, and the label on screen says so. When there is a real SAR
+ * frame of this area, put it under the cloud here.
  */
-export function CloudCover({ cover }: { cover: Cover | null }) {
-  const scanning = cover === 'scan'
+export function CloudCover({ cover, drag = false, onSwept }: {
+  cover: Cover | null
+  drag?: boolean
+  onSwept?: () => void
+}) {
   const label = useResolved(ui.scan)
+  const root = useRef<HTMLDivElement>(null)
+  const held = useRef(false)
+  const swept = useRef(false)
+
+  /** How far across the beam is, 0 to 1. The cloud is cut away behind it. */
+  const progress = useMotionValue(0)
+  const clipPath = useTransform(progress, (p) => `inset(0% 0% 0% ${p * 100}%)`)
+  const beamX = useTransform(progress, (p) => p * STAGE_WIDTH)
+
+  useEffect(() => {
+    if (cover === 'scan') {
+      const sweep = animate(progress, 1, { duration: SCAN_SECONDS, ease: 'linear' })
+      return () => sweep.stop()
+    }
+    if (cover === 'clouds') {
+      swept.current = false
+      progress.set(drag ? START : 0)
+    }
+  }, [cover, drag, progress])
+
+  const finish = useCallback(
+    (seconds: number) => {
+      if (swept.current) return
+      swept.current = true
+      animate(progress, 1, { duration: seconds, ease: 'linear' }).then(() => onSwept?.())
+    },
+    [progress, onSwept],
+  )
+
+  /** Follows the pointer, but never gives ground back to the cloud. */
+  const pull = (clientX: number) => {
+    const rect = root.current?.getBoundingClientRect()
+    if (!rect || swept.current) return
+    const p = Math.max(progress.get(), Math.min((clientX - rect.left) / rect.width, 1))
+    progress.set(p)
+    if (p >= ENOUGH) finish(0.25)
+  }
+
+  const scanning = cover === 'scan' || (cover === 'clouds' && drag)
+
   return (
     <AnimatePresence>
       {cover && (
         <motion.div
           key="cover"
+          ref={root}
           className="cloud-cover"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 2.4, ease: EASE }}
         >
-          {/* The cloud is cut away from the left as the sweep crosses. */}
-          <motion.div
-            className="cloud-sky"
-            initial={false}
-            animate={{ clipPath: scanning ? 'inset(0% 0% 0% 100%)' : 'inset(0% 0% 0% 0%)' }}
-            transition={{ duration: scanning ? SCAN_SECONDS : 0, ease: 'linear' }}
-          >
+          <motion.div className="cloud-sky" style={{ clipPath }}>
             <CloudLayer seed={11} className="cloud-layer cloud-layer--near" />
             <CloudLayer seed={47} className="cloud-layer cloud-layer--far" />
           </motion.div>
 
           {scanning && (
             <>
-              <motion.div
-                className="scan-beam"
-                initial={{ x: 0 }}
-                animate={{ x: 1920 }}
-                transition={{ duration: SCAN_SECONDS, ease: 'linear' }}
-              />
+              <motion.div className="scan-beam" style={{ x: beamX }} />
               <motion.p
                 className="stamp scan-label"
                 initial={{ opacity: 0 }}
@@ -55,6 +98,49 @@ export function CloudCover({ cover }: { cover: Cover | null }) {
                 <span className="stamp-lead">{label.lead}</span> · {label.rest}
               </motion.p>
             </>
+          )}
+
+          {drag && cover === 'clouds' && (
+            <div
+              className="sweep"
+              onClick={(e) => e.stopPropagation()}
+              onPointerDown={(e) => {
+                e.currentTarget.setPointerCapture(e.pointerId)
+                held.current = true
+                pull(e.clientX)
+              }}
+              onPointerMove={(e) => held.current && pull(e.clientX)}
+              onPointerUp={() => (held.current = false)}
+              onPointerCancel={() => (held.current = false)}
+            >
+              <motion.button
+                type="button"
+                className="sweep-handle"
+                role="slider"
+                aria-label={label.drag}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress.get() * 100)}
+                style={{ x: beamX }}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowRight') {
+                    const p = Math.min(progress.get() + 0.1, 1)
+                    progress.set(p)
+                    if (p >= ENOUGH) finish(0.25)
+                  } else if (e.key === 'Enter' || e.key === ' ') finish(SCAN_SECONDS * (1 - progress.get()))
+                  else return
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="m9 6-6 6 6 6M15 6l6 6-6 6" />
+                </svg>
+              </motion.button>
+              <motion.p className="sweep-prompt" style={{ x: beamX }}>
+                {label.drag}
+              </motion.p>
+            </div>
           )}
         </motion.div>
       )}

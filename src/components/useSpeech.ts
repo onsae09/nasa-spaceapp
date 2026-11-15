@@ -5,10 +5,11 @@ import { useTypewriter } from './useTypewriter'
 /**
  * Types out a line and ticks as it goes: every second letter, never for
  * spaces or punctuation, and not when a click reveals the rest at once.
- * While `active` is false nothing is typed and nothing sounds.
+ * While `active` is false nothing is typed and nothing sounds. With `instant`
+ * (a line the visitor has already read) it appears whole and silent.
  */
-export function useSpeech(id: string, text: string, pace: Pace, active: boolean, tick: () => void) {
-  const typing = useTypewriter(active ? id : 'idle', active ? text : '', pace)
+export function useSpeech(id: string, text: string, pace: Pace, active: boolean, tick: () => void, instant = false) {
+  const typing = useTypewriter(active ? id : 'idle', active ? text : '', pace, instant)
 
   const typed = useRef(0)
   useEffect(() => {

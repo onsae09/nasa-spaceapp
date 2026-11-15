@@ -9,7 +9,12 @@ const fitScale = () => Math.min(window.innerWidth / STAGE_WIDTH, window.innerHei
  * A fixed 1920×1080 canvas (the Canva page size) scaled to fit the window.
  * Everything inside is positioned in Canva pixels.
  */
-export function Stage({ children, onClick }: { children: ReactNode; onClick?: () => void }) {
+export function Stage({ children, onClick, chapter }: {
+  children: ReactNode
+  onClick?: () => void
+  /** The chapter being played; the stylesheet gives each its own look. */
+  chapter: number
+}) {
   const [scale, setScale] = useState(fitScale)
 
   useLayoutEffect(() => {
@@ -23,6 +28,7 @@ export function Stage({ children, onClick }: { children: ReactNode; onClick?: ()
     <div className="viewport">
       <div
         className="stage"
+        data-chapter={chapter}
         style={{ transform: `translate(-50%, -50%) scale(${scale})` }}
         onClick={onClick}
       >

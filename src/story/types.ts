@@ -29,18 +29,19 @@ export type Cover = 'clouds' | 'scan'
 
 /**
  * Which picture the radar lesson is showing (background `radarLesson`).
- *   send    – the satellite sends its signal down
- *   dry     – dry ground scatters it; part comes back; bright
+ *   send    – the satellite over dry ground, nothing fired yet
+ *   dry     – dry ground scatters the signal; part comes back; bright
+ *   flood   – the same field under water, nothing fired yet
  *   wet     – calm water bounces it away; little comes back; dark
  *   compare – the same place before and after: darker means water may have come
  */
-export type LessonStep = 'send' | 'dry' | 'wet' | 'compare'
+export type LessonStep = 'send' | 'dry' | 'flood' | 'wet' | 'compare'
 
 /** How fast a line is typed. Heavy lines are slow, greetings are quick. */
 export type Pace = 'slow' | 'normal' | 'quick'
 
 /** Figures shown large beside the dialogue. Content lives in src/assets.ts. */
-export type FactKey = 'nepalToll'
+export type FactKey = 'nepalToll' | 'oneInTen'
 
 /**
  * A full-screen interactive part of the story. The story waits until it is closed.
@@ -49,6 +50,35 @@ export type FactKey = 'nepalToll'
  *   files – the research files: open and read
  */
 export type OverlayKey = 'map' | 'cards' | 'files'
+
+/** Where Sara floats. dock: beside the dialogue box. */
+export type SaraSpot = 'dock'
+
+/** What Sara's body is doing. */
+export type SaraPose = 'idle' | 'wave' | 'think' | 'alarm' | 'present'
+
+/** A place on the stage Sara can point at. Coordinates live in ./anchors.ts. */
+export type AnchorKey = 'valley' | 'satellite' | 'ground' | 'tile' | 'tiles' | 'stamp' | 'patch' | 'map'
+
+/**
+ * A direction for Sara. Only the fields given change; the rest carry over
+ * from the last cue. `point` is dropped whenever the background changes.
+ */
+export type SaraCue = { show?: boolean; at?: SaraSpot; pose?: SaraPose; point?: AnchorKey | null }
+
+/** How the radar map backdrop is framed: the whole strip, or close on one flooded patch. */
+export type MapLook = 'whole' | 'patch'
+
+/**
+ * Something the visitor does themselves.
+ *   sweep  – drag the radar beam across the cloud
+ *   pulse  – fire the radar and watch the echo
+ *   choice – pick an answer
+ */
+export type Interaction =
+  | { kind: 'sweep' }
+  | { kind: 'pulse' }
+  | { kind: 'choice'; options: string[]; answer: number }
 
 /** The card shown at the start of a chapter. */
 export type ChapterMark = { number: number; title: string }
@@ -66,6 +96,8 @@ export type ButtonSpec = {
  *   say   – a line of dialogue; waits for a click, or for its button if it has one
  *   wait  – pauses for the given milliseconds; clicks are ignored
  *   open  – opens an interactive overlay; waits until the visitor closes it
+ *   do    – the visitor acts (see Interaction); its line stays up meanwhile.
+ *           Once done it no longer blocks, so coming back to it is a plain line.
  *
  * Instant steps (applied, then the story moves on):
  *   bg        – replace the background with a full-screen image
@@ -78,11 +110,15 @@ export type ButtonSpec = {
  *               cleared automatically when the background changes
  *   chapter   – show a chapter card, or null to take it away
  *   lesson    – which picture of the radar lesson to show
+ *   sara      – show, hide, pose or point the character
+ *   look      – how the radar map backdrop is framed; reset by a new background
  */
 export type Step =
   | { say: string; button?: ButtonSpec; pace?: Pace }
   | { wait: number }
   | { open: OverlayKey }
+  | { do: 'sweep' | 'pulse'; say: string }
+  | { do: 'choice'; say: string; options: string[]; answer: number }
   | { bg: BackdropKey }
   | { triptych: [PanelKey, PanelKey, PanelKey] }
   | { ui: boolean }
@@ -92,9 +128,13 @@ export type Step =
   | { cover: Cover | null }
   | { chapter: ChapterMark | null }
   | { lesson: LessonStep }
+  | { sara: SaraCue }
+  | { look: MapLook }
 
 export type Scene = {
   id: string
+  /** Which chapter the scene belongs to, for the progress display and the look. */
+  chapter: number
   steps: Step[]
 }
 

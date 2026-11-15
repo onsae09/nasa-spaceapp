@@ -6,7 +6,7 @@ import type { FactKey } from '../story/types'
 
 /** Figures shown large and still, with their source underneath. */
 export function FactPanel({ id }: { id: FactKey }) {
-  const { rows, source } = useResolved(facts[id])
+  const { rows, source, dots } = useResolved(facts[id])
   return (
     <motion.div
       className="fact"
@@ -27,6 +27,13 @@ export function FactPanel({ id }: { id: FactKey }) {
           <span className="fact-label">{row.label}</span>
         </motion.p>
       ))}
+      {dots && (
+        <p className="fact-dots" aria-hidden="true">
+          {Array.from({ length: dots.total }, (_, i) => (
+            <span key={i} className={i < dots.lit ? 'fact-dot fact-dot--lit' : 'fact-dot'} />
+          ))}
+        </p>
+      )}
       <p className="stamp fact-source">{source}</p>
     </motion.div>
   )

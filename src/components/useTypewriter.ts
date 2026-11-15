@@ -10,14 +10,15 @@ const prefersReducedMotion = () =>
  * moment at commas and sentence ends.
  *
  * `id` identifies the line, so the count resets the moment the line changes
- * (even when two consecutive lines have the same text).
+ * (even when two consecutive lines have the same text). With `instant` the
+ * whole line is there at once, as it is when motion is reduced.
  */
-export function useTypewriter(id: string, text: string, pace: Pace = 'normal') {
+export function useTypewriter(id: string, text: string, pace: Pace = 'normal', instant = false) {
   const [progress, setProgress] = useState({ id, count: 0 })
   const count = progress.id === id ? progress.count : 0
 
   useEffect(() => {
-    if (prefersReducedMotion()) {
+    if (instant || prefersReducedMotion()) {
       setProgress({ id, count: text.length })
       return
     }
@@ -38,7 +39,7 @@ export function useTypewriter(id: string, text: string, pace: Pace = 'normal') {
     }
     if (text.length > 0) timer = window.setTimeout(type, delay)
     return () => clearTimeout(timer)
-  }, [id, text, pace])
+  }, [id, text, pace, instant])
 
   const finish = useCallback(() => setProgress({ id, count: text.length }), [id, text])
 
