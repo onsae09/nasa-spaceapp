@@ -2,6 +2,11 @@
   "name": "dancing-with-the-sars",
   "private": true,
   "version": "0.1.0",
+  "description": "An interactive story that teaches how to read radar flood maps, with Sentinel-1 and NISAR data. NASA Space Apps Challenge 2026, Dancing with the SARs.",
+  "license": "MIT",
+  "homepage": "https://nasa-spaceapp-eight.vercel.app",
+  "repository": "github:onsae09/nasa-spaceapp",
+  "siAssistance": "Code, analysis scripts and documentation were written with the help of an SI tool (Claude Code). See \"Use of Super Intelligence (SI)\" in README.md.",
   "type": "module",
   "scripts": {
     "dev": "vite",
