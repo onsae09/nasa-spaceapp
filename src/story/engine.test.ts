@@ -335,7 +335,7 @@ describe.each(['en', 'ko'] as const)('the whole story in %s', (lang) => {
     })
     expect(end.finished).toBe(true)
     expect(scenes).toEqual(['missed', 'reminder', 'echo', 'hunt', 'limits', 'choose', 'window', 'briefing'])
-    expect(overlays).toEqual(['map', 'clues', 'gaps', 'nisar', 'steps', 'cards', 'files'])
+    expect(overlays).toEqual(['map', 'clues', 'gaps', 'pulse', 'nisar', 'steps', 'cards', 'files'])
     expect(lines[1].length).toBeLessThanOrEqual(BUDGET.chapter1)
     expect(lines[2].length).toBeLessThanOrEqual(BUDGET.chapter2)
     expect(lines[3].length).toBeLessThanOrEqual(BUDGET.chapter3)

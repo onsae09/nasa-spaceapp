@@ -3,3 +3,6 @@ dist
 .DS_Store
 *.local
 .vercel
+
+# NISAR layers read from the archive by scripts/fetch_nisar_gcov.py (about 800 MB)
+data/nisar/cache/

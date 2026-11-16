@@ -1,0 +1,76 @@
+{
+  "tibet": [
+    {
+      "date": "2026-10-28",
+      "collection": "NISAR_L2_GCOV_V1",
+      "granule": "NISAR_L2_PR_GCOV_034_069_A_018_2005_DHDH_M_20261028T232346_20261028T232421_P05036_N_F_J_001"
+    },
+    {
+      "date": "2026-11-09",
+      "collection": "NISAR_L2_GCOV_V1",
+      "granule": "NISAR_L2_PR_GCOV_035_069_A_018_2005_DHDH_M_20261109T232347_20261109T232422_P05036_N_F_J_001"
+    }
+  ],
+  "haor": [
+    {
+      "date": "2026-06-18",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_023_069_A_014_4005_DHDH_A_20260618T232135_20260618T232210_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-06-30",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_024_069_A_014_4005_DHDH_A_20260630T232134_20260630T232209_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-07-12",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_025_069_A_014_4005_DHDH_A_20260712T232134_20260712T232208_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-07-24",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_026_069_A_014_4005_DHDH_A_20260724T232133_20260724T232208_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-08-17",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_028_069_A_014_4005_DHDH_A_20260817T232132_20260817T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-08-29",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_029_069_A_014_4005_DHDH_A_20260829T232132_20260829T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-09-10",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_030_069_A_014_4005_DHDH_A_20260910T232131_20260910T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-09-22",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_031_069_A_014_4005_DHDH_A_20260922T232132_20260922T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-10-04",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_032_069_A_014_4005_DHDH_A_20261004T232132_20261004T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-10-16",
+      "collection": "NISAR_L2_GCOV_PROVISIONAL_V1",
+      "granule": "NISAR_L2_PR_GCOV_033_069_A_014_4005_DHDH_A_20261016T232132_20261016T232206_P05023_N_F_J_001"
+    },
+    {
+      "date": "2026-10-28",
+      "collection": "NISAR_L2_GCOV_V1",
+      "granule": "NISAR_L2_PR_GCOV_034_069_A_014_4005_DHDH_A_20261028T232132_20261028T232207_P05036_N_F_J_001"
+    },
+    {
+      "date": "2026-11-09",
+      "collection": "NISAR_L2_GCOV_V1",
+      "granule": "NISAR_L2_PR_GCOV_035_069_A_014_4005_DHDH_A_20261109T232132_20261109T232207_P05036_N_F_J_001"
+    }
+  ]
+}

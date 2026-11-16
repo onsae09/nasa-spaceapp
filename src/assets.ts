@@ -230,4 +230,5 @@ export const allImageUrls = [
   url('analysis/amphan-distributions.png'),
   url('analysis/nisar-before.webp'),
   url('analysis/nisar-after.webp'),
+  url('analysis/nisar-change.webp'),
 ]

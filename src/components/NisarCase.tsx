@@ -29,6 +29,8 @@ export function NisarCase({ onClose }: { onClose: () => void }) {
   const [lake, setLake] = useState<LakeKey>('1')
   const [read, setRead] = useState<Partial<Record<LakeKey, LakeChange>>>({})
   const [driver, setDriver] = useState<DriverKey | null>(null)
+  const [mode, setMode] = useState<'compare' | 'change'>('compare')
+  const comparing = mode === 'compare'
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -66,6 +68,8 @@ export function NisarCase({ onClose }: { onClose: () => void }) {
         <img className="nisar-layer" src={t.before} alt={t.alt} draggable={false} />
         {/* The later pass shows to the right of the divider. */}
         <img className="nisar-layer" src={t.after} alt="" draggable={false} style={{ clipPath: `inset(0 0 0 ${split}px)` }} />
+        {/* How far the HH echo moved between the passes, measured. */}
+        <img className="nisar-layer" src={t.change} alt="" draggable={false} style={{ opacity: comparing ? 0 : 1 }} />
 
         {LAKES.map((key) => {
           const { x, y, r } = nisar.lakes[key]
@@ -87,10 +91,10 @@ export function NisarCase({ onClose }: { onClose: () => void }) {
         })}
 
         {/* The dates stay in the corners: beside the divider they would be cut off at the edges. */}
-        <p className="stamp nisar-date nisar-date--before">{t.beforeDate}</p>
-        <p className="stamp nisar-date nisar-date--after">{t.afterDate}</p>
+        {comparing && <p className="stamp nisar-date nisar-date--before">{t.beforeDate}</p>}
+        {comparing && <p className="stamp nisar-date nisar-date--after">{t.afterDate}</p>}
 
-        <div className="nisar-divider" style={{ left: split }}>
+        <div className="nisar-divider" style={{ left: split, display: comparing ? undefined : 'none' }}>
           <button
             type="button"
             className="map-divider-grip"
@@ -129,6 +133,13 @@ export function NisarCase({ onClose }: { onClose: () => void }) {
 
       <div className="nisar-panel">
         <section className="nisar-block">
+          <div className="nisar-tabs" role="group" aria-label={t.viewGroup}>
+            {(['compare', 'change'] as const).map((key) => (
+              <button key={key} type="button" className="nisar-tab" aria-pressed={key === mode} onClick={() => setMode(key)}>
+                {t.views[key]}
+              </button>
+            ))}
+          </div>
           <div className="nisar-tabs" role="group" aria-label={t.task.lake}>
             {LAKES.map((key) => (
               <button
@@ -158,7 +169,7 @@ export function NisarCase({ onClose }: { onClose: () => void }) {
             ))}
           </div>
           <p className="nisar-note" aria-live="polite">
-            {answer ? (correct(lake) ? t.task.right[lake] : t.task.wrong) : t.colour}
+            {answer ? (correct(lake) ? t.task.right[lake] : t.task.wrong) : comparing ? t.colour : t.changeKey}
           </p>
         </section>
 

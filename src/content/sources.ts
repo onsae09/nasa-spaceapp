@@ -14,8 +14,8 @@ export const sources: { label: L; href?: string }[] = [
   },
   {
     label: {
-      en: 'NISAR: L2 GCOV browse images, NASA/JPL via ASF (track 69, frame 18; 28 Oct and 9 Nov 2026)',
-      ko: 'NISAR: L2 GCOV 미리보기 영상, NASA/JPL, ASF 제공 (트랙 69, 프레임 18; 2026년 10월 28일, 11월 9일)',
+      en: 'NISAR: 14 L2 GCOV products, NASA/JPL via ASF (track 69, frames 14 and 18; 18 Jun to 9 Nov 2026)',
+      ko: 'NISAR: L2 GCOV 산출물 14개, NASA/JPL, ASF 제공 (트랙 69, 프레임 14와 18; 2026년 6월 18일~11월 9일)',
     },
     href: 'https://search.asf.alaska.edu/',
   },

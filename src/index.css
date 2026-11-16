@@ -2995,6 +2995,141 @@ body {
   color: var(--text-2);
 }
 
+/* ---- the haor: twelve passes, one after another ---- */
+
+.pulse-frame {
+  left: 112px;
+  top: 168px;
+  width: 670px;
+  height: 739px;
+}
+
+.pulse-frame .nisar-layer {
+  transition: opacity 250ms linear;
+}
+
+.pulse-panel {
+  position: absolute;
+  left: 822px;
+  right: 112px;
+  top: 168px;
+  display: grid;
+  gap: 16px;
+}
+
+.pulse-controls {
+  display: grid;
+  grid-template-columns: 140px 1fr auto;
+  gap: 20px;
+  align-items: center;
+}
+
+.pulse-play {
+  flex: none;
+}
+
+.pulse-slider {
+  width: 100%;
+  height: 48px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.pulse-count {
+  color: var(--text);
+}
+
+.pulse-flag {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 22px;
+  line-height: 32px;
+  cursor: pointer;
+}
+
+.pulse-flag input {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: #3fe0f0;
+}
+
+.story-button.pulse-pick {
+  justify-self: start;
+  box-shadow: none;
+}
+
+.pulse-chart {
+  margin: 0;
+}
+
+.pulse-chart svg {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.pulse-axis {
+  stroke: var(--hairline);
+  stroke-width: 2;
+}
+
+.pulse-bar {
+  cursor: pointer;
+}
+
+.pulse-bar-fill {
+  fill: rgba(63, 224, 240, 0.45);
+}
+
+.pulse-bar[data-peak='true'] .pulse-bar-fill {
+  fill: #3fe0f0;
+}
+
+.pulse-bar[data-current='true'] .pulse-bar-fill {
+  stroke: var(--text);
+  stroke-width: 3;
+}
+
+.pulse-range {
+  stroke: var(--text);
+  stroke-width: 2;
+  opacity: 0.7;
+}
+
+.pulse-value,
+.pulse-tick,
+.pulse-yours {
+  font-family: var(--font-mono);
+  font-size: 17px;
+  fill: var(--text-2);
+}
+
+.pulse-value {
+  fill: var(--text);
+}
+
+.pulse-yours {
+  fill: var(--accent);
+}
+
+.pulse-findings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  font-size: 19px;
+  line-height: 26px;
+}
+
+.pulse-findings li {
+  padding-left: 18px;
+  background: linear-gradient(var(--text-2), var(--text-2)) 0 12px / 8px 2px no-repeat;
+}
+
 /* ================= choosing a next step ================= */
 
 .steps {

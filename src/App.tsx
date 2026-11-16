@@ -6,6 +6,7 @@ import { BackdropLayer } from './components/BackdropLayer'
 import { Choice } from './components/Choice'
 import { CloudCover } from './components/CloudCover'
 import { EndCard } from './components/EndCard'
+import { HaorPulse } from './components/HaorPulse'
 import { FactPanel } from './components/FactPanel'
 import { MapViewer } from './components/MapViewer'
 import { NextStep } from './components/NextStep'
@@ -305,6 +306,7 @@ export default function App() {
                 {overlay === 'map' && <MapViewer stage="detect" onClose={close} />}
                 {overlay === 'clues' && <MapViewer stage="clues" onClose={close} />}
                 {overlay === 'gaps' && <MapViewer stage="gaps" onClose={close} />}
+                {overlay === 'pulse' && <HaorPulse onClose={close} />}
                 {overlay === 'nisar' && <NisarCase onClose={close} />}
                 {overlay === 'steps' && <NextStep onClose={close} />}
                 {overlay === 'cards' && <SolutionDeck onClose={close} />}

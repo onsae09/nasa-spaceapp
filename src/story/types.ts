@@ -59,12 +59,13 @@ export type FactKey = 'nepalToll' | 'oneInTen' | 'texas'
  *   map   – the radar map: compare the two passes and label three regions
  *   clues – the same map: hold other evidence against one region
  *   gaps  – the same map: what a radar map of this place can miss
+ *   pulse – twelve NISAR passes over Bangladesh's haor: find the widest water
  *   nisar – two NISAR passes over Tibetan lakes: read the change, then its cause
  *   steps – choose a next step for the briefing
  *   cards – the solution cards: turn them over
  *   files – the research files: open, read and play
  */
-export type OverlayKey = 'map' | 'clues' | 'gaps' | 'nisar' | 'steps' | 'cards' | 'files'
+export type OverlayKey = 'map' | 'clues' | 'gaps' | 'pulse' | 'nisar' | 'steps' | 'cards' | 'files'
 
 /** Where Sara floats. dock: beside the dialogue box. */
 export type SaraSpot = 'dock'
