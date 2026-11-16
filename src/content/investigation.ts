@@ -115,8 +115,8 @@ export const gaps = {
       at: { x: 0.72, y: 0.66 },
       name: { en: 'Plants', ko: '식물' },
       text: {
-        en: 'Plants can complicate the return. Under this forest the signal scatters in the canopy, so water beneath it may never show as dark.',
-        ko: '식물은 돌아오는 신호를 복잡하게 해요. 이 숲에서는 신호가 나무에서 흩어져, 아래의 물이 어둡게 보이지 않을 수 있어요.',
+        en: 'Plants can complicate the return. Under this forest the signal scatters in the canopy, so water beneath it may never show as dark. Longer waves, like NISAR’s, reach further in.',
+        ko: '식물은 돌아오는 신호를 복잡하게 해요. 이 숲에서는 신호가 나무에서 흩어져, 아래의 물이 어둡게 보이지 않을 수 있어요. NISAR처럼 파장이 길면 더 깊이 들어가요.',
       },
     },
     coverage: {

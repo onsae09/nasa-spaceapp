@@ -8,6 +8,7 @@ const same = (text: string) => ({ en: text, ko: text })
  * The visitor fires the radar at dry ground and at water, guesses what comes
  * back, then reads the team's two radar passes over Cyclone Amphan, guesses
  * how far to trust a flag, and judges three places on the map themselves. Every figure is from src/content/analysis.ts.
+ * It ends on two NISAR passes over Tibetan lakes (src/content/nisar.ts).
  *
  * Edit lines and their order here; see ./types.ts for what each step does.
  * Every line needs both languages and at most 12 English words.
@@ -189,6 +190,16 @@ export const chapter2: ScriptScene[] = [
       { open: 'gaps' },
       { bg: 'space' },
       { camera: 'earth' },
+      // The challenge's own satellite: two NISAR passes, and the team's run on its archive.
+      { sara: { pose: 'present' } },
+      {
+        say: {
+          en: 'One more radar: NISAR. Longer waves, a new pass every 12 days.',
+          ko: '레이더 하나 더, NISAR예요. 더 긴 파장으로 12일마다 찍어요.',
+        },
+        button: { label: { en: 'Ask NISAR', ko: 'NISAR에게 묻기' }, at: 'center' },
+      },
+      { open: 'nisar' },
       { sara: { pose: 'wave' } },
       {
         say: {

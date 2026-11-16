@@ -9,6 +9,7 @@ import { EndCard } from './components/EndCard'
 import { FactPanel } from './components/FactPanel'
 import { MapViewer } from './components/MapViewer'
 import { NextStep } from './components/NextStep'
+import { NisarCase } from './components/NisarCase'
 import { MusicToggle } from './components/MusicToggle'
 import { ResearchFiles } from './components/ResearchFiles'
 import { Sara } from './components/Sara'
@@ -304,6 +305,7 @@ export default function App() {
                 {overlay === 'map' && <MapViewer stage="detect" onClose={close} />}
                 {overlay === 'clues' && <MapViewer stage="clues" onClose={close} />}
                 {overlay === 'gaps' && <MapViewer stage="gaps" onClose={close} />}
+                {overlay === 'nisar' && <NisarCase onClose={close} />}
                 {overlay === 'steps' && <NextStep onClose={close} />}
                 {overlay === 'cards' && <SolutionDeck onClose={close} />}
                 {overlay === 'files' && (

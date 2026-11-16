@@ -13,6 +13,17 @@ export const sources: { label: L; href?: string }[] = [
     },
   },
   {
+    label: {
+      en: 'NISAR: L2 GCOV browse images, NASA/JPL via ASF (track 69, frame 18; 28 Oct and 9 Nov 2026)',
+      ko: 'NISAR: L2 GCOV 미리보기 영상, NASA/JPL, ASF 제공 (트랙 69, 프레임 18; 2026년 10월 28일, 11월 9일)',
+    },
+    href: 'https://search.asf.alaska.edu/',
+  },
+  {
+    label: { en: 'NISAR pipeline: the team’s nisar-analysis', ko: 'NISAR 분석 파이프라인: 팀의 nisar-analysis' },
+    href: 'https://github.com/Maha123b/nisar-analysis',
+  },
+  {
     label: { en: 'Reference flood map: Zenodo 4390084', ko: '기준 침수 지도: Zenodo 4390084' },
     href: 'https://zenodo.org/records/4390084',
   },

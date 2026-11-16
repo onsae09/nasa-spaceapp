@@ -2636,6 +2636,8 @@ body {
 }
 
 /* Two equal views side by side, above the dialogue box. */
+/* The row is given a height of its own (minmax(0, 1fr)): left to size itself,
+   it grows to fit the pictures and the views run down over the case notes. */
 .desk-views {
   position: absolute;
   left: 112px;
@@ -2644,13 +2646,17 @@ body {
   height: 332px;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  grid-template-rows: minmax(0, 1fr);
   gap: 32px;
 }
 
 .desk-view {
   position: relative;
-  padding: 16px 16px 56px;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px 16px 56px;
   display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
   place-items: center;
   font: inherit;
   background: var(--ink-2);
@@ -2671,21 +2677,28 @@ body {
 }
 
 .desk-view img {
-  max-width: 100%;
-  max-height: 100%;
-  min-height: 0;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 .desk-date {
   position: absolute;
   left: 20px;
+  right: 20px;
   bottom: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: left;
 }
 
-/* Enlarged, one view takes the whole row and the other steps out. */
+/* Enlarged, one view takes the whole desk down to the foot of the notes
+   (Sara's helmet begins just below), and the other steps out. */
 .desk-views[data-large] {
+  top: 56px;
+  height: 516px;
   grid-template-columns: 1fr;
+  z-index: 1;
 }
 
 .desk-views[data-large] .desk-view[data-large='false'] {
@@ -2734,6 +2747,252 @@ body {
 .desk-notes dd {
   margin: 0;
   font-weight: 500;
+}
+
+/* ================= the NISAR stop ================= */
+
+.nisar {
+  position: absolute;
+  inset: 0;
+  background: var(--ink-0);
+}
+
+.nisar-head {
+  position: absolute;
+  left: 112px;
+  top: 40px;
+}
+
+/* Continue sits beside the heading here: the foot of the page is taken. */
+.nisar .story-button--corner {
+  top: 56px;
+  bottom: auto;
+}
+
+.nisar-frame {
+  position: absolute;
+  overflow: hidden;
+  background: var(--ink-2);
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px var(--hairline);
+}
+
+.nisar-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+.nisar-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 2px solid var(--text);
+  pointer-events: none;
+}
+
+.nisar-divider .map-divider-grip {
+  top: 50%;
+  margin-top: -32px;
+}
+
+.nisar-date {
+  position: absolute;
+  top: 12px;
+  padding: 6px 14px;
+  color: var(--text);
+  background: var(--chip);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.nisar-date--before {
+  left: 12px;
+}
+
+.nisar-date--after {
+  right: 12px;
+}
+
+.nisar-stamp {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  padding: 8px 14px;
+  font-size: 18px;
+  line-height: 26px;
+  color: var(--text);
+  background: var(--chip);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* Beside the picture: read the lakes, then say what might have caused it. */
+.nisar-panel {
+  position: absolute;
+  left: 1152px;
+  right: 112px;
+  top: 168px;
+  display: grid;
+  gap: 28px;
+}
+
+.nisar-block {
+  display: grid;
+  gap: 12px;
+}
+
+.nisar-tabs,
+.nisar-options {
+  display: flex;
+  gap: 8px;
+}
+
+.nisar-options--stack {
+  display: grid;
+}
+
+.nisar-tab,
+.nisar-option {
+  flex: 1;
+  height: 48px;
+  padding: 0 16px;
+  font: inherit;
+  font-size: 22px;
+  color: var(--text-2);
+  background: none;
+  border: 0;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  cursor: pointer;
+  transition:
+    color 150ms var(--ease),
+    background-color 150ms var(--ease);
+}
+
+.nisar-tab {
+  font-family: var(--font-mono);
+}
+
+.nisar-options--stack .nisar-option {
+  height: 44px;
+  text-align: left;
+}
+
+.nisar-tab:hover,
+.nisar-option:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.nisar-tab:focus-visible,
+.nisar-option:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 3px;
+}
+
+.nisar-tab[aria-pressed='true'],
+.nisar-option[aria-pressed='true'] {
+  color: var(--ink-1);
+  background: var(--text);
+}
+
+/* A lake read correctly keeps a mark on its tab. */
+.nisar-tab[data-found='true']:not([aria-pressed='true']) {
+  color: var(--text);
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.nisar-option:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.nisar-ask {
+  margin: 0;
+  font-size: 26px;
+  line-height: 32px;
+  font-weight: 500;
+}
+
+.nisar-note,
+.nisar-lesson {
+  margin: 0;
+  font-size: 21px;
+  line-height: 29px;
+  color: var(--text-2);
+}
+
+.nisar-note {
+  min-height: 58px;
+}
+
+.nisar-lesson {
+  padding-left: 16px;
+  color: var(--text);
+  border-left: 3px solid var(--accent);
+}
+
+/* Along the foot: what the newer radar adds, and what the team ran on it. */
+.nisar-facts {
+  position: absolute;
+  left: 112px;
+  right: 112px;
+  top: 850px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.15fr;
+  gap: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--hairline);
+}
+
+.nisar-facts-title {
+  margin: 0 0 8px;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+  color: var(--text-2);
+}
+
+.nisar-fact {
+  margin: 0 0 8px;
+  font-size: 19px;
+  line-height: 26px;
+}
+
+.nisar-fact a {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.nisar-counts {
+  margin: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.nisar-counts div {
+  display: grid;
+  grid-template-columns: 128px 1fr;
+  gap: 12px;
+  align-items: baseline;
+}
+
+.nisar-counts dt {
+  font-family: var(--font-mono);
+  font-size: 32px;
+  line-height: 40px;
+  color: var(--text);
+}
+
+.nisar-counts dd {
+  margin: 0;
+  font-size: 19px;
+  line-height: 26px;
+  color: var(--text-2);
 }
 
 /* ================= choosing a next step ================= */
