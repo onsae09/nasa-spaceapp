@@ -7,6 +7,16 @@ It runs in a browser, in English and Korean, and is short enough to finish in fi
 - Play it: [nasa-spaceapp-eight.vercel.app](https://nasa-spaceapp-eight.vercel.app)
 - Code: [github.com/onsae09/nasa-spaceapp](https://github.com/onsae09/nasa-spaceapp)
 
+## Team
+
+Team Wave of Change.
+
+| Member | Role |
+|---|---|
+| onsae09 | Coding |
+| projecti0n, Lily_ | Planning |
+| lukegeltner, Maha, Mohammad Marshad Bin Khaled | Data analysis and processing |
+
 ## Why it matters
 
 Floods come with cloud, and cloud hides them from ordinary satellites. Radar sees through it, and NISAR now returns to every place on land every 12 days with data anyone may download. But a radar picture is hard to read and easy to over-read: on our own Cyclone Amphan map, about nine in ten places the radar flagged were dry in the reference map, and a Tibetan lake that never flooded changed by more than the usual flood threshold. A flood map that hides this misleads the people who act on it.
